@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgFondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_partida_normal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/oscurecer" />
+
+    <LinearLayout
+        android:id="@+id/layPanel"
+        android:layout_width="620dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/panel_crema"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="22dp">
+
+        <TextView
+            android:id="@+id/lblTitulo"
+            style="@style/Titulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¡Objetivo conseguido!" />
+
+        <!-- Estrellas (Historia) o corazones vacíos (Infinito) -->
+        <LinearLayout
+            android:id="@+id/layEstrellas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgEstrella1"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/estrella_vacia" />
+
+            <ImageView
+                android:id="@+id/imgEstrella2"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/estrella_vacia" />
+
+            <ImageView
+                android:id="@+id/imgEstrella3"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/estrella_vacia" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lblNuevoRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/chip_naranja"
+            android:fontFamily="sans-serif-black"
+            android:paddingLeft="18dp"
+            android:paddingTop="4dp"
+            android:paddingRight="18dp"
+            android:paddingBottom="6dp"
+            android:text="@string/nuevo_record"
+            android:textColor="@color/blanco"
+            android:textSize="@dimen/texto_pequeno"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/lblPuntos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="0 puntos"
+            android:textColor="@color/marron"
+            android:textSize="@dimen/texto_puntos" />
+
+        <TextView
+            android:id="@+id/lblSubtitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/marron"
+            android:textSize="@dimen/texto_normal"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dato"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lblAciertos"
+                        style="@style/DatoNumero"
+                        android:text="0" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/aciertos" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dato"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lblFallos"
+                        style="@style/DatoNumero"
+                        android:text="0" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/fallos" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dato"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lblEscapados"
+                        style="@style/DatoNumero"
+                        android:text="0" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/escapados" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dato"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lblBombas"
+                        style="@style/DatoNumero"
+                        android:text="0" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/bombas" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dato"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lblRacha"
+                        style="@style/DatoNumero"
+                        android:text="0" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/mejor_racha" />
+                </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnRepetir"
+                style="@style/BotonJuego"
+                android:layout_width="0dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_verde"
+                android:text="@string/repetir" />
+
+            <TextView
+                android:id="@+id/btnSiguiente"
+                style="@style/BotonJuego"
+                android:layout_width="0dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_naranja"
+                android:text="@string/siguiente" />
+
+            <TextView
+                android:id="@+id/btnMenu"
+                style="@style/BotonJuego"
+                android:layout_width="0dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_verde"
+                android:text="@string/menu" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imgTopo"
+        android:layout_width="200dp"
+        android:layout_height="220dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/topo_normal_03_feliz" />
+</FrameLayout>

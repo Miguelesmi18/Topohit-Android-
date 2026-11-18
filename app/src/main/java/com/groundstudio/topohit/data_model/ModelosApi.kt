@@ -1,0 +1,115 @@
+package com.groundstudio.topohit.data_model
+
+import com.google.gson.annotations.SerializedName
+
+// Clases de datos que viajan en JSON entre la tablet y la API (vídeos 35 y 36).
+// La API de ASP.NET escribe las claves en camelCase ("finalScore", "idUsuario"...).
+
+// Lo que se envía a api/auth/login y a api/auth/registro
+data class LoginPeticion(
+    @SerializedName("username") val username: String,
+    @SerializedName("password") val password: String
+)
+
+// Lo que devuelve la API si el login o el registro van bien
+data class LoginRespuesta(
+    @SerializedName("token") val token: String,
+    @SerializedName("expira") val expira: String,
+    @SerializedName("idUsuario") val idUsuario: Int,
+    @SerializedName("username") val username: String,
+    @SerializedName("rol") val rol: String
+)
+
+// Cuando algo va mal la API responde { "mensaje": "..." }
+data class MensajeError(
+    @SerializedName("mensaje") val mensaje: String?
+)
+
+// GET api/modos/historia
+data class NivelHistoria(
+    @SerializedName("numero") val numero: Int,
+    @SerializedName("zona") val zona: String,
+    @SerializedName("agujeros") val agujeros: Int,
+    @SerializedName("objetivo") val objetivo: Int,     // 0 = nivel jefe
+    @SerializedName("tiempo") val tiempo: Int,
+    @SerializedName("novedad") val novedad: String?
+)
+
+// GET api/modos/contrarreloj
+data class DificultadContrarreloj(
+    @SerializedName("nombre") val nombre: String,
+    @SerializedName("agujeros") val agujeros: Int,
+    @SerializedName("tiempo") val tiempo: Int,
+    @SerializedName("objetivo") val objetivo: Int,
+    @SerializedName("tiempoVisibleMs") val tiempoVisibleMs: Int,
+    @SerializedName("saleCadaMs") val saleCadaMs: Int,
+    @SerializedName("toposALaVez") val toposALaVez: Int
+)
+
+// GET api/modos/infinito
+data class DificultadInfinito(
+    @SerializedName("nombre") val nombre: String,
+    @SerializedName("agujeros") val agujeros: Int,
+    @SerializedName("vidas") val vidas: Int,
+    @SerializedName("incremento") val incremento: Int    // % que acelera cada segundo
+)
+
+// POST api/sesiones: lo que enviamos al acabar una partida.
+// Reglas de la API: nAttempts = hits + errorsMade; en Historia difficulty = null;
+// en Contrarreloj e Infinito levelReached = null.
+data class SesionNueva(
+    @SerializedName("modeId") val modeId: Int,             // 1 Historia, 2 Contrarreloj, 3 Infinito
+    @SerializedName("sessionLength") val sessionLength: Int,
+    @SerializedName("errorsMade") val errorsMade: Int,
+    @SerializedName("finalScore") val finalScore: Int,
+    @SerializedName("difficulty") val difficulty: String?,
+    @SerializedName("levelReached") val levelReached: Int?,
+    @SerializedName("nAttempts") val nAttempts: Int,
+    @SerializedName("molesEscaped") val molesEscaped: Int,
+    @SerializedName("hits") val hits: Int,
+    @SerializedName("maxCombo") val maxCombo: Int,
+    @SerializedName("goldenHits") val goldenHits: Int,
+    @SerializedName("abandoned") val abandoned: Boolean,
+    @SerializedName("avgReactionMs") val avgReactionMs: Int?
+)
+
+// Respuesta de POST api/sesiones
+data class SesionCreada(
+    @SerializedName("sessionId") val sessionId: Int
+)
+
+// Una partida guardada (GET api/sesiones/mias)
+data class Sesion(
+    @SerializedName("sessionId") val sessionId: Int,
+    @SerializedName("modo") val modo: String?,
+    @SerializedName("dateTime") val dateTime: String?,
+    @SerializedName("sessionLength") val sessionLength: Int,
+    @SerializedName("errorsMade") val errorsMade: Int,
+    @SerializedName("finalScore") val finalScore: Int,
+    @SerializedName("difficulty") val difficulty: String?,
+    @SerializedName("levelReached") val levelReached: Int?,
+    @SerializedName("hits") val hits: Int,
+    @SerializedName("nAttempts") val nAttempts: Int,
+    @SerializedName("accuracy") val accuracy: Double?,
+    @SerializedName("abandoned") val abandoned: Boolean
+)
+
+// GET api/sesiones/progreso: por dónde se quedó el jugador
+class Progreso(
+    @SerializedName("nivelDesbloqueado") var nivelDesbloqueado: Int,
+    @SerializedName("niveles") var niveles: MutableList<ProgresoNivel>?,
+    @SerializedName("records") var records: MutableList<RecordModo>?
+)
+
+class ProgresoNivel(
+    @SerializedName("numero") val numero: Int,
+    @SerializedName("objetivo") val objetivo: Int,
+    @SerializedName("mejorPuntuacion") var mejorPuntuacion: Int,
+    @SerializedName("estrellas") var estrellas: Int
+)
+
+class RecordModo(
+    @SerializedName("modo") val modo: String,
+    @SerializedName("dificultad") val dificultad: String,
+    @SerializedName("mejorPuntuacion") var mejorPuntuacion: Int
+)

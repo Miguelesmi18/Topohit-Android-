@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">Topohit</string>
+
+    <!-- Login y registro -->
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="usuario">Usuario</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="repetir_contrasena">Repetir contraseña</string>
+    <string name="entrar">ENTRAR</string>
+    <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
+    <string name="crear_cuenta">Crear cuenta</string>
+    <string name="crear_cuenta_mayus">CREAR CUENTA</string>
+    <string name="sin_conexion">Probar sin conexión</string>
+    <string name="al_crear">Al crear la cuenta se inicia sesión.</string>
+    <string name="elige_avatar">Elige tu avatar</string>
+    <string name="nota_avatares">Avatares de las 3 temáticas. Puedes cambiarlo luego en tu perfil.</string>
+
+    <!-- Menú -->
+    <string name="jugar">¡JUGAR!</string>
+    <string name="a_jugar">¡A JUGAR!</string>
+    <string name="records">Récords</string>
+    <string name="perfil">Perfil</string>
+    <string name="tematica">Temática</string>
+    <string name="normal">Normal</string>
+    <string name="halloween">Halloween</string>
+    <string name="navidad">Navidad</string>
+
+    <!-- Modos -->
+    <string name="elige_modo">Elige un modo</string>
+    <string name="historia">HISTORIA</string>
+    <string name="historia_desc">Avanza por el mapa y gana estrellas</string>
+    <string name="contrarreloj">CONTRARRELOJ</string>
+    <string name="contrarreloj_desc">Llega al objetivo antes de que acabe el tiempo</string>
+    <string name="infinito">INFINITO</string>
+    <string name="infinito_desc">¡Aguanta todo lo que puedas!</string>
+    <string name="elegir">Elegir</string>
+    <string name="modo_historia">Modo Historia</string>
+
+    <!-- Partida -->
+    <string name="tiempo">TIEMPO</string>
+    <string name="objetivo">OBJETIVO</string>
+    <string name="vidas">VIDAS</string>
+    <string name="record">RÉCORD</string>
+    <string name="pausa">Pausa</string>
+    <string name="continuar">Continuar</string>
+    <string name="reiniciar">Reiniciar</string>
+    <string name="salir_menu">Salir al menú</string>
+    <string name="que_hace">¿Qué hace cada uno?</string>
+    <string name="partida_pausa">PARTIDA EN PAUSA</string>
+
+    <!-- Resultado -->
+    <string name="aciertos">Aciertos</string>
+    <string name="fallos">Fallos</string>
+    <string name="escapados">Escapados</string>
+    <string name="bombas">Bombas</string>
+    <string name="mejor_racha">Mejor racha</string>
+    <string name="repetir">Repetir</string>
+    <string name="siguiente">Siguiente</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="menu">Menú</string>
+    <string name="nuevo_record">¡NUEVO RÉCORD!</string>
+
+    <!-- Perfil, récords y ajustes -->
+    <string name="mi_perfil">Mi perfil</string>
+    <string name="cambiar_avatar">Cambiar avatar</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="historial">Historial de partidas</string>
+    <string name="mis_records">Mis récords</string>
+    <string name="ajustes">Ajustes</string>
+    <string name="servidor">Servidor de la API</string>
+    <string name="guardar">Guardar</string>
+    <string name="como_jugar">Cómo jugar</string>
+    <string name="atras">←</string>
+</resources>

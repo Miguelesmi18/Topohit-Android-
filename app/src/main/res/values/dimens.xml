@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Medidas pensadas para tablet horizontal (unos 960 x 600 dp o más) -->
+    <dimen name="margen">24dp</dimen>
+    <dimen name="margen_pequeno">12dp</dimen>
+    <dimen name="alto_boton">68dp</dimen>
+    <dimen name="alto_boton_pequeno">56dp</dimen>
+    <dimen name="alto_campo">56dp</dimen>
+    <dimen name="boton_redondo">64dp</dimen>
+    <dimen name="avatar">72dp</dimen>
+    <dimen name="avatar_pequeno">64dp</dimen>
+    <dimen name="ancho_panel">420dp</dimen>
+    <dimen name="ancho_tarjeta">260dp</dimen>
+    <dimen name="alto_hud">76dp</dimen>
+    <dimen name="nivel">76dp</dimen>
+    <dimen name="estrella_mini">24dp</dimen>
+    <dimen name="icono_hud">40dp</dimen>
+
+    <dimen name="texto_titulo">40sp</dimen>
+    <dimen name="texto_titulo_pequeno">28sp</dimen>
+    <dimen name="texto_boton">26sp</dimen>
+    <dimen name="texto_grande">26sp</dimen>
+    <dimen name="texto_normal">20sp</dimen>
+    <dimen name="texto_pequeno">15sp</dimen>
+    <dimen name="texto_puntos">54sp</dimen>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Panel con borde oscuro y "sombra" abajo (dos capas: la de abajo hace de sombra) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="5dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="26dp" />
+            <solid android:color="@color/marron" />
+        </shape>
+    </item>
+    <item android:bottom="5dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="26dp" />
+            <solid android:color="@color/blanco" />
+            <stroke android:width="3dp" android:color="@color/marron" />
+        </shape>
+    </item>
+</layer-list>

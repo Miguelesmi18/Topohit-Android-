@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Temática Normal (GDD) -->
+    <color name="naranja">#F28C28</color>
+    <color name="verde">#5DAA3A</color>
+    <color name="crema">#FFF4DC</color>
+    <color name="marron">#3B2314</color>
+
+    <!-- Temática Halloween -->
+    <color name="naranja_halloween">#FF7A1A</color>
+    <color name="morado">#7B3FC4</color>
+    <color name="morado_oscuro">#2B1A40</color>
+    <color name="crema_halloween">#FFE9C7</color>
+
+    <!-- Temática Navidad -->
+    <color name="rojo">#D7263D</color>
+    <color name="verde_navidad">#1E7B45</color>
+    <color name="blanco_nieve">#F4FAFF</color>
+    <color name="marron_navidad">#3B1E14</color>
+
+    <!-- Comunes -->
+    <color name="blanco">#FFFFFF</color>
+    <color name="amarillo">#FFD23F</color>
+    <color name="gris">#8A7B70</color>
+    <color name="oscurecer">#99000000</color>
+    <color name="transparente">#00000000</color>
+</resources>
