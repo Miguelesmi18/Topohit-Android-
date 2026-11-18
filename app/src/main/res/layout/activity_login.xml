@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgFondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_partida_normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="@dimen/margen">
+
+        <!-- Izquierda: logo y topo grande -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:src="@drawable/logo_normal" />
+
+            <ImageView
+                android:id="@+id/imgTopo"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.4"
+                android:src="@drawable/topo_normal_03_feliz" />
+        </LinearLayout>
+
+        <!-- Derecha: panel de inicio de sesión -->
+        <LinearLayout
+            android:id="@+id/layPanel"
+            android:layout_width="@dimen/ancho_panel"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/panel_crema"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="28dp">
+
+            <TextView
+                android:id="@+id/lblTitulo"
+                style="@style/Titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="@string/iniciar_sesion" />
+
+            <EditText
+                android:id="@+id/txtUsuario"
+                style="@style/Campo"
+                android:layout_marginBottom="14dp"
+                android:hint="@string/usuario"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/txtContrasena"
+                style="@style/Campo"
+                android:layout_marginBottom="22dp"
+                android:hint="@string/contrasena"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/btnEntrar"
+                style="@style/BotonJuego"
+                android:layout_width="match_parent"
+                android:background="@drawable/btn_naranja"
+                android:text="@string/entrar" />
+
+            <TextView
+                android:id="@+id/lblNoCuenta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/no_tienes_cuenta"
+                android:textColor="@color/marron"
+                android:textSize="@dimen/texto_pequeno" />
+
+            <TextView
+                android:id="@+id/btnRegistro"
+                style="@style/BotonJuego"
+                android:layout_width="280dp"
+                android:layout_height="@dimen/alto_boton_pequeno"
+                android:background="@drawable/btn_verde"
+                android:text="@string/crear_cuenta"
+                android:textSize="@dimen/texto_normal" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Ajustes: temática y sonido -->
+    <TextView
+        android:id="@+id/btnAjustes"
+        style="@style/BotonRedondo"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/margen_pequeno"
+        android:text="≡" />
+
+    <!-- Rueda de "cargando" mientras habla con la API -->
+    <ProgressBar
+        android:id="@+id/prgCargando"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</FrameLayout>

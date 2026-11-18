@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgFondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_partida_normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margen_pequeno">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/btnAtras"
+                style="@style/BotonRedondo"
+                android:text="@string/atras" />
+
+            <TextView
+                android:id="@+id/lblTitulo"
+                style="@style/Titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:shadowColor="@color/blanco"
+                android:shadowRadius="8"
+                android:text="@string/modo_historia" />
+
+            <LinearLayout
+                android:id="@+id/layTotalEstrellas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:background="@drawable/chip_crema"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingTop="4dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="4dp">
+
+                <ImageView
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:src="@drawable/estrella_llena" />
+
+                <TextView
+                    android:id="@+id/lblTotalEstrellas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="0/30"
+                    android:textColor="@color/marron"
+                    android:textSize="@dimen/texto_grande" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Aquí se colocan desde Kotlin las zonas y los 10 niveles -->
+        <FrameLayout
+            android:id="@+id/layMapa"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imgTopoAqui"
+                android:layout_width="80dp"
+                android:layout_height="88dp"
+                android:src="@drawable/topo_normal_03_feliz" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- ===== Inicio de nivel ===== -->
+    <FrameLayout
+        android:id="@+id/layInicio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/oscurecer"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <LinearLayout
+                android:id="@+id/layPanelInicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/panel_crema"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <TextView
+                    android:id="@+id/lblNivel"
+                    style="@style/Titulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nivel 1 · Campo" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imgInicioEstrella1"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_margin="4dp"
+                        android:src="@drawable/estrella_vacia" />
+
+                    <ImageView
+                        android:id="@+id/imgInicioEstrella2"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_margin="4dp"
+                        android:src="@drawable/estrella_vacia" />
+
+                    <ImageView
+                        android:id="@+id/imgInicioEstrella3"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_margin="4dp"
+                        android:src="@drawable/estrella_vacia" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/lblObjetivoNivel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:textColor="@color/marron"
+                    android:textSize="@dimen/texto_normal" />
+
+                <LinearLayout
+                    android:id="@+id/layNovedad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/fila"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/imgNovedad"
+                        android:layout_width="84dp"
+                        android:layout_height="92dp"
+                        android:src="@drawable/topo_normal_05_enfadado" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-black"
+                            android:text="¡Novedad!"
+                            android:textColor="@color/marron"
+                            android:textSize="@dimen/texto_normal" />
+
+                        <TextView
+                            android:id="@+id/lblNovedad"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/marron"
+                            android:textSize="@dimen/texto_pequeno" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btnJugarNivel"
+                    style="@style/BotonJuego"
+                    android:layout_width="300dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/btn_naranja"
+                    android:text="@string/a_jugar"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnCerrarInicio"
+                style="@style/BotonRedondo"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="10dp"
+                android:text="✕"
+                android:textSize="@dimen/texto_normal" />
+        </FrameLayout>
+    </FrameLayout>
+</FrameLayout>

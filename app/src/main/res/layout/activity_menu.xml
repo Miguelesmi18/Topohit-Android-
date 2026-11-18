@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgFondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_partida_normal" />
+
+    <!-- Arriba a la izquierda: avatar, saludo y récord -->
+    <LinearLayout
+        android:id="@+id/layJugador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margen_pequeno"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="@dimen/avatar"
+            android:layout_height="@dimen/avatar"
+            android:background="@drawable/circulo_crema"
+            android:padding="8dp"
+            android:src="@drawable/topo_normal_03_feliz" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lblHola"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:shadowColor="@color/marron"
+                android:shadowDy="3"
+                android:shadowRadius="3"
+                android:text="¡Hola!"
+                android:textColor="@color/blanco"
+                android:textSize="@dimen/texto_grande" />
+
+            <TextView
+                android:id="@+id/lblRecord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:shadowColor="@color/marron"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:textColor="@color/blanco"
+                android:textSize="@dimen/texto_pequeno"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Arriba a la derecha: cómo jugar y ajustes -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/margen_pequeno"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnComoJugar"
+            style="@style/BotonRedondo"
+            android:layout_marginEnd="12dp"
+            android:text="\?" />
+
+        <TextView
+            android:id="@+id/btnAjustes"
+            style="@style/BotonRedondo"
+            android:text="≡" />
+    </LinearLayout>
+
+    <!-- Centro: logo, botones y temáticas -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="@dimen/margen_pequeno">
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_normal" />
+
+        <TextView
+            android:id="@+id/btnJugar"
+            style="@style/BotonJuego"
+            android:layout_width="320dp"
+            android:layout_height="84dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_naranja"
+            android:text="@string/jugar"
+            android:textSize="32sp" />
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnRecords"
+                style="@style/BotonJuego"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/alto_boton_pequeno"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_verde"
+                android:text="@string/records"
+                android:textSize="@dimen/texto_normal" />
+
+            <TextView
+                android:id="@+id/btnPerfil"
+                style="@style/BotonJuego"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/alto_boton_pequeno"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_verde"
+                android:text="@string/perfil"
+                android:textSize="@dimen/texto_normal" />
+        </LinearLayout>
+
+        <!-- Barra de temáticas -->
+        <LinearLayout
+            android:id="@+id/layTematicas"
+            android:layout_width="600dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/panel_crema"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="18dp">
+
+            <TextView
+                android:id="@+id/lblTematica"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:text="@string/tematica"
+                android:textColor="@color/marron"
+                android:textSize="@dimen/texto_normal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btnTemaNormal"
+                    style="@style/BotonJuego"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/alto_boton_pequeno"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_verde"
+                    android:text="@string/normal"
+                    android:textSize="@dimen/texto_normal" />
+
+                <TextView
+                    android:id="@+id/btnTemaHalloween"
+                    style="@style/BotonJuego"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/alto_boton_pequeno"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_morado"
+                    android:text="@string/halloween"
+                    android:textSize="@dimen/texto_normal" />
+
+                <TextView
+                    android:id="@+id/btnTemaNavidad"
+                    style="@style/BotonJuego"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/alto_boton_pequeno"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rojo"
+                    android:text="@string/navidad"
+                    android:textSize="@dimen/texto_normal" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
