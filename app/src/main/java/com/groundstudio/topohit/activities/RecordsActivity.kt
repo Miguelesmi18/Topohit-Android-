@@ -2,6 +2,10 @@ package com.groundstudio.topohit.activities
 
 import android.os.Bundle
 import android.widget.TextView
+<<<<<<< HEAD
+=======
+import androidx.appcompat.app.AppCompatActivity
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.groundstudio.topohit.R
 import com.groundstudio.topohit.adapters.RecordAdapter
@@ -11,7 +15,11 @@ import com.groundstudio.topohit.util.Juego
 
 // Mis récords: la mejor puntuación de cada modo y dificultad, y las estrellas de cada nivel.
 // (El Figma tiene un ranking global, pero la API todavía no tiene una ruta para el top 10 de todos.)
+<<<<<<< HEAD
 class RecordsActivity : PantallaBase() {
+=======
+class RecordsActivity : AppCompatActivity() {
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityRecordsBinding
 

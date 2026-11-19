@@ -95,6 +95,7 @@
                     android:textSize="@dimen/texto_normal" />
             </LinearLayout>
 
+<<<<<<< HEAD
             <!-- Sonido: música de fondo y efectos -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -131,6 +132,49 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_naranja"
                     android:text="@string/efectos"
+=======
+            <!-- Servidor de la API -->
+            <TextView
+                android:id="@+id/lblServidor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:fontFamily="sans-serif-black"
+                android:text="@string/servidor"
+                android:textColor="@color/marron"
+                android:textSize="@dimen/texto_grande" />
+
+            <TextView
+                android:id="@+id/lblAyudaServidor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Emulador: http://10.0.2.2:5110/ · Tablet: http://IP-DEL-PC:5110/"
+                android:textColor="@color/marron"
+                android:textSize="@dimen/texto_pequeno" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/txtServidor"
+                    style="@style/Campo"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:inputType="textUri" />
+
+                <TextView
+                    android:id="@+id/btnGuardarServidor"
+                    style="@style/BotonJuego"
+                    android:layout_width="160dp"
+                    android:layout_height="@dimen/alto_boton_pequeno"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/btn_naranja"
+                    android:text="@string/guardar"
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
                     android:textSize="@dimen/texto_normal" />
             </LinearLayout>
 

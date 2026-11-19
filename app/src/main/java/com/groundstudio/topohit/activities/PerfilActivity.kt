@@ -4,6 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+<<<<<<< HEAD
+=======
+import androidx.appcompat.app.AppCompatActivity
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.groundstudio.topohit.adapters.HistorialAdapter
@@ -18,7 +22,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 // Perfil: avatar, resumen y el historial de partidas (GET api/sesiones/mias)
+<<<<<<< HEAD
 class PerfilActivity : PantallaBase() {
+=======
+class PerfilActivity : AppCompatActivity() {
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityPerfilBinding
     private var avatarElegido = 0

@@ -4,6 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+<<<<<<< HEAD
+=======
+import androidx.appcompat.app.AppCompatActivity
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.api.RetrofitClient
 import com.groundstudio.topohit.data_model.Tematica
@@ -17,7 +21,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 // Menú principal: jugar, récords, perfil y los 3 botones de temática
+<<<<<<< HEAD
 class MenuActivity : PantallaBase() {
+=======
+class MenuActivity : AppCompatActivity() {
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityMenuBinding
 
@@ -33,7 +41,15 @@ class MenuActivity : PantallaBase() {
             startActivity(Intent(this, RecordsActivity::class.java))
         }
         binding.btnPerfil.setOnClickListener {
+<<<<<<< HEAD
             startActivity(Intent(this, PerfilActivity::class.java))
+=======
+            if (Juego.invitado) {
+                Toast.makeText(this, "Sin conexión no hay perfil. ¡Crea una cuenta!", Toast.LENGTH_LONG).show()
+            } else {
+                startActivity(Intent(this, PerfilActivity::class.java))
+            }
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         }
         binding.btnComoJugar.setOnClickListener {
             startActivity(Intent(this, ComoJugarActivity::class.java))
@@ -107,6 +123,12 @@ class MenuActivity : PantallaBase() {
     // GET api/sesiones/progreso: estrellas, niveles desbloqueados y récords
     @OptIn(DelicateCoroutinesApi::class)
     private fun cargarProgreso() {
+<<<<<<< HEAD
+=======
+        if (Juego.invitado) {
+            return
+        }
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         GlobalScope.launch {
             try {
                 val response = RetrofitClient.api().getProgreso(Juego.cabeceraToken()).execute()

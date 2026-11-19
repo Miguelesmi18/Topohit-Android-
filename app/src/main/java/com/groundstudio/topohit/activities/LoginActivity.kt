@@ -4,19 +4,30 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+<<<<<<< HEAD
+=======
+import androidx.appcompat.app.AppCompatActivity
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.api.RetrofitClient
 import com.groundstudio.topohit.data_model.LoginPeticion
 import com.groundstudio.topohit.databinding.ActivityLoginBinding
 import com.groundstudio.topohit.util.Almacen
+<<<<<<< HEAD
 import com.groundstudio.topohit.util.Cifrado
+=======
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import com.groundstudio.topohit.util.Juego
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 // Pantalla de inicio: usuario y contraseña contra la API (POST api/auth/login)
+<<<<<<< HEAD
 class LoginActivity : PantallaBase() {
+=======
+class LoginActivity : AppCompatActivity() {
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -43,6 +54,15 @@ class LoginActivity : PantallaBase() {
         binding.btnAjustes.setOnClickListener {
             startActivity(Intent(this, AjustesActivity::class.java))
         }
+<<<<<<< HEAD
+=======
+        binding.btnSinConexion.setOnClickListener {
+            Juego.cerrarSesion()
+            Juego.invitado = true
+            Juego.username = "Invitado"
+            irAlMenu()
+        }
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
     }
 
     // Al volver de Ajustes puede haber cambiado la temática
@@ -76,10 +96,14 @@ class LoginActivity : PantallaBase() {
         cargando(true)
         GlobalScope.launch {
             try {
+<<<<<<< HEAD
                 // La contraseña se cifra aquí, dentro de la corrutina: bcrypt tarda un poco
                 // y así la pantalla no se queda congelada
                 val hash = Cifrado.hash(contrasena)
                 val response = RetrofitClient.api().login(LoginPeticion(usuario, hash)).execute()
+=======
+                val response = RetrofitClient.api().login(LoginPeticion(usuario, contrasena)).execute()
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
                 val respuesta = response.body()
                 runOnUiThread {
                     cargando(false)
@@ -88,6 +112,10 @@ class LoginActivity : PantallaBase() {
                         Juego.idUsuario = respuesta.idUsuario
                         Juego.username = respuesta.username
                         Juego.rol = respuesta.rol
+<<<<<<< HEAD
+=======
+                        Juego.invitado = false
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
                         Juego.avatar = Almacen.cargarAvatar(this@LoginActivity, respuesta.username)
                         Almacen.guardarSesion(this@LoginActivity)
                         irAlMenu()
@@ -99,7 +127,11 @@ class LoginActivity : PantallaBase() {
                 runOnUiThread {
                     cargando(false)
                     Toast.makeText(this@LoginActivity,
+<<<<<<< HEAD
                         "No se puede conectar con el servidor. Comprueba que la API está arrancada.",
+=======
+                        "No se puede conectar con la API (" + RetrofitClient.url + "). Revisa la dirección en Ajustes o prueba sin conexión.",
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
                         Toast.LENGTH_LONG).show()
                 }
             }

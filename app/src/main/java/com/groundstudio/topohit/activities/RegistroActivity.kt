@@ -4,12 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+<<<<<<< HEAD
+=======
+import androidx.appcompat.app.AppCompatActivity
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.api.RetrofitClient
 import com.groundstudio.topohit.data_model.LoginPeticion
 import com.groundstudio.topohit.databinding.ActivityRegistroBinding
 import com.groundstudio.topohit.util.Almacen
+<<<<<<< HEAD
 import com.groundstudio.topohit.util.Cifrado
+=======
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import com.groundstudio.topohit.util.Avatares
 import com.groundstudio.topohit.util.Juego
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -17,7 +24,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 // Crear cuenta (POST api/auth/registro). Si va bien, la API ya devuelve el token y entramos.
+<<<<<<< HEAD
 class RegistroActivity : PantallaBase() {
+=======
+class RegistroActivity : AppCompatActivity() {
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityRegistroBinding
     private var avatarElegido = 0
@@ -80,10 +91,14 @@ class RegistroActivity : PantallaBase() {
         binding.btnCrear.isEnabled = false
         GlobalScope.launch {
             try {
+<<<<<<< HEAD
                 // La contraseña se cifra aquí, dentro de la corrutina: bcrypt tarda un poco
                 // y así la pantalla no se queda congelada
                 val hash = Cifrado.hash(contrasena)
                 val response = RetrofitClient.api().registro(LoginPeticion(usuario, hash)).execute()
+=======
+                val response = RetrofitClient.api().registro(LoginPeticion(usuario, contrasena)).execute()
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
                 val respuesta = response.body()
                 runOnUiThread {
                     binding.prgCargando.visibility = View.GONE
@@ -93,6 +108,10 @@ class RegistroActivity : PantallaBase() {
                         Juego.idUsuario = respuesta.idUsuario
                         Juego.username = respuesta.username
                         Juego.rol = respuesta.rol
+<<<<<<< HEAD
+=======
+                        Juego.invitado = false
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
                         Juego.avatar = avatarElegido
                         Juego.progreso = null
                         Almacen.guardarAvatar(this@RegistroActivity, respuesta.username, avatarElegido)

@@ -4,13 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
+<<<<<<< HEAD
+=======
+import androidx.appcompat.app.AppCompatActivity
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.R
 import com.groundstudio.topohit.databinding.ActivityDificultadBinding
 import com.groundstudio.topohit.util.Juego
 
 // Elegir la dificultad de Contrarreloj (Fácil, Medio, Difícil) o de Infinito (Fácil, Normal, Difícil)
+<<<<<<< HEAD
 class DificultadActivity : PantallaBase() {
+=======
+class DificultadActivity : AppCompatActivity() {
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityDificultadBinding
     private var modo = Juego.CONTRARRELOJ

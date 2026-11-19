@@ -45,7 +45,10 @@ dependencies {
     implementation(libs.retrofit.gson)
     // Corrutinas para GlobalScope.launch (vídeo 35)
     implementation(libs.kotlinx.coroutines.android)
+<<<<<<< HEAD
     // [No visto en clase] jBCrypt: cifra la contraseña con bcrypt antes de enviarla a la API
     // (reto "Protecció dels usuaris"). Es la misma librería que BCrypt.Net del escritorio.
     implementation(libs.jbcrypt)
+=======
+>>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 }
