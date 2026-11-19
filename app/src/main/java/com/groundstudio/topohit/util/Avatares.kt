@@ -15,12 +15,13 @@ object Avatares {
             b.imgAvatar8, b.imgAvatar9, b.imgAvatar10, b.imgAvatar11)
     }
 
-    // Pone los dibujos y marca con un borde amarillo el elegido
+    // Pone los dibujos y marca con un borde amarillo el elegido.
+    // CAMBIO 19/11: "elegido" es el id del avatar (1 a 12), no la posición: la imagen i es el avatar i + 1
     fun pintar(b: SelectorAvataresBinding, elegido: Int) {
         val lista = imagenes(b)
         for (i in 0..lista.size - 1) {
             lista[i].setImageResource(Tematicas.AVATARES[i])
-            if (i == elegido) {
+            if (i + 1 == elegido) {
                 lista[i].setBackgroundResource(R.drawable.seleccion)
             } else {
                 lista[i].background = null
@@ -28,10 +29,11 @@ object Avatares {
         }
     }
 
-    fun dibujo(avatar: Int): Int {
-        if (avatar < 0 || avatar >= Tematicas.AVATARES.size) {
+    // El dibujo de un avatar a partir de su id (1 a 12). Si el id no es válido, el avatar 1
+    fun dibujo(avatarId: Int): Int {
+        if (avatarId < 1 || avatarId > Tematicas.AVATARES.size) {
             return Tematicas.AVATARES[0]
         }
-        return Tematicas.AVATARES[avatar]
+        return Tematicas.AVATARES[avatarId - 1]
     }
 }

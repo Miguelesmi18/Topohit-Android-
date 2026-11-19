@@ -6,10 +6,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-<<<<<<< HEAD
-=======
-import androidx.appcompat.app.AppCompatActivity
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.R
 import com.groundstudio.topohit.databinding.ActivityMapaHistoriaBinding
@@ -18,11 +14,7 @@ import com.groundstudio.topohit.util.Juego
 
 // Mapa del modo Historia: 10 niveles en 3 zonas (Campo, Huerto y Mina).
 // Cada nivel se desbloquea al sacar 1 estrella o más en el anterior.
-<<<<<<< HEAD
 class MapaHistoriaActivity : PantallaBase() {
-=======
-class MapaHistoriaActivity : AppCompatActivity() {
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityMapaHistoriaBinding
     private val niveles = mutableListOf<ItemNivelBinding>()
@@ -175,7 +167,6 @@ class MapaHistoriaActivity : AppCompatActivity() {
         }
     }
 
-<<<<<<< HEAD
     // El topo se pone encima del nivel por el que va el niño ("estás aquí"),
     // el mismo que dice la API en nivelActual
     private fun colocarTopoAqui() {
@@ -185,11 +176,6 @@ class MapaHistoriaActivity : AppCompatActivity() {
                 indice = i
             }
         }
-=======
-    // El topo se pone encima del último nivel desbloqueado ("estás aquí")
-    private fun colocarTopoAqui() {
-        val indice = Juego.nivelDesbloqueado() - 1
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         if (indice < 0 || indice >= niveles.size) {
             return
         }

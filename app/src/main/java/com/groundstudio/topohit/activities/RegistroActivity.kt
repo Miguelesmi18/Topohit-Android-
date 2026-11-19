@@ -4,19 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-<<<<<<< HEAD
-=======
-import androidx.appcompat.app.AppCompatActivity
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.api.RetrofitClient
-import com.groundstudio.topohit.data_model.LoginPeticion
+import com.groundstudio.topohit.data_model.RegistroPeticion
 import com.groundstudio.topohit.databinding.ActivityRegistroBinding
 import com.groundstudio.topohit.util.Almacen
-<<<<<<< HEAD
 import com.groundstudio.topohit.util.Cifrado
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import com.groundstudio.topohit.util.Avatares
 import com.groundstudio.topohit.util.Juego
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -24,14 +17,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 // Crear cuenta (POST api/auth/registro). Si va bien, la API ya devuelve el token y entramos.
-<<<<<<< HEAD
 class RegistroActivity : PantallaBase() {
-=======
-class RegistroActivity : AppCompatActivity() {
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityRegistroBinding
-    private var avatarElegido = 0
+    private var avatarElegido = 1          // CAMBIO 19/11: id del avatar (1 a 12)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +43,7 @@ class RegistroActivity : AppCompatActivity() {
         val imagenes = Avatares.imagenes(binding.selAvatares)
         for (i in 0..imagenes.size - 1) {
             imagenes[i].setOnClickListener {
-                avatarElegido = i
+                avatarElegido = i + 1              // la imagen i es el avatar i + 1
                 Avatares.pintar(binding.selAvatares, avatarElegido)
             }
         }
@@ -91,14 +80,10 @@ class RegistroActivity : AppCompatActivity() {
         binding.btnCrear.isEnabled = false
         GlobalScope.launch {
             try {
-<<<<<<< HEAD
                 // La contraseña se cifra aquí, dentro de la corrutina: bcrypt tarda un poco
                 // y así la pantalla no se queda congelada
                 val hash = Cifrado.hash(contrasena)
-                val response = RetrofitClient.api().registro(LoginPeticion(usuario, hash)).execute()
-=======
-                val response = RetrofitClient.api().registro(LoginPeticion(usuario, contrasena)).execute()
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
+                val response = RetrofitClient.api().registro(RegistroPeticion(usuario, hash, avatarElegido)).execute()
                 val respuesta = response.body()
                 runOnUiThread {
                     binding.prgCargando.visibility = View.GONE
@@ -108,13 +93,8 @@ class RegistroActivity : AppCompatActivity() {
                         Juego.idUsuario = respuesta.idUsuario
                         Juego.username = respuesta.username
                         Juego.rol = respuesta.rol
-<<<<<<< HEAD
-=======
-                        Juego.invitado = false
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
-                        Juego.avatar = avatarElegido
+                        Juego.avatar = respuesta.avatarId    // CAMBIO 19/11: el que ha guardado la API
                         Juego.progreso = null
-                        Almacen.guardarAvatar(this@RegistroActivity, respuesta.username, avatarElegido)
                         Almacen.guardarSesion(this@RegistroActivity)
                         Toast.makeText(this@RegistroActivity, "¡Cuenta creada!", Toast.LENGTH_SHORT).show()
                         // Vamos al menú y cerramos el login que había debajo

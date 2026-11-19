@@ -66,7 +66,12 @@ object Tematicas {
         }
     }
 
-    // Los 12 avatares del registro: 4 de cada temática
+    // Los 12 avatares. CAMBIO 19/11: la posición en la lista + 1 es el id de la tabla AVATAR
+    // (AVATARES[0] es el avatar 1, AVATARES[11] el avatar 12). Si se cambia el orden aquí,
+    // hay que cambiarlo también en la base de datos.
+    // El avatar NO depende de la temática: los dibujos tienen estilo normal, Halloween o Navidad,
+    // pero cualquier jugador puede elegir cualquiera.
+    // A la API solo se envía el número (avatarId), nunca R.drawable: ese número cambia al compilar.
     val AVATARES = listOf(
         R.drawable.topo_normal_03_feliz, R.drawable.topo_normal_05_enfadado,
         R.drawable.topo_normal_08_dorado, R.drawable.topo_normal_07_burlon,

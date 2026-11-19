@@ -98,27 +98,10 @@
                 android:background="@drawable/btn_verde"
                 android:text="@string/crear_cuenta"
                 android:textSize="@dimen/texto_normal" />
-<<<<<<< HEAD
         </LinearLayout>
     </LinearLayout>
 
     <!-- Ajustes: temática y sonido -->
-=======
-
-            <TextView
-                android:id="@+id/btnSinConexion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:padding="6dp"
-                android:text="@string/sin_conexion"
-                android:textColor="@color/gris"
-                android:textSize="@dimen/texto_pequeno" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Ajustes: para cambiar la dirección de la API antes de entrar -->
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
     <TextView
         android:id="@+id/btnAjustes"
         style="@style/BotonRedondo"

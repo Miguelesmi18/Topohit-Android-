@@ -4,21 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-<<<<<<< HEAD
-=======
-import androidx.appcompat.app.AppCompatActivity
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.R
 import com.groundstudio.topohit.databinding.ActivityResultadoBinding
 import com.groundstudio.topohit.util.Juego
 
 // Pantalla final: Victoria, ¡Se acabó el tiempo! o ¡Se acabaron las vidas!
-<<<<<<< HEAD
 class ResultadoActivity : PantallaBase() {
-=======
-class ResultadoActivity : AppCompatActivity() {
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityResultadoBinding
 

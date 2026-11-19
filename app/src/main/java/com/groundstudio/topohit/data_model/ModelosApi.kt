@@ -5,18 +5,19 @@ import com.google.gson.annotations.SerializedName
 // Clases de datos que viajan en JSON entre la tablet y la API (vídeos 35 y 36).
 // La API de ASP.NET escribe las claves en camelCase ("finalScore", "idUsuario"...).
 
-<<<<<<< HEAD
 // Lo que se envía a api/auth/login y a api/auth/registro.
 // La contraseña NO viaja tal cual: se envía su hash bcrypt (ver util/Cifrado.kt).
 data class LoginPeticion(
     @SerializedName("username") val username: String,
     @SerializedName("passwordHash") val passwordHash: String
-=======
-// Lo que se envía a api/auth/login y a api/auth/registro
-data class LoginPeticion(
+)
+
+// CAMBIO 19/11: lo que se envía a api/auth/registro. Además del usuario y el hash
+// va el avatar elegido (id de la tabla AVATAR, de 1 a 12).
+data class RegistroPeticion(
     @SerializedName("username") val username: String,
-    @SerializedName("password") val password: String
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
+    @SerializedName("passwordHash") val passwordHash: String,
+    @SerializedName("avatarId") val avatarId: Int
 )
 
 // Lo que devuelve la API si el login o el registro van bien
@@ -25,7 +26,18 @@ data class LoginRespuesta(
     @SerializedName("expira") val expira: String,
     @SerializedName("idUsuario") val idUsuario: Int,
     @SerializedName("username") val username: String,
-    @SerializedName("rol") val rol: String
+    @SerializedName("rol") val rol: String,
+    @SerializedName("avatarId") val avatarId: Int        // CAMBIO 19/11: el avatar guardado en la BD
+)
+
+// CAMBIO 19/11: PUT api/auth/avatar (cambiar el avatar desde el Perfil)
+data class AvatarPeticion(
+    @SerializedName("avatarId") val avatarId: Int
+)
+
+data class AvatarRespuesta(
+    @SerializedName("mensaje") val mensaje: String?,
+    @SerializedName("avatarId") val avatarId: Int
 )
 
 // Cuando algo va mal la API responde { "mensaje": "..." }
@@ -102,7 +114,6 @@ data class Sesion(
     @SerializedName("abandoned") val abandoned: Boolean
 )
 
-<<<<<<< HEAD
 // GET api/sesiones/progreso: por dónde va el jugador.
 // La API devuelve una fila por cada nivel activo de Historia y por cada dificultad
 // de Contrarreloj e Infinito, con sus estrellas y su récord.
@@ -120,24 +131,4 @@ class ProgresoNivel(
     @SerializedName("estrellas") var estrellas: Int,          // solo cuentan en Historia
     @SerializedName("record") var record: Int?,               // null = aún no ha jugado
     @SerializedName("partidas") var partidas: Int
-=======
-// GET api/sesiones/progreso: por dónde se quedó el jugador
-class Progreso(
-    @SerializedName("nivelDesbloqueado") var nivelDesbloqueado: Int,
-    @SerializedName("niveles") var niveles: MutableList<ProgresoNivel>?,
-    @SerializedName("records") var records: MutableList<RecordModo>?
-)
-
-class ProgresoNivel(
-    @SerializedName("numero") val numero: Int,
-    @SerializedName("objetivo") val objetivo: Int,
-    @SerializedName("mejorPuntuacion") var mejorPuntuacion: Int,
-    @SerializedName("estrellas") var estrellas: Int
-)
-
-class RecordModo(
-    @SerializedName("modo") val modo: String,
-    @SerializedName("dificultad") val dificultad: String,
-    @SerializedName("mejorPuntuacion") var mejorPuntuacion: Int
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 )

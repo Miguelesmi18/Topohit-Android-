@@ -6,10 +6,6 @@ import com.groundstudio.topohit.data_model.DificultadInfinito
 import com.groundstudio.topohit.data_model.NivelHistoria
 import com.groundstudio.topohit.data_model.Progreso
 import com.groundstudio.topohit.data_model.ProgresoNivel
-<<<<<<< HEAD
-=======
-import com.groundstudio.topohit.data_model.RecordModo
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import com.groundstudio.topohit.data_model.Tematica
 import com.groundstudio.topohit.data_model.Tematicas
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -50,11 +46,7 @@ object Juego {
     var idUsuario = 0
     var username = ""
     var rol = ""
-<<<<<<< HEAD
-=======
-    var invitado = false         // "Probar sin conexión": se juega pero no se guarda nada
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
-    var avatar = 0               // posición en Tematicas.AVATARES
+    var avatar = 1               // CAMBIO 19/11: id del avatar (tabla AVATAR, 1 a 12). Lo guarda la API
     var tema: Tematica = Tematicas.NORMAL
 
     fun cabeceraToken(): String {
@@ -66,11 +58,7 @@ object Juego {
         idUsuario = 0
         username = ""
         rol = ""
-<<<<<<< HEAD
-=======
-        invitado = false
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
-        avatar = 0
+        avatar = 1
         progreso = null
     }
 
@@ -158,7 +146,6 @@ object Juego {
     }
 
     // ---------- Progreso ----------
-<<<<<<< HEAD
     // Lo que devuelve GET api/sesiones/progreso: una fila (ProgresoNivel) por cada nivel de Historia
     // y por cada dificultad de Contrarreloj e Infinito. Las filas de Historia llevan el número de
     // nivel en levelReached; las otras, el nombre de la dificultad en difficulty.
@@ -170,20 +157,10 @@ object Juego {
         if (progreso == null) {
             progreso = Progreso(mutableListOf(), 0, null)
             progreso!!.nivelActual = primerNivel()
-=======
-
-    var progreso: Progreso? = null
-
-    // Si todavía no tenemos el progreso (sin conexión o invitado), empezamos uno vacío
-    fun progresoSeguro(): Progreso {
-        if (progreso == null) {
-            progreso = Progreso(1, mutableListOf(), mutableListOf())
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         }
         if (progreso!!.niveles == null) {
             progreso!!.niveles = mutableListOf()
         }
-<<<<<<< HEAD
         return progreso!!
     }
 
@@ -250,38 +227,12 @@ object Juego {
             if (n.modeId == 1) {
                 total = total + n.estrellas
             }
-=======
-        if (progreso!!.records == null) {
-            progreso!!.records = mutableListOf()
-        }
-        return progreso!!
-    }
-
-    fun nivelDesbloqueado(): Int {
-        return progresoSeguro().nivelDesbloqueado
-    }
-
-    fun estrellasDeNivel(numero: Int): Int {
-        for (n in progresoSeguro().niveles!!) {
-            if (n.numero == numero) {
-                return n.estrellas
-            }
-        }
-        return 0
-    }
-
-    fun totalEstrellas(): Int {
-        var total = 0
-        for (n in progresoSeguro().niveles!!) {
-            total = total + n.estrellas
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         }
         return total
     }
 
     // Récord de un modo: en Historia es la mejor puntuación de un nivel ("Nivel 3")
     fun record(modo: String, dificultad: String): Int {
-<<<<<<< HEAD
         var fila: ProgresoNivel? = null
         if (modo == HISTORIA) {
             val numero = dificultad.replace("Nivel ", "").toIntOrNull()
@@ -304,29 +255,6 @@ object Juego {
             val record = n.record
             if (n.modeId != 1 && record != null && record > mejor) {
                 mejor = record
-=======
-        if (modo == HISTORIA) {
-            for (n in progresoSeguro().niveles!!) {
-                if ("Nivel " + n.numero == dificultad) {
-                    return n.mejorPuntuacion
-                }
-            }
-            return 0
-        }
-        for (r in progresoSeguro().records!!) {
-            if (r.modo.equals(modo, true) && r.dificultad == dificultad) {
-                return r.mejorPuntuacion
-            }
-        }
-        return 0
-    }
-
-    fun mejorRecord(): Int {
-        var mejor = 0
-        for (r in progresoSeguro().records!!) {
-            if (r.mejorPuntuacion > mejor) {
-                mejor = r.mejorPuntuacion
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
             }
         }
         return mejor
@@ -344,7 +272,6 @@ object Juego {
         return 0
     }
 
-<<<<<<< HEAD
     // Apunta una partida en el progreso de la tablet, para verla al momento sin esperar a la API
     // (al volver al menú se vuelve a pedir el progreso). Devuelve true si es un récord nuevo.
     fun apuntarPartida(modo: String, dificultad: String?, nivel: Int, puntos: Int, estrellas: Int): Boolean {
@@ -412,51 +339,4 @@ object Juego {
         }
         return null
     }
-=======
-    // Apunta una partida en el progreso de la tablet, para no tener que volver a pedirlo a la API.
-    // Devuelve true si es un récord nuevo.
-    fun apuntarPartida(modo: String, dificultad: String?, nivel: Int, puntos: Int, estrellas: Int): Boolean {
-        val p = progresoSeguro()
-        var nuevoRecord = false
-        if (modo == HISTORIA) {
-            var encontrado: ProgresoNivel? = null
-            for (n in p.niveles!!) {
-                if (n.numero == nivel) {
-                    encontrado = n
-                }
-            }
-            if (encontrado == null) {
-                encontrado = ProgresoNivel(nivel, buscarNivel(nivel).objetivo, 0, 0)
-                p.niveles!!.add(encontrado)
-            }
-            if (puntos > encontrado.mejorPuntuacion) {
-                nuevoRecord = encontrado.mejorPuntuacion > 0
-                encontrado.mejorPuntuacion = puntos
-            }
-            if (estrellas > encontrado.estrellas) {
-                encontrado.estrellas = estrellas
-            }
-            // Con 1 estrella o más se abre el siguiente nivel
-            if (estrellas >= 1 && nivel == p.nivelDesbloqueado && nivel < niveles.size) {
-                p.nivelDesbloqueado = nivel + 1
-            }
-        } else if (dificultad != null) {
-            var encontrado: RecordModo? = null
-            for (r in p.records!!) {
-                if (r.modo.equals(modo, true) && r.dificultad == dificultad) {
-                    encontrado = r
-                }
-            }
-            if (encontrado == null) {
-                encontrado = RecordModo(modo, dificultad, 0)
-                p.records!!.add(encontrado)
-            }
-            if (puntos > encontrado.mejorPuntuacion) {
-                nuevoRecord = encontrado.mejorPuntuacion > 0
-                encontrado.mejorPuntuacion = puntos
-            }
-        }
-        return nuevoRecord
-    }
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 }

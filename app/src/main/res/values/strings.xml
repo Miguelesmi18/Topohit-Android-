@@ -10,10 +10,6 @@
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="crear_cuenta">Crear cuenta</string>
     <string name="crear_cuenta_mayus">CREAR CUENTA</string>
-<<<<<<< HEAD
-=======
-    <string name="sin_conexion">Probar sin conexión</string>
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
     <string name="al_crear">Al crear la cuenta se inicia sesión.</string>
     <string name="elige_avatar">Elige tu avatar</string>
     <string name="nota_avatares">Avatares de las 3 temáticas. Puedes cambiarlo luego en tu perfil.</string>
@@ -70,13 +66,9 @@
     <string name="historial">Historial de partidas</string>
     <string name="mis_records">Mis récords</string>
     <string name="ajustes">Ajustes</string>
-<<<<<<< HEAD
     <string name="sonido">Sonido</string>
     <string name="musica">Música</string>
     <string name="efectos">Efectos</string>
-=======
-    <string name="servidor">Servidor de la API</string>
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
     <string name="guardar">Guardar</string>
     <string name="como_jugar">Cómo jugar</string>
     <string name="atras">←</string>

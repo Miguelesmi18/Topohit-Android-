@@ -4,14 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-<<<<<<< HEAD
-=======
-import androidx.appcompat.app.AppCompatActivity
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.groundstudio.topohit.adapters.HistorialAdapter
 import com.groundstudio.topohit.api.RetrofitClient
+import com.groundstudio.topohit.data_model.AvatarPeticion
 import com.groundstudio.topohit.data_model.Sesion
 import com.groundstudio.topohit.databinding.ActivityPerfilBinding
 import com.groundstudio.topohit.util.Almacen
@@ -22,14 +20,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 // Perfil: avatar, resumen y el historial de partidas (GET api/sesiones/mias)
-<<<<<<< HEAD
 class PerfilActivity : PantallaBase() {
-=======
-class PerfilActivity : AppCompatActivity() {
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityPerfilBinding
-    private var avatarElegido = 0
+    private var avatarElegido = 1          // CAMBIO 19/11: id del avatar (1 a 12)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,12 +60,12 @@ class PerfilActivity : AppCompatActivity() {
             cerrarSesion()
         }
 
-        // Cambiar avatar: se abre la rejilla y al guardar se apunta en la tablet
+        // Cambiar avatar: se abre la rejilla y al guardar se envía a la API (CAMBIO 19/11)
         avatarElegido = Juego.avatar
         val imagenes = Avatares.imagenes(binding.selAvatares)
         for (i in 0..imagenes.size - 1) {
             imagenes[i].setOnClickListener {
-                avatarElegido = i
+                avatarElegido = i + 1              // la imagen i es el avatar i + 1
                 Avatares.pintar(binding.selAvatares, avatarElegido)
             }
         }
@@ -80,13 +74,40 @@ class PerfilActivity : AppCompatActivity() {
             binding.layAvatares.visibility = View.VISIBLE
         }
         binding.btnGuardarAvatar.setOnClickListener {
-            Juego.avatar = avatarElegido
-            Almacen.guardarAvatar(this, Juego.username, avatarElegido)
-            binding.imgAvatar.setImageResource(Avatares.dibujo(avatarElegido))
-            binding.layAvatares.visibility = View.GONE
+            guardarAvatar()
         }
 
         cargarHistorial()
+    }
+
+    // CAMBIO 19/11: PUT api/auth/avatar. Si la API dice que sí, se cambia también en la tablet
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun guardarAvatar() {
+        binding.btnGuardarAvatar.isEnabled = false
+        GlobalScope.launch {
+            try {
+                val peticion = AvatarPeticion(avatarElegido)
+                val response = RetrofitClient.api().cambiarAvatar(Juego.cabeceraToken(), peticion).execute()
+                val respuesta = response.body()
+                runOnUiThread {
+                    binding.btnGuardarAvatar.isEnabled = true
+                    if (response.isSuccessful && respuesta != null) {
+                        Juego.avatar = respuesta.avatarId
+                        Almacen.guardarSesion(this@PerfilActivity)
+                        binding.imgAvatar.setImageResource(Avatares.dibujo(Juego.avatar))
+                        binding.layAvatares.visibility = View.GONE
+                        Toast.makeText(this@PerfilActivity, "¡Avatar cambiado!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@PerfilActivity, RetrofitClient.mensajeDeError(response), Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    binding.btnGuardarAvatar.isEnabled = true
+                    Toast.makeText(this@PerfilActivity, "No se puede conectar con la API", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun cerrarSesion() {

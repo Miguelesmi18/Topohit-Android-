@@ -10,10 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-<<<<<<< HEAD
-=======
-import androidx.appcompat.app.AppCompatActivity
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.R
 import com.groundstudio.topohit.api.RetrofitClient
@@ -23,10 +19,7 @@ import com.groundstudio.topohit.databinding.ActivityPartidaBinding
 import com.groundstudio.topohit.databinding.FilaAyudaBinding
 import com.groundstudio.topohit.databinding.ItemAgujeroBinding
 import com.groundstudio.topohit.util.Juego
-<<<<<<< HEAD
 import com.groundstudio.topohit.util.Sonidos
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -39,11 +32,7 @@ import kotlin.random.Random
 // en el hilo de la pantalla después de X milisegundos; al final de cada vuelta lo
 // volvemos a programar. Así podemos tocar las vistas sin runOnUiThread.
 // [No visto en clase] view.animate(): una animación cortita para que el topo "salte" del agujero.
-<<<<<<< HEAD
 class PartidaActivity : PantallaBase() {
-=======
-class PartidaActivity : AppCompatActivity() {
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityPartidaBinding
 
@@ -304,10 +293,6 @@ class PartidaActivity : AppCompatActivity() {
         } else {
             binding.lblObjetivo.text = "" + objetivo
         }
-<<<<<<< HEAD
-=======
-        binding.vProgreso.pivotX = 0f
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         actualizarHud()
     }
 
@@ -343,7 +328,6 @@ class PartidaActivity : AppCompatActivity() {
             cuentaAtras = cuentaAtras - pasado
             binding.lblMensaje.visibility = View.VISIBLE
             if (cuentaAtras > 2500) {
-<<<<<<< HEAD
                 ponerCuenta("3")
             } else if (cuentaAtras > 1500) {
                 ponerCuenta("2")
@@ -351,15 +335,6 @@ class PartidaActivity : AppCompatActivity() {
                 ponerCuenta("1")
             } else if (cuentaAtras > 0) {
                 ponerCuenta("¡YA!")
-=======
-                binding.lblMensaje.text = "3"
-            } else if (cuentaAtras > 1500) {
-                binding.lblMensaje.text = "2"
-            } else if (cuentaAtras > 500) {
-                binding.lblMensaje.text = "1"
-            } else if (cuentaAtras > 0) {
-                binding.lblMensaje.text = "¡YA!"
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
             } else {
                 binding.lblMensaje.visibility = View.GONE
                 estado = JUGANDO
@@ -445,7 +420,6 @@ class PartidaActivity : AppCompatActivity() {
         }
     }
 
-<<<<<<< HEAD
     // Cambia el número de la cuenta atrás y suena un "bip" cada vez que cambia
     private fun ponerCuenta(texto: String) {
         if (binding.lblMensaje.text.toString() == texto) {
@@ -459,8 +433,6 @@ class PartidaActivity : AppCompatActivity() {
         }
     }
 
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
     private fun contarFuera(): Int {
         var total = 0
         for (a in agujeros) {
@@ -582,10 +554,7 @@ class PartidaActivity : AppCompatActivity() {
         if (a.estado != Agujero.FUERA) {
             fallos++
             racha = 0
-<<<<<<< HEAD
             Sonidos.efecto(Sonidos.FALLO)
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
             actualizarHud()
             return
         }
@@ -595,10 +564,7 @@ class PartidaActivity : AppCompatActivity() {
             fallos++
             bombasTocadas++
             racha = 0
-<<<<<<< HEAD
             Sonidos.efecto(Sonidos.BOMBA)
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
             a.estado = Agujero.GOLPEADO
             a.fin = reloj + 600
             a.vista.imgTopo.setImageResource(Juego.tema.explosion)
@@ -621,10 +587,7 @@ class PartidaActivity : AppCompatActivity() {
         }
         if (racha == Juego.ACIERTOS_PARA_COMBO) {
             mostrarMensaje("¡COMBO x" + Juego.MULTIPLICADOR_COMBO + "!")
-<<<<<<< HEAD
             Sonidos.efecto(Sonidos.COMBO)
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         }
         // Tiempo de reacción: desde que sale hasta el primer golpe
         if (!a.golpeado) {
@@ -635,10 +598,7 @@ class PartidaActivity : AppCompatActivity() {
         a.golpesQuedan--
 
         if (a.tipo == Agujero.JEFE) {
-<<<<<<< HEAD
             Sonidos.efecto(Sonidos.GOLPE)
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
             golpearJefe(a)
             actualizarHud()
             return
@@ -647,10 +607,7 @@ class PartidaActivity : AppCompatActivity() {
         if (a.golpesQuedan > 0) {
             // Enfadado después del primer golpe: se pone la tirita y aguanta un poquito más
             a.vista.imgTopo.setImageResource(Juego.tema.topoEnfadadoTirita)
-<<<<<<< HEAD
             Sonidos.efecto(Sonidos.GOLPE)
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
             a.fin = a.fin + 400
             actualizarHud()
             return
@@ -669,14 +626,11 @@ class PartidaActivity : AppCompatActivity() {
         }
         val ganados = base * multiplicador()
         puntos = puntos + ganados
-<<<<<<< HEAD
         if (a.tipo == Agujero.DORADO) {
             Sonidos.efecto(Sonidos.DORADO)
         } else {
             Sonidos.efecto(Sonidos.GOLPE)
         }
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
         a.estado = Agujero.GOLPEADO
         a.fin = reloj + 450
@@ -711,10 +665,7 @@ class PartidaActivity : AppCompatActivity() {
     }
 
     private fun perderVida() {
-<<<<<<< HEAD
         Sonidos.efecto(Sonidos.VIDA)
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         vidas--
         if (vidas <= 0) {
             vidas = 0
@@ -758,7 +709,6 @@ class PartidaActivity : AppCompatActivity() {
             if (quedan < 0) {
                 quedan = 0
             }
-<<<<<<< HEAD
             // El número y la barra salen del mismo valor (quedan), así siempre van a la par
             binding.lblTiempo.text = "" + ((quedan + 999) / 1000) + " s"
             pintarBarra(quedan.toFloat() / duracionMs.toFloat())
@@ -784,11 +734,6 @@ class PartidaActivity : AppCompatActivity() {
             binding.vProgreso.visibility = View.INVISIBLE
         } else {
             binding.vProgreso.visibility = View.VISIBLE
-=======
-            binding.lblTiempo.text = "" + ((quedan + 999) / 1000) + " s"
-            // La barra verde se encoge (scaleX va de 1 a 0)
-            binding.vProgreso.scaleX = quedan.toFloat() / duracionMs.toFloat()
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         }
     }
 
@@ -834,14 +779,11 @@ class PartidaActivity : AppCompatActivity() {
         }
         estado = TERMINADA
         handler.removeCallbacks(bucle)
-<<<<<<< HEAD
         if (resultado == Constantes.VICTORIA) {
             Sonidos.efecto(Sonidos.VICTORIA)
         } else {
             Sonidos.efecto(Sonidos.FIN)
         }
-=======
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
         var estrellas = 0
         if (modo == Juego.HISTORIA) {
@@ -883,12 +825,6 @@ class PartidaActivity : AppCompatActivity() {
     // POST api/sesiones con los datos de la partida (para el escritorio y las métricas)
     @OptIn(DelicateCoroutinesApi::class)
     private fun enviarPartida(abandonada: Boolean) {
-<<<<<<< HEAD
-=======
-        if (Juego.invitado) {
-            return              // sin cuenta no se guarda nada
-        }
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
         val segundos = (reloj / 1000).toInt()
         if (abandonada && segundos < 1) {
             return              // ni siquiera ha empezado a jugar

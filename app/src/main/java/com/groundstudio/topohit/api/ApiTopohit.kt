@@ -2,10 +2,13 @@ package com.groundstudio.topohit.api
 
 import com.groundstudio.topohit.data_model.DificultadContrarreloj
 import com.groundstudio.topohit.data_model.DificultadInfinito
+import com.groundstudio.topohit.data_model.AvatarPeticion
+import com.groundstudio.topohit.data_model.AvatarRespuesta
 import com.groundstudio.topohit.data_model.LoginPeticion
 import com.groundstudio.topohit.data_model.LoginRespuesta
 import com.groundstudio.topohit.data_model.NivelHistoria
 import com.groundstudio.topohit.data_model.Progreso
+import com.groundstudio.topohit.data_model.RegistroPeticion
 import com.groundstudio.topohit.data_model.Sesion
 import com.groundstudio.topohit.data_model.SesionCreada
 import com.groundstudio.topohit.data_model.SesionNueva
@@ -14,6 +17,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 // Las llamadas a la API de Topohit (vídeos 35-38).
 // [No visto en clase] @Body: nuestra API recibe un JSON en el cuerpo de la petición,
@@ -24,8 +28,14 @@ interface ApiTopohit {
     @POST("api/auth/login")
     fun login(@Body peticion: LoginPeticion): Call<LoginRespuesta>
 
+    // CAMBIO 19/11: el registro también envía el avatar elegido
     @POST("api/auth/registro")
-    fun registro(@Body peticion: LoginPeticion): Call<LoginRespuesta>
+    fun registro(@Body peticion: RegistroPeticion): Call<LoginRespuesta>
+
+    // CAMBIO 19/11: el jugador cambia su avatar (se guarda en USUARIO.avatar_id)
+    // [No visto en clase] @PUT: igual que @POST, pero es el verbo que usa la API para modificar
+    @PUT("api/auth/avatar")
+    fun cambiarAvatar(@Header("Authorization") token: String, @Body peticion: AvatarPeticion): Call<AvatarRespuesta>
 
     @GET("api/modos/historia")
     fun getNiveles(): Call<List<NivelHistoria>>

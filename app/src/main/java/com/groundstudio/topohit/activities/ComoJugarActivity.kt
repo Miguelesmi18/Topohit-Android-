@@ -3,20 +3,12 @@ package com.groundstudio.topohit.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
-<<<<<<< HEAD
-=======
-import androidx.appcompat.app.AppCompatActivity
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.databinding.ActivityComoJugarBinding
 import com.groundstudio.topohit.util.Juego
 
 // Cómo jugar: 3 pasos con dibujos
-<<<<<<< HEAD
 class ComoJugarActivity : PantallaBase() {
-=======
-class ComoJugarActivity : AppCompatActivity() {
->>>>>>> 6f38390c9fce1eba1c53bb712e1a3853243a1880
 
     private lateinit var binding: ActivityComoJugarBinding
 
