@@ -62,7 +62,7 @@ Las pantallas y los dibujos salen del Figma del equipo (página «Arte · Temát
 Al acabar (o al salir desde la pausa, con `abandoned = true`): `modeId` (1 Historia, 2 Contrarreloj, 3 Infinito),
 `sessionLength`, `errorsMade` (toques en vacío + bombas), `finalScore`, `difficulty` o `levelReached`,
 `nAttempts` = `hits` + `errorsMade`, `molesEscaped`, `hits`, `maxCombo`, `goldenHits`, `abandoned` y `avgReactionMs`
-(media de ms desde que sale el topo hasta el primer golpe).
+(media de ms desde que sale el topo hasta el primer golpe; `null` si no ha golpeado ninguno: la API lo acepta desde el 19/11).
 
 ## Cosas que NO hemos visto en clase (y cómo se han resuelto de la forma más simple)
 
@@ -95,5 +95,5 @@ Al acabar (o al salir desde la pausa, con `abandoned = true`): `modeId` (1 Histo
 ## Pendiente / ideas
 
 - **Ranking global**: la API todavía no tiene una ruta con el top 10 de todos los jugadores; por eso la pantalla es «Mis récords».
-- **API, nivel jefe**: `CalcularEstrellas` da 3 estrellas a cualquier partida no abandonada del nivel 10, aunque no se venza al jefe.
+- ~~API, nivel jefe~~ **Hecho (19/11)**: la API y el escritorio dan 3 estrellas en el nivel 10 solo si se vence al jefe (≥ 200 puntos), igual que la tablet.
 #
