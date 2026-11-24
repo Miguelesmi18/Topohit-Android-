@@ -1,0 +1,24 @@
+{
+  "metricas": {
+    "sesiones": 400,
+    "player_count": 112,
+    "returning_players": 67,
+    "retention_rate": 59.82,
+    "churn_rate": 40.18,
+    "average_session_length": 135.0,
+    "dau_medio": 6.8,
+    "mau_medio": 64.0,
+    "dau_mau": 0.106,
+    "sesiones_por_jugador": 3.57,
+    "partidas_abandonadas": 11.0,
+    "ayudas_por_partida": 0.69
+  },
+  "modelo": {
+    "accuracy": 0.913,
+    "precision": 0.875,
+    "recall": 1.0,
+    "roc_auc": 0.865,
+    "jugadores_entrenamiento": 89,
+    "jugadores_prueba": 23
+  }
+}

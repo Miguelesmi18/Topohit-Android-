@@ -1,0 +1,6 @@
+,session_length,session_length,session_length,errors_made,errors_made,errors_made,final_score,final_score,final_score,hits,hits,hits,moles_escaped,moles_escaped,moles_escaped,max_combo,max_combo,max_combo,golden_hits,golden_hits,golden_hits,avg_reaction_ms,avg_reaction_ms,avg_reaction_ms,help_clicks,help_clicks,help_clicks
+,min,mean,max,min,mean,max,min,mean,max,min,mean,max,min,mean,max,min,mean,max,min,mean,max,min,mean,max,min,mean,max
+difficulty,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Difícil,90,124.8,186,3,3.0,3,1215,1520.0,2340,85,111.0,166,6,7.4,10,5,6.4,7,3,4.8,7,510,574.8,646,0,0.0,0
+Fácil,42,94.7,194,4,4.9,5,170,756.4,1970,16,66.3,170,5,14.0,21,1,4.6,7,0,1.9,6,523,780.9,984,0,0.0,0
+Normal,52,130.4,195,2,2.8,3,540,1489.2,2535,39,114.6,199,1,9.1,20,1,6.2,9,0,2.4,6,461,632.6,740,0,0.0,0

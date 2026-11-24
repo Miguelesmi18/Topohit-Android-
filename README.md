@@ -14,6 +14,12 @@ siguiendo lo que se enseña en clase (módulo 0489). Las normas de código está
 - Todo lo decide la API (`GET api/sesiones/dificultades`); la tablet solo lo pinta. La API tampoco deja guardar
   partidas de una dificultad cerrada (403).
 
+## Métricas (carpeta `metricas/`)
+
+Contiene el pipeline en Python del reto «Mètriques dels jocs»: el playtest, la simulación de 400 sesiones, las gráficas,
+el árbol de decisión y el informe PDF. Está aquí porque la pestaña «Mètriques» de la tablet lo ejecutará con Chaquopy
+(`generar_informe()` devuelve las gráficas en base64). Más información en [`metricas/README.md`](metricas/README.md).
+
 ## Cómo abrirlo
 
 1. Android Studio → **Open** → esta carpeta. Si Gradle dice que no admite la versión de Java (por ejemplo «25.0.3»),
