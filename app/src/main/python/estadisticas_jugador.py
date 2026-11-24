@@ -23,7 +23,8 @@ def cargar(json_partidas):
     if len(df) > 0:
         df = df[df["modo"] == "Infinito"]           # las partidas antiguas de otros modos no cuentan
     if len(df) > 0:
-        df["dateTime"] = pd.to_datetime(df["dateTime"])
+        # Las fechas de la API pueden venir con milisegundos o sin ellos: ISO8601 acepta las dos
+        df["dateTime"] = pd.to_datetime(df["dateTime"], format="ISO8601")
         df = df.sort_values("dateTime").reset_index(drop=True)
         df["numero"] = range(1, len(df) + 1)           # número de partida: 1, 2, 3...
         df["dia"] = df["dateTime"].dt.normalize()

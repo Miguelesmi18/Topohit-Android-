@@ -28,7 +28,8 @@ FEATURES = ["session_length", "errors_made", "final_score", "hits", "moles_escap
 
 def cargar(ruta_csv):
     df = pd.read_csv(ruta_csv)
-    df["date_time"] = pd.to_datetime(df["date_time"])
+    # Las fechas de la API pueden venir con milisegundos o sin ellos: ISO8601 acepta las dos
+    df["date_time"] = pd.to_datetime(df["date_time"], format="ISO8601")
     df["dia"] = df["date_time"].dt.normalize()
     df["mes"] = df["date_time"].dt.to_period("M")
     df["errores_por_minuto"] = df["errors_made"] / (df["session_length"] / 60)
