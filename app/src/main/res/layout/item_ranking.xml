@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Una fila del ranking: puesto, avatar, nombre y récord -->
+<!-- Una fila del ranking: puesto, avatar, nombre (en el total, también el récord de cada dificultad) y puntos -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/LayListRankingFila"
     android:layout_width="match_parent"
@@ -25,15 +25,30 @@
         android:layout_height="@dimen/avatar_fila"
         android:contentDescription="@string/avatar" />
 
-    <TextView
-        android:id="@+id/LblListRankingNombre"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/separacion"
         android:layout_weight="1"
-        android:textColor="@color/marron"
-        android:textSize="@dimen/texto_normal"
-        android:textStyle="bold" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/LblListRankingNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/marron"
+            android:textSize="@dimen/texto_normal"
+            android:textStyle="bold" />
+
+        <!-- Solo en el ranking total: el récord de cada dificultad -->
+        <TextView
+            android:id="@+id/LblListRankingDetalle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/marron"
+            android:textSize="@dimen/texto_mini"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/LblListRankingPuntos"

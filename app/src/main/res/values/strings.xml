@@ -128,6 +128,10 @@
     <string name="cancelar">Cancelar</string>
 
     <!-- Ranking -->
+    <string name="ranking_total">Total</string>
+    <string name="ranking_total_vacio">Todavía nadie tiene récords. ¡Sé el primero!</string>
+    <string name="ranking_detalle">Fácil %1$s · Normal %2$s · Difícil %3$s</string>
+    <string name="sin_record">–</string>
     <string name="ranking_vacio">Todavía nadie ha jugado esta dificultad. ¡Sé el primero!</string>
     <string name="cargando">Cargando…</string>
     <string name="guardando">Guardando…</string>

@@ -15,13 +15,17 @@ import com.groundstudio.topohit.R
 import com.groundstudio.topohit.SharedData
 import com.groundstudio.topohit.adapters.RankingAdapter
 import com.groundstudio.topohit.api.ApiGetRanking
+import com.groundstudio.topohit.api.ApiGetRankingTotal
 import com.groundstudio.topohit.api.RetrofitGetRankingClient
+import com.groundstudio.topohit.api.RetrofitGetRankingTotalClient
 import com.groundstudio.topohit.datamodel.PuestoRanking
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit2.Call
 
 // Ranking: los 10 mejores récords de todos los jugadores en cada dificultad de Infinito
-// (GET api/sesiones/ranking). Una pestaña por dificultad; la fila del jugador va resaltada.
+// (GET api/sesiones/ranking) y la clasificación total, que suma el récord de cada dificultad
+// (GET api/sesiones/ranking/total). Una pestaña para cada una; la fila del jugador va resaltada.
 class RankingActivity : PantallaBase()
 {
     private lateinit var lstRanking: RecyclerView
@@ -39,7 +43,8 @@ class RankingActivity : PantallaBase()
         lblRankingVacio = findViewById<TextView>(R.id.LblRankingVacio)
         pestanas = listOf(findViewById<TextView>(R.id.BtnRankingFacil),
                           findViewById<TextView>(R.id.BtnRankingNormal),
-                          findViewById<TextView>(R.id.BtnRankingDificil))
+                          findViewById<TextView>(R.id.BtnRankingDificil),
+                          findViewById<TextView>(R.id.BtnRankingTotal))
 
         val tema = GestorAjustes.tema
         findViewById<ImageView>(R.id.ImgRankingFondo).setImageResource(tema.fondo)
@@ -51,9 +56,12 @@ class RankingActivity : PantallaBase()
         lstRanking.layoutManager = LinearLayoutManager(this)
         lstRanking.adapter = adapter
 
-        for(i in 0..pestanas.size - 1)
+        for(i in 0..SharedData.DIFICULTADES.size - 1)
         {
             pestanas[i].text = SharedData.DIFICULTADES[i]
+        }
+        for(i in 0..pestanas.size - 1)
+        {
             pestanas[i].setOnClickListener()
             {
                 elegirPestana(i)
@@ -85,21 +93,43 @@ class RankingActivity : PantallaBase()
                 pestanas[i].alpha = 0.75f
             }
         }
-        getRanking(SharedData.DIFICULTADES[elegida])
+        // Las primeras pestañas son las dificultades y la última, el total
+        if(elegida < SharedData.DIFICULTADES.size)
+        {
+            getRanking(SharedData.DIFICULTADES[elegida])
+        }
+        else
+        {
+            getRankingTotal()
+        }
     }
 
     private fun getRanking(dificultad: String)
     {
-        lblRankingVacio.visibility = View.VISIBLE
-        lblRankingVacio.text = getString(R.string.cargando)
         val token = GestorSesion.cabecera(this)
         val rankingApi = RetrofitGetRankingClient.getInstance().create(ApiGetRanking::class.java)
+        val call = rankingApi.getRanking(token, SharedData.MODO_INFINITO, dificultad, SharedData.TOP_RANKING)
+        cargarRanking(call, getString(R.string.ranking_vacio))
+    }
+
+    private fun getRankingTotal()
+    {
+        val token = GestorSesion.cabecera(this)
+        val rankingApi = RetrofitGetRankingTotalClient.getInstance().create(ApiGetRankingTotal::class.java)
+        val call = rankingApi.getRankingTotal(token, SharedData.TOP_RANKING)
+        cargarRanking(call, getString(R.string.ranking_total_vacio))
+    }
+
+    // Las dos llamadas devuelven la misma lista de puestos: se cargan igual
+    private fun cargarRanking(call: Call<List<PuestoRanking>>, textoVacio: String)
+    {
+        lblRankingVacio.visibility = View.VISIBLE
+        lblRankingVacio.text = getString(R.string.cargando)
 
         GlobalScope.launch()
         {
             try
             {
-                val call = rankingApi.getRanking(token, SharedData.MODO_INFINITO, dificultad, SharedData.TOP_RANKING)
                 val response = call.execute()
                 val local = response.body()
 
@@ -113,7 +143,7 @@ class RankingActivity : PantallaBase()
                             adapter.setPuestos(puestos)
                             if(puestos.size == 0)
                             {
-                                lblRankingVacio.text = getString(R.string.ranking_vacio)
+                                lblRankingVacio.text = textoVacio
                             }
                             else
                             {

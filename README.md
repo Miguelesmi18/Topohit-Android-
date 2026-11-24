@@ -14,6 +14,13 @@ siguiendo lo que se enseña en clase (módulo 0489). Las normas de código está
 - Todo lo decide la API (`GET api/sesiones/dificultades`); la tablet solo lo pinta. La API tampoco deja guardar
   partidas de una dificultad cerrada (403).
 
+## Ranking
+
+Tiene una pestaña por dificultad, con los 10 mejores récords, y la pestaña **Total**
+(`GET api/sesiones/ranking/total`). En Total se suma el récord de cada dificultad y debajo del nombre sale el
+récord de cada una, para que los niños compitan entre ellos aunque jueguen en dificultades distintas.
+La fila del jugador va resaltada.
+
 ## Métricas (carpeta `metricas/`)
 
 Contiene el pipeline en Python del reto «Mètriques dels jocs»: el playtest, la simulación de 400 sesiones, las gráficas,
