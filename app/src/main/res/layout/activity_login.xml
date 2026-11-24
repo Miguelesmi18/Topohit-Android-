@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Login: a la izquierda el logo y el topo, a la derecha el panel para entrar -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imgFondo"
+        android:id="@+id/ImgLoginFondo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo_partida_normal" />
 
@@ -16,7 +18,6 @@
         android:orientation="horizontal"
         android:padding="@dimen/margen">
 
-        <!-- Izquierda: logo y topo grande -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -25,75 +26,78 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imgLogo"
+                android:id="@+id/ImgLoginLogo"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
                 android:src="@drawable/logo_normal" />
 
             <ImageView
-                android:id="@+id/imgTopo"
+                android:id="@+id/ImgLoginTopo"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.4"
+                android:contentDescription="@null"
                 android:src="@drawable/topo_normal_03_feliz" />
         </LinearLayout>
 
-        <!-- Derecha: panel de inicio de sesión -->
         <LinearLayout
-            android:id="@+id/layPanel"
+            android:id="@+id/LayLoginPanel"
             android:layout_width="@dimen/ancho_panel"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@drawable/panel_crema"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="28dp">
+            android:padding="@dimen/relleno_panel">
 
             <TextView
-                android:id="@+id/lblTitulo"
+                android:id="@+id/LblLoginTitulo"
                 style="@style/Titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="@dimen/margen"
                 android:text="@string/iniciar_sesion" />
 
             <EditText
-                android:id="@+id/txtUsuario"
+                android:id="@+id/TxtLoginUsuario"
                 style="@style/Campo"
-                android:layout_marginBottom="14dp"
+                android:layout_marginBottom="@dimen/separacion"
+                android:autofillHints="username"
                 android:hint="@string/usuario"
                 android:inputType="text" />
 
             <EditText
-                android:id="@+id/txtContrasena"
+                android:id="@+id/TxtLoginContrasena"
                 style="@style/Campo"
-                android:layout_marginBottom="22dp"
+                android:layout_marginBottom="@dimen/margen"
+                android:autofillHints="password"
                 android:hint="@string/contrasena"
                 android:inputType="textPassword" />
 
             <TextView
-                android:id="@+id/btnEntrar"
+                android:id="@+id/BtnLoginEntrar"
                 style="@style/BotonJuego"
                 android:layout_width="match_parent"
                 android:background="@drawable/btn_naranja"
                 android:text="@string/entrar" />
 
             <TextView
-                android:id="@+id/lblNoCuenta"
+                android:id="@+id/LblLoginNoCuenta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="@dimen/separacion"
+                android:layout_marginBottom="@dimen/separacion_pequena"
                 android:text="@string/no_tienes_cuenta"
                 android:textColor="@color/marron"
                 android:textSize="@dimen/texto_pequeno" />
 
             <TextView
-                android:id="@+id/btnRegistro"
+                android:id="@+id/BtnLoginRegistro"
                 style="@style/BotonJuego"
-                android:layout_width="280dp"
+                android:layout_width="@dimen/ancho_boton_mediano"
                 android:layout_height="@dimen/alto_boton_pequeno"
                 android:background="@drawable/btn_verde"
                 android:text="@string/crear_cuenta"
@@ -101,19 +105,18 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Ajustes: temática y sonido -->
     <TextView
-        android:id="@+id/btnAjustes"
+        android:id="@+id/BtnLoginAjustes"
         style="@style/BotonRedondo"
         android:layout_gravity="top|end"
         android:layout_margin="@dimen/margen_pequeno"
-        android:text="≡" />
+        android:contentDescription="@string/ajustes"
+        android:text="@string/icono_ajustes" />
 
-    <!-- Rueda de "cargando" mientras habla con la API -->
     <ProgressBar
-        android:id="@+id/prgCargando"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:id="@+id/PrgLoginCargando"
+        android:layout_width="@dimen/cargando"
+        android:layout_height="@dimen/cargando"
         android:layout_gravity="center"
         android:visibility="gone" />
 </FrameLayout>

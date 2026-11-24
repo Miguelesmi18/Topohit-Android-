@@ -1,26 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Medidas de la app (REGLA-0489-015), pensadas para tablet en horizontal (unos 960 x 600 dp o más) -->
 <resources>
-    <!-- Medidas pensadas para tablet horizontal (unos 960 x 600 dp o más) -->
+    <!-- Márgenes y separaciones -->
     <dimen name="margen">24dp</dimen>
     <dimen name="margen_pequeno">12dp</dimen>
+    <dimen name="margen_tarjetas">30dp</dimen>
+    <dimen name="margen_tablero">110dp</dimen>
+    <dimen name="separacion">16dp</dimen>
+    <dimen name="separacion_pequena">8dp</dimen>
+    <dimen name="separacion_mini">4dp</dimen>
+    <dimen name="relleno_panel">28dp</dimen>
+    <dimen name="relleno_panel_pequeno">20dp</dimen>
+
+    <!-- Botones -->
     <dimen name="alto_boton">68dp</dimen>
     <dimen name="alto_boton_pequeno">56dp</dimen>
-    <dimen name="alto_campo">56dp</dimen>
+    <dimen name="alto_boton_jugar">84dp</dimen>
+    <dimen name="ancho_boton_jugar">320dp</dimen>
+    <dimen name="ancho_boton_mediano">280dp</dimen>
+    <dimen name="ancho_boton_pequeno">200dp</dimen>
     <dimen name="boton_redondo">64dp</dimen>
-    <dimen name="avatar">72dp</dimen>
-    <dimen name="avatar_pequeno">64dp</dimen>
-    <dimen name="ancho_panel">420dp</dimen>
-    <dimen name="ancho_tarjeta">260dp</dimen>
-    <dimen name="alto_hud">76dp</dimen>
-    <dimen name="nivel">76dp</dimen>
-    <dimen name="estrella_mini">24dp</dimen>
-    <dimen name="icono_hud">40dp</dimen>
+    <dimen name="boton_hud">56dp</dimen>
+    <dimen name="alto_campo">56dp</dimen>
 
+    <!-- Paneles -->
+    <dimen name="ancho_panel">420dp</dimen>
+    <dimen name="ancho_panel_pausa">440dp</dimen>
+    <dimen name="ancho_panel_ayuda">520dp</dimen>
+    <dimen name="ancho_panel_resultado">660dp</dimen>
+    <dimen name="ancho_panel_jugador">250dp</dimen>
+    <dimen name="ancho_panel_avatares">820dp</dimen>
+    <dimen name="alto_panel_avatares">460dp</dimen>
+    <dimen name="ancho_panel_ranking">640dp</dimen>
+    <dimen name="ancho_panel_ajustes">760dp</dimen>
+    <dimen name="ancho_tematicas">600dp</dimen>
+    <dimen name="alto_tarjeta">420dp</dimen>
+
+    <!-- Imágenes -->
+    <dimen name="avatar">72dp</dimen>
+    <dimen name="avatar_grande">150dp</dimen>
+    <dimen name="avatar_fila">48dp</dimen>
+    <dimen name="alto_avatar_rejilla">120dp</dimen>
+    <dimen name="candado">96dp</dimen>
+    <dimen name="agujero_mini">44dp</dimen>
+    <dimen name="topo_pausa">110dp</dimen>
+    <dimen name="topo_resultado_ancho">200dp</dimen>
+    <dimen name="topo_resultado_alto">220dp</dimen>
+    <dimen name="imagen_ayuda">64dp</dimen>
+    <dimen name="cargando">64dp</dimen>
+
+    <!-- Barra de la partida (HUD) -->
+    <dimen name="alto_hud">76dp</dimen>
+    <dimen name="icono_hud">40dp</dimen>
+    <dimen name="corazon_ancho">38dp</dimen>
+    <dimen name="corazon_alto">34dp</dimen>
+    <dimen name="ancho_puntos_hud">110dp</dimen>
+    <dimen name="ancho_combo">150dp</dimen>
+    <dimen name="alto_combo">44dp</dimen>
+    <dimen name="ancho_record_hud">110dp</dimen>
+
+    <!-- Listas -->
+    <dimen name="alto_fila">52dp</dimen>
+    <dimen name="alto_fila_ranking">60dp</dimen>
+    <dimen name="alto_fila_ayuda">72dp</dimen>
+    <dimen name="ancho_puesto">48dp</dimen>
+    <dimen name="ancho_etiqueta_ajuste">200dp</dimen>
+    <dimen name="numero_paso">52dp</dimen>
+
+    <!-- Textos -->
     <dimen name="texto_titulo">40sp</dimen>
     <dimen name="texto_titulo_pequeno">28sp</dimen>
     <dimen name="texto_boton">26sp</dimen>
+    <dimen name="texto_jugar">32sp</dimen>
     <dimen name="texto_grande">26sp</dimen>
     <dimen name="texto_normal">20sp</dimen>
     <dimen name="texto_pequeno">15sp</dimen>
+    <dimen name="texto_mini">13sp</dimen>
     <dimen name="texto_puntos">54sp</dimen>
+    <dimen name="texto_puntos_hud">32sp</dimen>
+    <dimen name="texto_golpe">34sp</dimen>
+    <dimen name="texto_mensaje">90sp</dimen>
 </resources>

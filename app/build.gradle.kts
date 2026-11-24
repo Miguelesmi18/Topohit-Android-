@@ -28,10 +28,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    // ViewBinding (vídeo 39): adiós a findViewById
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 dependencies {
@@ -40,12 +36,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
-    // Retrofit + GSON para la API (vídeos 35-38)
+    // Retrofit + Gson para la API (REGLA-0489-067: gson, retrofit y converter-gson)
+    implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
-    // Corrutinas para GlobalScope.launch (vídeo 35)
+    // Corrutinas para GlobalScope.launch (REGLA-0489-069)
     implementation(libs.kotlinx.coroutines.android)
-    // [No visto en clase] jBCrypt: cifra la contraseña con bcrypt antes de enviarla a la API
-    // (reto "Protecció dels usuaris"). Es la misma librería que BCrypt.Net del escritorio.
+    // Esta parte es de información externa que no sale en los vídeos
+    // (jBCrypt: el profesor de 0490 da jbcrypt.jar, pero ningún vídeo lo programa).
+    // Cifra la contraseña con bcrypt antes de enviarla a la API (reto «Protecció dels usuaris»).
     implementation(libs.jbcrypt)
 }

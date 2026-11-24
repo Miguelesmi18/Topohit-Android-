@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una fila del historial de partidas del Perfil -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alto_fila"
+    android:layout_marginTop="@dimen/separacion_mini"
+    android:background="@drawable/fila"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/separacion"
+    android:paddingRight="@dimen/separacion">
+
+    <TextView
+        android:id="@+id/LblListPartidaFecha"
+        style="@style/TextoFila"
+        android:layout_weight="1.2" />
+
+    <TextView
+        android:id="@+id/LblListPartidaDificultad"
+        style="@style/TextoFila"
+        android:layout_weight="1"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/LblListPartidaPuntos"
+        style="@style/TextoFila"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-black" />
+
+    <TextView
+        android:id="@+id/LblListPartidaPrecision"
+        style="@style/TextoFila"
+        android:layout_weight="0.8" />
+
+    <TextView
+        android:id="@+id/LblListPartidaEstado"
+        style="@style/TextoFila"
+        android:layout_weight="1" />
+</LinearLayout>

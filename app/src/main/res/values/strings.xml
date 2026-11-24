@@ -1,5 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Todos los textos de la app (REGLA-0489-015). Los %1$s y %1$d son los datos que se ponen desde Kotlin. -->
 <resources>
     <string name="app_name">Topohit</string>
+
+    <!-- Iconos de los botones redondos -->
+    <string name="atras">←</string>
+    <string name="icono_ajustes">≡</string>
+    <string name="icono_ayuda">\?</string>
+    <string name="icono_pausa">II</string>
+    <string name="cero">0</string>
+    <string name="uno">1</string>
+    <string name="dos">2</string>
+    <string name="tres">3</string>
+    <string name="sin_dato">-</string>
+
+    <!-- Descripciones para la accesibilidad (lector de pantalla) -->
+    <string name="volver">Volver</string>
+    <string name="tu_avatar">Tu avatar</string>
+    <string name="avatar">Avatar</string>
+    <string name="avatar_numero">Avatar %1$d</string>
+    <string name="avatar_elegido">Avatar %1$d, elegido</string>
+    <string name="bloqueada">Bloqueada</string>
+    <string name="puntos">Puntos</string>
+    <string name="topo_normal">Topo</string>
+    <string name="topo_enfadado">Topo enfadado</string>
+    <string name="topo_dorado">Topo dorado</string>
+    <string name="bomba">Bomba</string>
 
     <!-- Login y registro -->
     <string name="iniciar_sesion">Iniciar sesión</string>
@@ -10,66 +36,135 @@
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="crear_cuenta">Crear cuenta</string>
     <string name="crear_cuenta_mayus">CREAR CUENTA</string>
-    <string name="al_crear">Al crear la cuenta se inicia sesión.</string>
+    <string name="al_crear">Al crear la cuenta se entra en el juego.</string>
     <string name="elige_avatar">Elige tu avatar</string>
-    <string name="nota_avatares">Avatares de las 3 temáticas. Puedes cambiarlo luego en tu perfil.</string>
+    <string name="nota_avatares">Puedes cambiarlo luego en tu perfil.</string>
+    <string name="cuenta_creada">¡Cuenta creada!</string>
 
     <!-- Menú -->
+    <string name="menu_hola">¡Hola, %1$s!</string>
     <string name="jugar">¡JUGAR!</string>
     <string name="a_jugar">¡A JUGAR!</string>
-    <string name="records">Récords</string>
+    <string name="ranking">Ranking</string>
     <string name="perfil">Perfil</string>
     <string name="tematica">Temática</string>
     <string name="normal">Normal</string>
     <string name="halloween">Halloween</string>
     <string name="navidad">Navidad</string>
+    <string name="tema_elegido">✓ %1$s</string>
 
-    <!-- Modos -->
-    <string name="elige_modo">Elige un modo</string>
-    <string name="historia">HISTORIA</string>
-    <string name="historia_desc">Avanza por el mapa y gana estrellas</string>
-    <string name="contrarreloj">CONTRARRELOJ</string>
-    <string name="contrarreloj_desc">Llega al objetivo antes de que acabe el tiempo</string>
+    <!-- Dificultades -->
     <string name="infinito">INFINITO</string>
     <string name="infinito_desc">¡Aguanta todo lo que puedas!</string>
-    <string name="elegir">Elegir</string>
-    <string name="modo_historia">Modo Historia</string>
+    <string name="dificultad_agujeros">%1$d agujeros</string>
+    <string name="dificultad_record">★ Récord %1$d</string>
+    <string name="dificultad_sin_jugar">★ ¡Juega tu primera partida!</string>
+    <string name="dificultad_cerrada">Esta todavía está cerrada. ¡Mira debajo del candado qué te falta!</string>
+    <string name="dificultad_reintentar">Sin conexión. Toca aquí para volver a probar.</string>
+    <string name="candado_puntos">Consigue %1$d puntos en %2$s para desbloquearla</string>
+    <string name="candado_llevas">Tu récord allí: %1$d</string>
+    <string name="candado_tutor">Tu tutor ha bloqueado esta dificultad</string>
+    <string name="candado_tutor_motivo">Tu tutor la ha bloqueado: %1$s</string>
+    <string name="dificultades">Dificultades</string>
 
     <!-- Partida -->
-    <string name="tiempo">TIEMPO</string>
-    <string name="objetivo">OBJETIVO</string>
     <string name="vidas">VIDAS</string>
     <string name="record">RÉCORD</string>
+    <string name="partida_vidas">x%1$d</string>
+    <string name="partida_velocidad">Velocidad x%1$.1f</string>
+    <string name="partida_racha">Racha %1$d</string>
+    <string name="partida_combo">COMBO x%1$d</string>
+    <string name="partida_combo_mensaje">¡COMBO x%1$d!</string>
+    <string name="partida_mas_puntos">+%1$d</string>
+    <string name="partida_menos_vida">−1 ❤</string>
+    <string name="cuenta_3">3</string>
+    <string name="cuenta_2">2</string>
+    <string name="cuenta_1">1</string>
+    <string name="cuenta_ya">¡YA!</string>
     <string name="pausa">Pausa</string>
     <string name="continuar">Continuar</string>
     <string name="reiniciar">Reiniciar</string>
-    <string name="salir_menu">Salir al menú</string>
+    <string name="salir">Salir</string>
     <string name="que_hace">¿Qué hace cada uno?</string>
-    <string name="partida_pausa">PARTIDA EN PAUSA</string>
+    <string name="partida_pausa">II  PARTIDA EN PAUSA</string>
+    <string name="ayuda_normal">Topo: tócalo · +%1$d puntos</string>
+    <string name="ayuda_enfadado">Enfadado: 2 golpes · +%1$d puntos</string>
+    <string name="ayuda_dorado">Dorado: +%1$d puntos · ¡y +1 vida!</string>
+    <string name="ayuda_bomba">Bomba: ¡no la toques! · −1 vida</string>
 
     <!-- Resultado -->
+    <string name="resultado_titulo">¡Se acabaron las vidas!</string>
+    <string name="resultado_mejor">¡Es tu mejor partida!</string>
+    <string name="resultado_igualado">¡Has igualado tu récord! ¡Muy bien!</string>
+    <string name="resultado_record">Tu récord: %1$d · ¡Te faltan %2$d!</string>
+    <string name="resultado_desbloqueada">🔓 ¡Has desbloqueado %1$s!</string>
+    <string name="resultado_guardando">Guardando la partida…</string>
+    <string name="resultado_guardada">✓ Partida guardada</string>
+    <string name="nuevo_record">¡NUEVO RÉCORD!</string>
+    <string name="puntos_cantidad">%1$d puntos</string>
     <string name="aciertos">Aciertos</string>
     <string name="fallos">Fallos</string>
     <string name="escapados">Escapados</string>
-    <string name="bombas">Bombas</string>
+    <string name="dorados">Dorados</string>
     <string name="mejor_racha">Mejor racha</string>
     <string name="repetir">Repetir</string>
-    <string name="siguiente">Siguiente</string>
-    <string name="reintentar">Reintentar</string>
     <string name="menu">Menú</string>
-    <string name="nuevo_record">¡NUEVO RÉCORD!</string>
 
-    <!-- Perfil, récords y ajustes -->
+    <!-- Perfil -->
     <string name="mi_perfil">Mi perfil</string>
     <string name="cambiar_avatar">Cambiar avatar</string>
+    <string name="avatar_cambiado">¡Avatar cambiado!</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
-    <string name="historial">Historial de partidas</string>
-    <string name="mis_records">Mis récords</string>
+    <string name="historial">Mis partidas</string>
+    <string name="partidas">Partidas</string>
+    <string name="record_minuscula">Récord</string>
+    <string name="precision">Precisión</string>
+    <string name="minutos_jugados">Minutos</string>
+    <string name="porcentaje">%1$d %%</string>
+    <string name="partida_abandonada">Abandonada</string>
+    <string name="partida_terminada">Terminada</string>
+    <string name="perfil_sin_partidas">Todavía no has jugado ninguna partida</string>
+    <string name="guardar">Guardar</string>
+    <string name="cancelar">Cancelar</string>
+
+    <!-- Ranking -->
+    <string name="ranking_vacio">Todavía nadie ha jugado esta dificultad. ¡Sé el primero!</string>
+    <string name="cargando">Cargando…</string>
+    <string name="guardando">Guardando…</string>
+
+    <!-- Ajustes -->
     <string name="ajustes">Ajustes</string>
     <string name="sonido">Sonido</string>
     <string name="musica">Música</string>
     <string name="efectos">Efectos</string>
-    <string name="guardar">Guardar</string>
+    <string name="ajustes_musica_si">Música: Sí</string>
+    <string name="ajustes_musica_no">Música: No</string>
+    <string name="ajustes_efectos_si">Efectos: Sí</string>
+    <string name="ajustes_efectos_no">Efectos: No</string>
+    <string name="ajustes_usuario">Has entrado como %1$s</string>
+
+    <!-- Cómo jugar -->
     <string name="como_jugar">Cómo jugar</string>
-    <string name="atras">←</string>
+    <string name="como_paso1_titulo">Toca los topos</string>
+    <string name="como_paso1_texto">+%1$d · el enfadado necesita 2 golpes (+%2$d)</string>
+    <string name="como_paso2_titulo">¡Ojo con las bombas!</string>
+    <string name="como_paso2_texto">Una bomba o un topo que se escapa quitan 1 vida</string>
+    <string name="como_paso3_titulo">Dorado y combos</string>
+    <string name="como_paso3_texto">Dorado +%1$d y +1 vida · %2$d aciertos seguidos = x2</string>
+
+    <!-- Errores (Toast largo) -->
+    <string name="error_conexion">No se puede conectar con el servidor. Avisa a tu profe.</string>
+    <string name="error_login_vacio">Escribe tu usuario y tu contraseña</string>
+    <string name="error_login">El usuario o la contraseña no son correctos</string>
+    <string name="error_usuario_corto">El usuario tiene que tener 3 letras o más</string>
+    <string name="error_contrasena_corta">La contraseña tiene que tener 4 letras o más</string>
+    <string name="error_contrasenas_distintas">Las dos contraseñas no son iguales</string>
+    <string name="error_usuario_existe">Ese usuario ya existe. Prueba con otro nombre.</string>
+    <string name="error_datos">Algo no ha ido bien con los datos. Inténtalo otra vez.</string>
+    <string name="error_sesion">Tienes que volver a entrar</string>
+    <string name="error_bloqueada">Esta dificultad está bloqueada</string>
+    <string name="error_no_encontrado">No se ha encontrado</string>
+    <string name="error_desconocido">Algo no ha ido bien. Inténtalo otra vez.</string>
+    <string name="error_cargar">No se ha podido cargar</string>
+    <string name="error_guardar_partida">La partida no se ha podido guardar</string>
 </resources>

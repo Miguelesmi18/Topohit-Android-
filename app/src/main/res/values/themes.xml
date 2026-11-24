@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Estilos: así cada control repite menos atributos y las medidas salen de dimens.xml -->
 <resources>
     <!-- Sin barra de título y a pantalla completa: es un juego -->
     <style name="Theme.Topohit" parent="Theme.AppCompat.Light.NoActionBar">
@@ -28,6 +29,23 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <!-- Botón que reparte el ancho con otros en una fila (temáticas, pestañas del ranking...) -->
+    <style name="BotonTema" parent="BotonJuego">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/alto_boton_pequeno</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">@dimen/texto_normal</item>
+    </style>
+
+    <!-- Botones de abajo del resultado -->
+    <style name="BotonFila" parent="BotonJuego">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:textSize">@dimen/texto_normal</item>
+    </style>
+
     <!-- Botón redondo pequeño: ← ? ≡ II -->
     <style name="BotonRedondo">
         <item name="android:layout_width">@dimen/boton_redondo</item>
@@ -52,6 +70,15 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <!-- Texto blanco con sombra, para escribir encima del fondo -->
+    <style name="TextoSobreFondo">
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/blanco</item>
+        <item name="android:shadowColor">@color/marron</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">3</item>
+    </style>
+
     <!-- Campo de texto del login y del registro -->
     <style name="Campo">
         <item name="android:layout_width">match_parent</item>
@@ -65,7 +92,32 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <!-- Chip con texto blanco («¡NUEVO RÉCORD!») -->
+    <style name="Chip">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/chip_naranja</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:paddingLeft">18dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingRight">18dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:textColor">@color/blanco</item>
+        <item name="android:textSize">@dimen/texto_pequeno</item>
+    </style>
+
     <!-- Cajita de dato (Aciertos, Fallos...) -->
+    <style name="CajaDato">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:background">@drawable/dato</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
     <style name="DatoNumero">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -80,5 +132,92 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/texto_pequeno</item>
         <item name="android:textColor">@color/marron</item>
+    </style>
+
+    <!-- Etiqueta pequeña de la barra de la partida (VIDAS, RÉCORD) -->
+    <style name="EtiquetaHud">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/marron</item>
+        <item name="android:textSize">@dimen/texto_mini</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Filas de la ayuda de la partida -->
+    <style name="FilaAyuda">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/alto_fila_ayuda</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@drawable/fila</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingLeft">12dp</item>
+    </style>
+    <style name="ImagenAyuda">
+        <item name="android:layout_width">@dimen/imagen_ayuda</item>
+        <item name="android:layout_height">@dimen/imagen_ayuda</item>
+    </style>
+    <style name="TextoAyuda">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/marron</item>
+        <item name="android:textSize">@dimen/texto_normal</item>
+    </style>
+
+    <!-- Texto de una fila de lista -->
+    <style name="TextoFila">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/marron</item>
+        <item name="android:textSize">@dimen/texto_pequeno</item>
+    </style>
+
+    <!-- Etiqueta de la izquierda en Ajustes -->
+    <style name="EtiquetaAjuste">
+        <item name="android:layout_width">@dimen/ancho_etiqueta_ajuste</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/marron</item>
+        <item name="android:textSize">@dimen/texto_grande</item>
+    </style>
+
+    <!-- Tarjetas de «Cómo jugar» -->
+    <style name="TarjetaPaso">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:background">@drawable/panel_crema</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">16dp</item>
+    </style>
+    <style name="NumeroPaso">
+        <item name="android:layout_width">@dimen/numero_paso</item>
+        <item name="android:layout_height">@dimen/numero_paso</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:background">@drawable/circulo_naranja</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textColor">@color/blanco</item>
+        <item name="android:textSize">@dimen/texto_grande</item>
+    </style>
+    <style name="TituloPaso" parent="Titulo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/texto_grande</item>
+    </style>
+    <style name="TextoPaso">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minLines">2</item>
+        <item name="android:textColor">@color/marron</item>
+        <item name="android:textSize">@dimen/texto_normal</item>
     </style>
 </resources>

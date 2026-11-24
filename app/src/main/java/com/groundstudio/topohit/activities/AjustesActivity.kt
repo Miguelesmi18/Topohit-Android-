@@ -1,111 +1,158 @@
 package com.groundstudio.topohit.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.groundstudio.topohit.data_model.Tematica
-import com.groundstudio.topohit.data_model.Tematicas
-import com.groundstudio.topohit.databinding.ActivityAjustesBinding
-import com.groundstudio.topohit.util.Almacen
-import com.groundstudio.topohit.util.Juego
-import com.groundstudio.topohit.util.Sonidos
+import com.groundstudio.topohit.Avisos
+import com.groundstudio.topohit.GestorAjustes
+import com.groundstudio.topohit.GestorSesion
+import com.groundstudio.topohit.R
+import com.groundstudio.topohit.Sonidos
+import com.groundstudio.topohit.Tematicas
+import com.groundstudio.topohit.datamodel.Tematica
 
-// Ajustes: temática, sonido y cerrar sesión
-class AjustesActivity : PantallaBase() {
+// Ajustes: temática, música, efectos y cerrar sesión.
+// Se puede abrir desde el login (sin sesión) o desde el menú.
+class AjustesActivity : PantallaBase()
+{
+    private lateinit var btnAjustesTemaNormal: TextView
+    private lateinit var btnAjustesTemaHalloween: TextView
+    private lateinit var btnAjustesTemaNavidad: TextView
+    private lateinit var btnAjustesMusica: TextView
+    private lateinit var btnAjustesEfectos: TextView
 
-    private lateinit var binding: ActivityAjustesBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        binding = ActivityAjustesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_ajustes)
+
+        btnAjustesTemaNormal    = findViewById<TextView>(R.id.BtnAjustesTemaNormal)
+        btnAjustesTemaHalloween = findViewById<TextView>(R.id.BtnAjustesTemaHalloween)
+        btnAjustesTemaNavidad   = findViewById<TextView>(R.id.BtnAjustesTemaNavidad)
+        btnAjustesMusica        = findViewById<TextView>(R.id.BtnAjustesMusica)
+        btnAjustesEfectos       = findViewById<TextView>(R.id.BtnAjustesEfectos)
 
         // Si todavía no ha entrado nadie (venimos del login) no hay sesión que cerrar
-        if (Juego.username.isEmpty()) {
-            binding.laySesion.visibility = View.GONE
-        } else {
-            binding.lblUsuario.text = "Has entrado como " + Juego.username
+        if(GestorSesion.getSesion(this) == null)
+        {
+            findViewById<LinearLayout>(R.id.LayAjustesSesion).visibility = View.GONE
+        }
+        else
+        {
+            findViewById<TextView>(R.id.LblAjustesUsuario).text =
+                getString(R.string.ajustes_usuario, GestorSesion.getUsername(this))
         }
 
-        binding.btnAtras.setOnClickListener {
+        findViewById<TextView>(R.id.BtnAjustesAtras).setOnClickListener()
+        {
             finish()
         }
-        binding.btnTemaNormal.setOnClickListener {
+
+        btnAjustesTemaNormal.setOnClickListener()
+        {
             cambiarTema(Tematicas.NORMAL)
         }
-        binding.btnTemaHalloween.setOnClickListener {
+
+        btnAjustesTemaHalloween.setOnClickListener()
+        {
             cambiarTema(Tematicas.HALLOWEEN)
         }
-        binding.btnTemaNavidad.setOnClickListener {
+
+        btnAjustesTemaNavidad.setOnClickListener()
+        {
             cambiarTema(Tematicas.NAVIDAD)
         }
+
         // Música y efectos: cada toque los enciende o los apaga
-        binding.btnMusica.setOnClickListener {
-            Sonidos.musicaActivada = !Sonidos.musicaActivada
-            if (Sonidos.musicaActivada) {
+        btnAjustesMusica.setOnClickListener()
+        {
+            GestorAjustes.musica = !GestorAjustes.musica
+            if(GestorAjustes.musica)
+            {
                 Sonidos.sonarMusica()
-            } else {
+            }
+            else
+            {
                 Sonidos.pausarMusica()
             }
-            Almacen.guardarAjustes(this)
+            GestorAjustes.guardar(this)
             pintar()
         }
-        binding.btnEfectos.setOnClickListener {
-            Sonidos.efectosActivados = !Sonidos.efectosActivados
-            Almacen.guardarAjustes(this)
+
+        btnAjustesEfectos.setOnClickListener()
+        {
+            GestorAjustes.efectos = !GestorAjustes.efectos
+            GestorAjustes.guardar(this)
             Sonidos.efecto(Sonidos.GOLPE)       // para que se oiga cómo suena
             pintar()
         }
-        binding.btnCerrarSesion.setOnClickListener {
-            Almacen.borrarSesion(this)
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+
+        findViewById<TextView>(R.id.BtnAjustesCerrarSesion).setOnClickListener()
+        {
+            Avisos.volverAlLogin(this)
         }
+
         pintar()
     }
 
-    private fun cambiarTema(tema: Tematica) {
-        Juego.tema = tema
-        Almacen.guardarAjustes(this)
+    private fun cambiarTema(tema: Tematica)
+    {
+        GestorAjustes.tema = tema
+        GestorAjustes.guardar(this)
         pintar()
     }
 
-    private fun pintar() {
-        val tema = Juego.tema
-        binding.imgFondo.setImageResource(tema.fondo)
-        binding.btnAtras.setBackgroundResource(tema.circulo)
-        binding.layPanel.setBackgroundResource(tema.panel)
+    private fun pintar()
+    {
+        val tema = GestorAjustes.tema
+        findViewById<ImageView>(R.id.ImgAjustesFondo).setImageResource(tema.fondo)
+        findViewById<TextView>(R.id.BtnAjustesAtras).setBackgroundResource(tema.circulo)
+        findViewById<LinearLayout>(R.id.LayAjustesPanel).setBackgroundResource(tema.panel)
         val color = ContextCompat.getColor(this, tema.colorTexto)
-        val textos = listOf<TextView>(binding.lblTematica, binding.lblSonido, binding.lblUsuario)
-        for (t in textos) {
-            t.setTextColor(color)
+        val textos = listOf<TextView>(findViewById(R.id.LblAjustesTematica), findViewById(R.id.LblAjustesSonido),
+                                      findViewById(R.id.LblAjustesUsuario))
+        for(texto in textos)
+        {
+            texto.setTextColor(color)
         }
-        marcar(binding.btnTemaNormal, tema == Tematicas.NORMAL)
-        marcar(binding.btnTemaHalloween, tema == Tematicas.HALLOWEEN)
-        marcar(binding.btnTemaNavidad, tema == Tematicas.NAVIDAD)
 
-        // Botones de sonido: "Música: Sí" a color o "Música: No" medio transparente
-        if (Sonidos.musicaActivada) {
-            binding.btnMusica.text = "Música: Sí"
-        } else {
-            binding.btnMusica.text = "Música: No"
+        marcar(btnAjustesTemaNormal, tema == Tematicas.NORMAL)
+        marcar(btnAjustesTemaHalloween, tema == Tematicas.HALLOWEEN)
+        marcar(btnAjustesTemaNavidad, tema == Tematicas.NAVIDAD)
+
+        // «Música: Sí» a color o «Música: No» medio transparente
+        if(GestorAjustes.musica)
+        {
+            btnAjustesMusica.text = getString(R.string.ajustes_musica_si)
         }
-        marcar(binding.btnMusica, Sonidos.musicaActivada)
-        if (Sonidos.efectosActivados) {
-            binding.btnEfectos.text = "Efectos: Sí"
-        } else {
-            binding.btnEfectos.text = "Efectos: No"
+        else
+        {
+            btnAjustesMusica.text = getString(R.string.ajustes_musica_no)
         }
-        marcar(binding.btnEfectos, Sonidos.efectosActivados)
+        marcar(btnAjustesMusica, GestorAjustes.musica)
+
+        if(GestorAjustes.efectos)
+        {
+            btnAjustesEfectos.text = getString(R.string.ajustes_efectos_si)
+        }
+        else
+        {
+            btnAjustesEfectos.text = getString(R.string.ajustes_efectos_no)
+        }
+        marcar(btnAjustesEfectos, GestorAjustes.efectos)
     }
 
-    private fun marcar(boton: TextView, actual: Boolean) {
-        if (actual) {
+    private fun marcar(boton: TextView, activo: Boolean)
+    {
+        if(activo)
+        {
             boton.alpha = 1f
-        } else {
+        }
+        else
+        {
             boton.alpha = 0.55f
         }
     }

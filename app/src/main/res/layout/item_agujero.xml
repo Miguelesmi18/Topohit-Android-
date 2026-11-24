@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Un agujero del tablero: el agujero, el topo que sale encima y el efecto del golpe -->
+<!-- Un agujero del tablero: el agujero, el topo que sale encima y el efecto del golpe.
+     Se infla una vez por agujero (como una fila de lista), por eso lleva "List" en los id. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layAgujero"
     android:layout_width="0dp"
     android:layout_height="match_parent"
     android:layout_weight="1"
@@ -11,16 +11,16 @@
 
     <!-- Línea donde "se apoya" el topo: un poco por encima del fondo del agujero -->
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guiaSuelo"
+        android:id="@+id/GuiListAgujeroSuelo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.82" />
 
     <ImageView
-        android:id="@+id/imgAgujero"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@null"
         android:src="@drawable/agujero"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,31 +28,33 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imgTopo"
+        android:id="@+id/ImgListAgujeroTopo"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/topo_normal"
         android:src="@drawable/topo_normal_03_feliz"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/guiaSuelo"
+        app:layout_constraintBottom_toBottomOf="@id/GuiListAgujeroSuelo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.74"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imgEfecto"
+        android:id="@+id/ImgListAgujeroEfecto"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@null"
         android:src="@drawable/golpe_estallido"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/imgTopo"
+        app:layout_constraintBottom_toBottomOf="@id/ImgListAgujeroTopo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.45"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/imgTopo" />
+        app:layout_constraintTop_toTopOf="@id/ImgListAgujeroTopo" />
 
-    <!-- "+10", "-20"... -->
+    <!-- "+10", "-1 ❤"... -->
     <TextView
-        android:id="@+id/lblPuntos"
+        android:id="@+id/LblListAgujeroPuntos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
@@ -60,9 +62,9 @@
         android:shadowDy="3"
         android:shadowRadius="4"
         android:textColor="@color/amarillo"
-        android:textSize="34sp"
+        android:textSize="@dimen/texto_golpe"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/imgTopo" />
+        app:layout_constraintTop_toTopOf="@id/ImgListAgujeroTopo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

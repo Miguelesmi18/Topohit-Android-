@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Perfil: avatar y botones a la izquierda; resumen e historial a la derecha; capa para cambiar el avatar -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imgFondo"
+        android:id="@+id/ImgPerfilFondo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo_partida_normal" />
 
@@ -21,12 +23,12 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/btnAtras"
+                android:id="@+id/BtnPerfilAtras"
                 style="@style/BotonRedondo"
+                android:contentDescription="@string/volver"
                 android:text="@string/atras" />
 
             <TextView
-                android:id="@+id/lblTitulo"
                 style="@style/Titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,44 +41,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginTop="@dimen/margen_pequeno"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
-            <!-- Izquierda: avatar y botones -->
             <LinearLayout
-                android:id="@+id/layPanelJugador"
-                android:layout_width="250dp"
+                android:id="@+id/LayPerfilJugador"
+                android:layout_width="@dimen/ancho_panel_jugador"
                 android:layout_height="match_parent"
                 android:background="@drawable/panel_crema"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/separacion">
 
                 <ImageView
-                    android:id="@+id/imgAvatar"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:id="@+id/ImgPerfilAvatar"
+                    android:layout_width="@dimen/avatar_grande"
+                    android:layout_height="@dimen/avatar_grande"
                     android:background="@drawable/circulo_crema"
-                    android:padding="16dp"
+                    android:contentDescription="@string/tu_avatar"
+                    android:padding="@dimen/separacion"
                     android:src="@drawable/topo_normal_03_feliz" />
 
                 <TextView
-                    android:id="@+id/lblNombre"
+                    android:id="@+id/LblPerfilNombre"
                     style="@style/Titulo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Nombre"
+                    android:layout_marginTop="@dimen/separacion_pequena"
                     android:textSize="@dimen/texto_titulo_pequeno" />
-
-                <TextView
-                    android:id="@+id/lblRol"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/marron"
-                    android:textSize="@dimen/texto_pequeno" />
 
                 <View
                     android:layout_width="match_parent"
@@ -84,7 +77,7 @@
                     android:layout_weight="1" />
 
                 <TextView
-                    android:id="@+id/btnCambiarAvatar"
+                    android:id="@+id/BtnPerfilCambiarAvatar"
                     style="@style/BotonJuego"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/alto_boton_pequeno"
@@ -93,17 +86,16 @@
                     android:textSize="@dimen/texto_normal" />
 
                 <TextView
-                    android:id="@+id/btnCerrarSesion"
+                    android:id="@+id/BtnPerfilCerrarSesion"
                     style="@style/BotonJuego"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/alto_boton_pequeno"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="@dimen/margen_pequeno"
                     android:background="@drawable/btn_rojo"
                     android:text="@string/cerrar_sesion"
                     android:textSize="@dimen/texto_normal" />
             </LinearLayout>
 
-            <!-- Derecha: datos e historial -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -116,129 +108,67 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/layDatoPartidas"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/dato"
-                android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                    <LinearLayout style="@style/CajaDato">
 
-                <TextView
-                    android:id="@+id/lblPartidas"
-                    style="@style/DatoNumero"
-                    android:text="-" />
+                        <TextView
+                            android:id="@+id/LblPerfilPartidas"
+                            style="@style/DatoNumero"
+                            android:text="@string/sin_dato" />
 
-                <TextView
-                    style="@style/DatoEtiqueta"
-                    android:text="Partidas" />
-            </LinearLayout>
+                        <TextView
+                            style="@style/DatoEtiqueta"
+                            android:text="@string/partidas" />
+                    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layDatoRecordCr"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/dato"
-                android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                    <LinearLayout style="@style/CajaDato">
 
-                <TextView
-                    android:id="@+id/lblRecordCr"
-                    style="@style/DatoNumero"
-                    android:text="-" />
+                        <TextView
+                            android:id="@+id/LblPerfilRecord"
+                            style="@style/DatoNumero"
+                            android:text="@string/sin_dato" />
 
-                <TextView
-                    style="@style/DatoEtiqueta"
-                    android:text="Récord CR" />
-            </LinearLayout>
+                        <TextView
+                            style="@style/DatoEtiqueta"
+                            android:text="@string/record_minuscula" />
+                    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layDatoRecordInf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/dato"
-                android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                    <LinearLayout style="@style/CajaDato">
 
-                <TextView
-                    android:id="@+id/lblRecordInf"
-                    style="@style/DatoNumero"
-                    android:text="-" />
+                        <TextView
+                            android:id="@+id/LblPerfilPrecision"
+                            style="@style/DatoNumero"
+                            android:text="@string/sin_dato" />
 
-                <TextView
-                    style="@style/DatoEtiqueta"
-                    android:text="Récord Inf." />
-            </LinearLayout>
+                        <TextView
+                            style="@style/DatoEtiqueta"
+                            android:text="@string/precision" />
+                    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layDatoEstrellas"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/dato"
-                android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                    <LinearLayout style="@style/CajaDato">
 
-                <TextView
-                    android:id="@+id/lblEstrellas"
-                    style="@style/DatoNumero"
-                    android:text="-" />
+                        <TextView
+                            android:id="@+id/LblPerfilMinutos"
+                            style="@style/DatoNumero"
+                            android:text="@string/sin_dato" />
 
-                <TextView
-                    style="@style/DatoEtiqueta"
-                    android:text="Estrellas" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layDatoPrecision"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/dato"
-                android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
-
-                <TextView
-                    android:id="@+id/lblPrecision"
-                    style="@style/DatoNumero"
-                    android:text="-" />
-
-                <TextView
-                    style="@style/DatoEtiqueta"
-                    android:text="Precisión" />
-            </LinearLayout>
+                        <TextView
+                            style="@style/DatoEtiqueta"
+                            android:text="@string/minutos_jugados" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/layPanelHistorial"
+                    android:id="@+id/LayPerfilHistorial"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margen_pequeno"
                     android:layout_weight="1"
                     android:background="@drawable/panel_crema"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/separacion">
 
                     <TextView
-                        android:id="@+id/lblHistorial"
+                        android:id="@+id/LblPerfilHistorialTitulo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-black"
@@ -247,20 +177,20 @@
                         android:textSize="@dimen/texto_grande" />
 
                     <TextView
-                        android:id="@+id/lblVacio"
+                        android:id="@+id/LblPerfilVacio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/margen"
                         android:gravity="center"
-                        android:text="Cargando..."
+                        android:text="@string/cargando"
                         android:textColor="@color/marron"
                         android:textSize="@dimen/texto_normal" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/lstHistorial"
+                        android:id="@+id/LstPerfilHistorial"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/separacion_pequena"
                         android:layout_weight="1" />
                 </LinearLayout>
             </LinearLayout>
@@ -269,7 +199,7 @@
 
     <!-- ===== Elegir otro avatar ===== -->
     <FrameLayout
-        android:id="@+id/layAvatares"
+        android:id="@+id/LayPerfilAvatares"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/oscurecer"
@@ -278,39 +208,55 @@
         android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/layPanelAvatares"
-            android:layout_width="520dp"
-            android:layout_height="480dp"
+            android:id="@+id/LayPerfilPanelAvatares"
+            android:layout_width="@dimen/ancho_panel_avatares"
+            android:layout_height="@dimen/alto_panel_avatares"
             android:layout_gravity="center"
             android:background="@drawable/panel_crema"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="18dp">
+            android:padding="@dimen/separacion">
 
             <TextView
-                android:id="@+id/lblElige"
+                android:id="@+id/LblPerfilElige"
                 style="@style/Titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/elige_avatar"
                 android:textSize="@dimen/texto_titulo_pequeno" />
 
-            <include
-                android:id="@+id/selAvatares"
-                layout="@layout/selector_avatares"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/LstPerfilAvatares"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="@dimen/separacion_pequena"
                 android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/btnGuardarAvatar"
-                style="@style/BotonJuego"
-                android:layout_width="240dp"
-                android:layout_height="@dimen/alto_boton_pequeno"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/btn_naranja"
-                android:text="@string/guardar"
-                android:textSize="@dimen/texto_normal" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/separacion_pequena"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/BtnPerfilCerrarAvatares"
+                    style="@style/BotonJuego"
+                    android:layout_width="@dimen/ancho_boton_pequeno"
+                    android:layout_height="@dimen/alto_boton_pequeno"
+                    android:layout_marginEnd="@dimen/margen_pequeno"
+                    android:background="@drawable/btn_gris"
+                    android:text="@string/cancelar"
+                    android:textSize="@dimen/texto_normal" />
+
+                <TextView
+                    android:id="@+id/BtnPerfilGuardarAvatar"
+                    style="@style/BotonJuego"
+                    android:layout_width="@dimen/ancho_boton_pequeno"
+                    android:layout_height="@dimen/alto_boton_pequeno"
+                    android:background="@drawable/btn_naranja"
+                    android:text="@string/guardar"
+                    android:textSize="@dimen/texto_normal" />
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 </FrameLayout>

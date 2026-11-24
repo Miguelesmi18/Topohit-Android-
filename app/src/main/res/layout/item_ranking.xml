@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una fila del ranking: puesto, avatar, nombre y récord -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LayListRankingFila"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alto_fila_ranking"
+    android:layout_marginTop="@dimen/separacion_mini"
+    android:background="@drawable/fila"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/separacion"
+    android:paddingRight="@dimen/separacion">
+
+    <TextView
+        android:id="@+id/LblListRankingPuesto"
+        android:layout_width="@dimen/ancho_puesto"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/marron"
+        android:textSize="@dimen/texto_grande" />
+
+    <ImageView
+        android:id="@+id/ImgListRankingAvatar"
+        android:layout_width="@dimen/avatar_fila"
+        android:layout_height="@dimen/avatar_fila"
+        android:contentDescription="@string/avatar" />
+
+    <TextView
+        android:id="@+id/LblListRankingNombre"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/separacion"
+        android:layout_weight="1"
+        android:textColor="@color/marron"
+        android:textSize="@dimen/texto_normal"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/LblListRankingPuntos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/marron"
+        android:textSize="@dimen/texto_normal" />
+</LinearLayout>

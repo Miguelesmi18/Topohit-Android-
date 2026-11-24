@@ -2,44 +2,56 @@ package com.groundstudio.topohit.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.groundstudio.topohit.databinding.ActivityComoJugarBinding
-import com.groundstudio.topohit.util.Juego
+import com.groundstudio.topohit.GestorAjustes
+import com.groundstudio.topohit.R
+import com.groundstudio.topohit.ReglasJuego
 
-// Cómo jugar: 3 pasos con dibujos
-class ComoJugarActivity : PantallaBase() {
-
-    private lateinit var binding: ActivityComoJugarBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+// Cómo jugar: 3 pasos con dibujos de la temática elegida
+class ComoJugarActivity : PantallaBase()
+{
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        binding = ActivityComoJugarBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_como_jugar)
 
-        val tema = Juego.tema
-        binding.imgFondo.setImageResource(tema.fondo)
-        binding.btnAtras.setBackgroundResource(tema.circulo)
-        binding.btnAJugar.setBackgroundResource(tema.botonPrincipal)
-        binding.layPaso1.setBackgroundResource(tema.panel)
-        binding.layPaso2.setBackgroundResource(tema.panel)
-        binding.layPaso3.setBackgroundResource(tema.panel)
-        binding.imgPaso1a.setImageResource(tema.topoNormal)
-        binding.imgPaso1b.setImageResource(tema.topoEnfadado)
-        binding.imgPaso2.setImageResource(tema.bomba)
-        binding.imgPaso3.setImageResource(tema.topoDorado)
+        val tema = GestorAjustes.tema
+        findViewById<ImageView>(R.id.ImgComoJugarFondo).setImageResource(tema.fondo)
+        findViewById<TextView>(R.id.BtnComoJugarAtras).setBackgroundResource(tema.circulo)
+        findViewById<TextView>(R.id.BtnComoJugarJugar).setBackgroundResource(tema.botonPrincipal)
+        findViewById<LinearLayout>(R.id.LayComoJugarPaso1).setBackgroundResource(tema.panel)
+        findViewById<LinearLayout>(R.id.LayComoJugarPaso2).setBackgroundResource(tema.panel)
+        findViewById<LinearLayout>(R.id.LayComoJugarPaso3).setBackgroundResource(tema.panel)
+        findViewById<ImageView>(R.id.ImgComoJugarPaso1a).setImageResource(tema.topoNormal)
+        findViewById<ImageView>(R.id.ImgComoJugarPaso1b).setImageResource(tema.topoEnfadado)
+        findViewById<ImageView>(R.id.ImgComoJugarPaso2).setImageResource(tema.bomba)
+        findViewById<ImageView>(R.id.ImgComoJugarPaso3).setImageResource(tema.topoDorado)
+
+        findViewById<TextView>(R.id.LblComoJugarTexto1).text =
+            getString(R.string.como_paso1_texto, ReglasJuego.PUNTOS_NORMAL, ReglasJuego.PUNTOS_ENFADADO)
+        findViewById<TextView>(R.id.LblComoJugarTexto3).text =
+            getString(R.string.como_paso3_texto, ReglasJuego.PUNTOS_DORADO, ReglasJuego.ACIERTOS_PARA_COMBO)
+
         val color = ContextCompat.getColor(this, tema.colorTexto)
-        val textos = listOf<TextView>(binding.lblPasoTitulo1, binding.lblPasoTitulo2, binding.lblPasoTitulo3,
-            binding.lblPasoTexto1, binding.lblPasoTexto2, binding.lblPasoTexto3)
-        for (t in textos) {
-            t.setTextColor(color)
+        val textos = listOf<TextView>(findViewById(R.id.LblComoJugarTitulo1), findViewById(R.id.LblComoJugarTitulo2),
+                                      findViewById(R.id.LblComoJugarTitulo3), findViewById(R.id.LblComoJugarTexto1),
+                                      findViewById(R.id.LblComoJugarTexto2), findViewById(R.id.LblComoJugarTexto3))
+        for(texto in textos)
+        {
+            texto.setTextColor(color)
         }
 
-        binding.btnAtras.setOnClickListener {
+        findViewById<TextView>(R.id.BtnComoJugarAtras).setOnClickListener()
+        {
             finish()
         }
-        binding.btnAJugar.setOnClickListener {
-            startActivity(Intent(this, ModoActivity::class.java))
+
+        findViewById<TextView>(R.id.BtnComoJugarJugar).setOnClickListener()
+        {
+            startActivity(Intent(this, DificultadActivity::class.java))
             finish()
         }
     }

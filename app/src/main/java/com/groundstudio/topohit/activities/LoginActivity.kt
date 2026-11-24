@@ -3,119 +3,168 @@ package com.groundstudio.topohit.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.groundstudio.topohit.api.RetrofitClient
-import com.groundstudio.topohit.data_model.LoginPeticion
-import com.groundstudio.topohit.databinding.ActivityLoginBinding
-import com.groundstudio.topohit.util.Almacen
-import com.groundstudio.topohit.util.Cifrado
-import com.groundstudio.topohit.util.Juego
-import kotlinx.coroutines.DelicateCoroutinesApi
+import com.groundstudio.topohit.Avisos
+import com.groundstudio.topohit.Cifrado
+import com.groundstudio.topohit.GestorAjustes
+import com.groundstudio.topohit.GestorSesion
+import com.groundstudio.topohit.R
+import com.groundstudio.topohit.api.ApiLogin
+import com.groundstudio.topohit.api.RetrofitLoginClient
+import com.groundstudio.topohit.datamodel.LoginPeticion
+import com.groundstudio.topohit.datamodel.SesionUsuario
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-// Pantalla de inicio: usuario y contraseña contra la API (POST api/auth/login)
-class LoginActivity : PantallaBase() {
+// Pantalla de inicio: usuario y contraseña contra la API (POST api/auth/login).
+// Si ya había entrado antes en esta tablet, va directa al menú.
+class LoginActivity : PantallaBase()
+{
+    private lateinit var txtLoginUsuario: EditText
+    private lateinit var txtLoginContrasena: EditText
+    private lateinit var btnLoginEntrar: TextView
+    private lateinit var prgLoginCargando: ProgressBar
 
-    private lateinit var binding: ActivityLoginBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_login)
 
-        Almacen.cargarAjustes(this)
-        Juego.cargarConfiguracion()
-
-        // Si ya había entrado antes, vamos directos al menú
-        if (Almacen.cargarSesion(this)) {
+        if(GestorSesion.getSesion(this) != null)
+        {
             irAlMenu()
-            return
         }
+        else
+        {
+            txtLoginUsuario    = findViewById<EditText>(R.id.TxtLoginUsuario)
+            txtLoginContrasena = findViewById<EditText>(R.id.TxtLoginContrasena)
+            btnLoginEntrar     = findViewById<TextView>(R.id.BtnLoginEntrar)
+            prgLoginCargando   = findViewById<ProgressBar>(R.id.PrgLoginCargando)
+            val btnLoginRegistro = findViewById<TextView>(R.id.BtnLoginRegistro)
+            val btnLoginAjustes  = findViewById<TextView>(R.id.BtnLoginAjustes)
 
-        binding.btnEntrar.setOnClickListener {
-            entrar()
-        }
-        binding.btnRegistro.setOnClickListener {
-            startActivity(Intent(this, RegistroActivity::class.java))
-        }
-        binding.btnAjustes.setOnClickListener {
-            startActivity(Intent(this, AjustesActivity::class.java))
-        }
-    }
+            btnLoginEntrar.setOnClickListener()
+            {
+                entrar()
+            }
 
-    // Al volver de Ajustes puede haber cambiado la temática
-    override fun onResume() {
-        super.onResume()
-        aplicarTema()
-    }
+            btnLoginRegistro.setOnClickListener()
+            {
+                startActivity(Intent(this, RegistroActivity::class.java))
+            }
 
-    private fun aplicarTema() {
-        val tema = Juego.tema
-        binding.imgFondo.setImageResource(tema.fondo)
-        binding.imgLogo.setImageResource(tema.logo)
-        binding.imgTopo.setImageResource(tema.topoNormal)
-        binding.layPanel.setBackgroundResource(tema.panel)
-        binding.btnEntrar.setBackgroundResource(tema.botonPrincipal)
-        binding.btnRegistro.setBackgroundResource(tema.botonSecundario)
-        binding.btnAjustes.setBackgroundResource(tema.circulo)
-        binding.lblTitulo.setTextColor(ContextCompat.getColor(this, tema.colorTexto))
-        binding.lblNoCuenta.setTextColor(ContextCompat.getColor(this, tema.colorTexto))
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun entrar() {
-        val usuario = binding.txtUsuario.text.toString().trim()
-        val contrasena = binding.txtContrasena.text.toString()
-        if (usuario.isEmpty() || contrasena.isEmpty()) {
-            Toast.makeText(this, "Escribe tu usuario y tu contraseña", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        cargando(true)
-        GlobalScope.launch {
-            try {
-                // La contraseña se cifra aquí, dentro de la corrutina: bcrypt tarda un poco
-                // y así la pantalla no se queda congelada
-                val hash = Cifrado.hash(contrasena)
-                val response = RetrofitClient.api().login(LoginPeticion(usuario, hash)).execute()
-                val respuesta = response.body()
-                runOnUiThread {
-                    cargando(false)
-                    if (response.isSuccessful && respuesta != null) {
-                        Juego.token = respuesta.token
-                        Juego.idUsuario = respuesta.idUsuario
-                        Juego.username = respuesta.username
-                        Juego.rol = respuesta.rol
-                        Juego.avatar = respuesta.avatarId          // CAMBIO 19/11: el avatar viene de la API
-                        Almacen.guardarSesion(this@LoginActivity)
-                        irAlMenu()
-                    } else {
-                        Toast.makeText(this@LoginActivity, RetrofitClient.mensajeDeError(response), Toast.LENGTH_LONG).show()
-                    }
-                }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    cargando(false)
-                    Toast.makeText(this@LoginActivity,
-                        "No se puede conectar con el servidor. Comprueba que la API está arrancada.",
-                        Toast.LENGTH_LONG).show()
-                }
+            btnLoginAjustes.setOnClickListener()
+            {
+                startActivity(Intent(this, AjustesActivity::class.java))
             }
         }
     }
 
-    private fun cargando(si: Boolean) {
-        if (si) {
-            binding.prgCargando.visibility = View.VISIBLE
-        } else {
-            binding.prgCargando.visibility = View.GONE
+    // Al volver de Ajustes puede haber cambiado la temática
+    override fun onResume()
+    {
+        super.onResume()
+        if(GestorSesion.getSesion(this) == null)
+        {
+            pintarTema()
         }
-        binding.btnEntrar.isEnabled = !si
     }
 
-    private fun irAlMenu() {
+    private fun pintarTema()
+    {
+        val tema = GestorAjustes.tema
+        val color = ContextCompat.getColor(this, tema.colorTexto)
+        findViewById<ImageView>(R.id.ImgLoginFondo).setImageResource(tema.fondo)
+        findViewById<ImageView>(R.id.ImgLoginLogo).setImageResource(tema.logo)
+        findViewById<ImageView>(R.id.ImgLoginTopo).setImageResource(tema.topoNormal)
+        findViewById<LinearLayout>(R.id.LayLoginPanel).setBackgroundResource(tema.panel)
+        findViewById<TextView>(R.id.LblLoginTitulo).setTextColor(color)
+        findViewById<TextView>(R.id.LblLoginNoCuenta).setTextColor(color)
+        findViewById<TextView>(R.id.BtnLoginRegistro).setBackgroundResource(tema.botonSecundario)
+        findViewById<TextView>(R.id.BtnLoginAjustes).setBackgroundResource(tema.circulo)
+        btnLoginEntrar.setBackgroundResource(tema.botonPrincipal)
+    }
+
+    private fun entrar()
+    {
+        val usuario = txtLoginUsuario.text.toString().trim()
+        val contrasena = txtLoginContrasena.text.toString()
+
+        if(usuario != "" && contrasena != "")
+        {
+            cargando(true)
+            val loginApi = RetrofitLoginClient.getInstance().create(ApiLogin::class.java)
+
+            GlobalScope.launch()
+            {
+                try
+                {
+                    // La contraseña se cifra aquí, dentro de la corrutina: bcrypt tarda un poco
+                    // y así la pantalla no se queda congelada
+                    val hash = Cifrado.hash(contrasena)
+                    val call = loginApi.login(LoginPeticion(usuario, hash))
+                    val response = call.execute()
+                    val respuesta = response.body()
+
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            cargando(false)
+                            if(respuesta != null)
+                            {
+                                GestorSesion.guardar(this@LoginActivity,
+                                                     SesionUsuario(respuesta.token, respuesta.idUsuario,
+                                                                   respuesta.username, respuesta.rol, respuesta.avatarId))
+                                irAlMenu()
+                            }
+                            else
+                            {
+                                // 401: usuario o contraseña incorrectos (aquí no hay sesión que caduque)
+                                Avisos.toast(this@LoginActivity, R.string.error_login)
+                            }
+                        }
+                    }
+                }
+                catch(e: Exception)
+                {
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            cargando(false)
+                            Avisos.errorConexion(this@LoginActivity)
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            Avisos.toast(this, R.string.error_login_vacio)
+        }
+    }
+
+    private fun cargando(activo: Boolean)
+    {
+        if(activo)
+        {
+            prgLoginCargando.visibility = View.VISIBLE
+        }
+        else
+        {
+            prgLoginCargando.visibility = View.GONE
+        }
+        btnLoginEntrar.isEnabled = !activo
+    }
+
+    private fun irAlMenu()
+    {
         startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }

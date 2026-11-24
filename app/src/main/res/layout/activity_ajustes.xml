@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Ajustes: temática, sonido y sesión -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imgFondo"
+        android:id="@+id/ImgAjustesFondo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo_partida_normal" />
 
@@ -21,12 +23,12 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/btnAtras"
+                android:id="@+id/BtnAjustesAtras"
                 style="@style/BotonRedondo"
+                android:contentDescription="@string/volver"
                 android:text="@string/atras" />
 
             <TextView
-                android:id="@+id/lblTitulo"
                 style="@style/Titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,16 +39,15 @@
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/layPanel"
-            android:layout_width="760dp"
+            android:id="@+id/LayAjustesPanel"
+            android:layout_width="@dimen/ancho_panel_ajustes"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margen"
             android:background="@drawable/panel_crema"
             android:orientation="vertical"
-            android:padding="28dp">
+            android:padding="@dimen/relleno_panel">
 
-            <!-- Temática -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,97 +55,67 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/lblTematica"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-black"
-                    android:text="@string/tematica"
-                    android:textColor="@color/marron"
-                    android:textSize="@dimen/texto_grande" />
+                    android:id="@+id/LblAjustesTematica"
+                    style="@style/EtiquetaAjuste"
+                    android:text="@string/tematica" />
 
                 <TextView
-                    android:id="@+id/btnTemaNormal"
-                    style="@style/BotonJuego"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/alto_boton_pequeno"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
+                    android:id="@+id/BtnAjustesTemaNormal"
+                    style="@style/BotonTema"
+                    android:layout_marginEnd="@dimen/separacion_pequena"
                     android:background="@drawable/btn_verde"
-                    android:text="@string/normal"
-                    android:textSize="@dimen/texto_normal" />
+                    android:text="@string/normal" />
 
                 <TextView
-                    android:id="@+id/btnTemaHalloween"
-                    style="@style/BotonJuego"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/alto_boton_pequeno"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
+                    android:id="@+id/BtnAjustesTemaHalloween"
+                    style="@style/BotonTema"
+                    android:layout_marginEnd="@dimen/separacion_pequena"
                     android:background="@drawable/btn_morado"
-                    android:text="@string/halloween"
-                    android:textSize="@dimen/texto_normal" />
+                    android:text="@string/halloween" />
 
                 <TextView
-                    android:id="@+id/btnTemaNavidad"
-                    style="@style/BotonJuego"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/alto_boton_pequeno"
-                    android:layout_weight="1"
+                    android:id="@+id/BtnAjustesTemaNavidad"
+                    style="@style/BotonTema"
                     android:background="@drawable/btn_rojo"
-                    android:text="@string/navidad"
-                    android:textSize="@dimen/texto_normal" />
+                    android:text="@string/navidad" />
             </LinearLayout>
 
-            <!-- Sonido: música de fondo y efectos -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="@dimen/relleno_panel"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/lblSonido"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-black"
-                    android:text="@string/sonido"
-                    android:textColor="@color/marron"
-                    android:textSize="@dimen/texto_grande" />
+                    android:id="@+id/LblAjustesSonido"
+                    style="@style/EtiquetaAjuste"
+                    android:text="@string/sonido" />
 
                 <TextView
-                    android:id="@+id/btnMusica"
-                    style="@style/BotonJuego"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/alto_boton_pequeno"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
+                    android:id="@+id/BtnAjustesMusica"
+                    style="@style/BotonTema"
+                    android:layout_marginEnd="@dimen/separacion_pequena"
                     android:background="@drawable/btn_naranja"
-                    android:text="@string/musica"
-                    android:textSize="@dimen/texto_normal" />
+                    android:text="@string/musica" />
 
                 <TextView
-                    android:id="@+id/btnEfectos"
-                    style="@style/BotonJuego"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/alto_boton_pequeno"
-                    android:layout_weight="1"
+                    android:id="@+id/BtnAjustesEfectos"
+                    style="@style/BotonTema"
                     android:background="@drawable/btn_naranja"
-                    android:text="@string/efectos"
-                    android:textSize="@dimen/texto_normal" />
+                    android:text="@string/efectos" />
             </LinearLayout>
 
-            <!-- Sesión -->
             <LinearLayout
-                android:id="@+id/laySesion"
+                android:id="@+id/LayAjustesSesion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="@dimen/relleno_panel"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/lblUsuario"
+                    android:id="@+id/LblAjustesUsuario"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -152,9 +123,9 @@
                     android:textSize="@dimen/texto_normal" />
 
                 <TextView
-                    android:id="@+id/btnCerrarSesion"
+                    android:id="@+id/BtnAjustesCerrarSesion"
                     style="@style/BotonJuego"
-                    android:layout_width="260dp"
+                    android:layout_width="@dimen/ancho_boton_mediano"
                     android:layout_height="@dimen/alto_boton_pequeno"
                     android:background="@drawable/btn_rojo"
                     android:text="@string/cerrar_sesion"

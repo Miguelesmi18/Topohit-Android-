@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Crear cuenta: los datos a la izquierda y la rejilla de avatares a la derecha -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imgFondo"
+        android:id="@+id/ImgRegistroFondo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo_partida_normal" />
 
@@ -16,35 +18,35 @@
         android:orientation="vertical"
         android:padding="@dimen/margen_pequeno">
 
-        <!-- Barra de arriba: atrás y título -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/btnAtras"
+                android:id="@+id/BtnRegistroAtras"
                 style="@style/BotonRedondo"
+                android:contentDescription="@string/volver"
                 android:text="@string/atras" />
 
             <TextView
-                android:id="@+id/lblTitulo"
                 style="@style/Titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:shadowColor="@color/blanco"
+                android:shadowRadius="8"
                 android:text="@string/crear_cuenta" />
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginTop="@dimen/margen_pequeno"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
-            <!-- Datos de la cuenta -->
             <LinearLayout
-                android:id="@+id/layPanelDatos"
+                android:id="@+id/LayRegistroDatos"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/margen_pequeno"
@@ -52,74 +54,76 @@
                 android:background="@drawable/panel_crema"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="28dp">
+                android:padding="@dimen/relleno_panel">
 
                 <EditText
-                    android:id="@+id/txtUsuario"
+                    android:id="@+id/TxtRegistroUsuario"
                     style="@style/Campo"
-                    android:layout_marginBottom="14dp"
+                    android:layout_marginBottom="@dimen/separacion"
+                    android:autofillHints="username"
                     android:hint="@string/usuario"
                     android:inputType="text" />
 
                 <EditText
-                    android:id="@+id/txtContrasena"
+                    android:id="@+id/TxtRegistroContrasena"
                     style="@style/Campo"
-                    android:layout_marginBottom="14dp"
+                    android:layout_marginBottom="@dimen/separacion"
+                    android:autofillHints="password"
                     android:hint="@string/contrasena"
                     android:inputType="textPassword" />
 
                 <EditText
-                    android:id="@+id/txtRepetir"
+                    android:id="@+id/TxtRegistroRepetir"
                     style="@style/Campo"
-                    android:layout_marginBottom="22dp"
+                    android:layout_marginBottom="@dimen/margen"
+                    android:autofillHints="password"
                     android:hint="@string/repetir_contrasena"
                     android:inputType="textPassword" />
 
                 <TextView
-                    android:id="@+id/btnCrear"
+                    android:id="@+id/BtnRegistroCrear"
                     style="@style/BotonJuego"
                     android:layout_width="match_parent"
                     android:background="@drawable/btn_naranja"
                     android:text="@string/crear_cuenta_mayus" />
 
                 <TextView
-                    android:id="@+id/lblNota"
+                    android:id="@+id/LblRegistroNota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="@dimen/margen_pequeno"
                     android:text="@string/al_crear"
                     android:textColor="@color/marron"
                     android:textSize="@dimen/texto_pequeno" />
             </LinearLayout>
 
-            <!-- Avatar -->
             <LinearLayout
-                android:id="@+id/layPanelAvatar"
+                android:id="@+id/LayRegistroAvatar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/panel_crema"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="@dimen/relleno_panel_pequeno">
 
                 <TextView
-                    android:id="@+id/lblAvatar"
+                    android:id="@+id/LblRegistroAvatar"
                     style="@style/Titulo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/elige_avatar"
                     android:textSize="@dimen/texto_titulo_pequeno" />
 
-                <include
-                    android:id="@+id/selAvatares"
-                    layout="@layout/selector_avatares"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/LstRegistroAvatares"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/separacion_pequena"
                     android:layout_weight="1" />
 
                 <TextView
-                    android:id="@+id/lblNotaAvatar"
+                    android:id="@+id/LblRegistroNotaAvatar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -131,9 +135,9 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/prgCargando"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:id="@+id/PrgRegistroCargando"
+        android:layout_width="@dimen/cargando"
+        android:layout_height="@dimen/cargando"
         android:layout_gravity="center"
         android:visibility="gone" />
 </FrameLayout>

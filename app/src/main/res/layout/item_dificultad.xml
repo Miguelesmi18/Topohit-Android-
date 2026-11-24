@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una tarjeta de dificultad. Si está cerrada, encima va la capa del candado con el motivo -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alto_tarjeta"
+    android:layout_margin="@dimen/separacion_pequena"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:id="@+id/LayListDificultadTarjeta"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/panel_crema"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/separacion">
+
+        <!-- Vista previa de los agujeros (se rellena desde el adapter) -->
+        <LinearLayout
+            android:id="@+id/LayListDificultadVista"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/LblListDificultadNombre"
+            style="@style/Titulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/texto_titulo_pequeno" />
+
+        <TextView
+            android:id="@+id/LblListDificultadInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/marron"
+            android:textSize="@dimen/texto_normal"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/LblListDificultadVidas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/rojo"
+            android:textSize="@dimen/texto_normal" />
+
+        <TextView
+            android:id="@+id/LblListDificultadRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/separacion_pequena"
+            android:background="@drawable/chip_crema"
+            android:paddingLeft="@dimen/separacion"
+            android:paddingTop="@dimen/separacion_mini"
+            android:paddingRight="@dimen/separacion"
+            android:paddingBottom="@dimen/separacion_mini"
+            android:textColor="@color/marron"
+            android:textSize="@dimen/texto_pequeno"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Capa del candado: tapa la tarjeta y explica qué falta para abrirla -->
+    <LinearLayout
+        android:id="@+id/LayListDificultadCandado"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/capa_candado"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/separacion"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/LblListDificultadCandadoNombre"
+            style="@style/TextoSobreFondo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/separacion_pequena"
+            android:textSize="@dimen/texto_titulo_pequeno" />
+
+        <ImageView
+            android:layout_width="@dimen/candado"
+            android:layout_height="@dimen/candado"
+            android:contentDescription="@string/bloqueada"
+            android:src="@drawable/candado" />
+
+        <TextView
+            android:id="@+id/LblListDificultadCandado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/separacion_pequena"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:shadowColor="@color/marron"
+            android:shadowDy="2"
+            android:shadowRadius="3"
+            android:textColor="@color/blanco"
+            android:textSize="@dimen/texto_normal" />
+
+        <TextView
+            android:id="@+id/LblListDificultadProgreso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/separacion_pequena"
+            android:background="@drawable/chip_naranja"
+            android:paddingLeft="@dimen/separacion"
+            android:paddingTop="@dimen/separacion_mini"
+            android:paddingRight="@dimen/separacion"
+            android:paddingBottom="@dimen/separacion_mini"
+            android:textColor="@color/blanco"
+            android:textSize="@dimen/texto_pequeno"
+            android:textStyle="bold" />
+    </LinearLayout>
+</FrameLayout>

@@ -6,35 +6,44 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import com.groundstudio.topohit.Avisos
+import com.groundstudio.topohit.GestorAjustes
+import com.groundstudio.topohit.GestorSesion
 import com.groundstudio.topohit.R
-import com.groundstudio.topohit.api.RetrofitClient
-import com.groundstudio.topohit.data_model.Agujero
-import com.groundstudio.topohit.data_model.SesionNueva
-import com.groundstudio.topohit.databinding.ActivityPartidaBinding
-import com.groundstudio.topohit.databinding.FilaAyudaBinding
-import com.groundstudio.topohit.databinding.ItemAgujeroBinding
-import com.groundstudio.topohit.util.Juego
-import com.groundstudio.topohit.util.Sonidos
-import kotlinx.coroutines.DelicateCoroutinesApi
+import com.groundstudio.topohit.ReglasJuego
+import com.groundstudio.topohit.SharedData
+import com.groundstudio.topohit.Sonidos
+import com.groundstudio.topohit.api.ApiAddSesion
+import com.groundstudio.topohit.api.RetrofitAddSesionClient
+import com.groundstudio.topohit.datamodel.Agujero
+import com.groundstudio.topohit.datamodel.EstadoDificultad
+import com.groundstudio.topohit.datamodel.SesionNueva
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.random.Random
+import java.util.Random
 
-// La partida: el tablero de agujeros, los topos que salen y la barra de arriba.
+// La partida del modo Infinito: el tablero de 3, 6 o 9 agujeros, los topos que salen y la barra de arriba.
+// No hay tiempo: se juega hasta perder todas las vidas. Se pierde una vida al tocar una bomba
+// y cada vez que un topo se escapa sin golpearlo. Cada segundo los topos van un poco más rápido
+// (el % de «incremento» de la dificultad). El topo dorado da +1 vida.
 //
-// [No visto en clase] Handler + postDelayed: para que el juego "se mueva" necesitamos
-// repetir una función cada 40 ms (el bucle del juego). Un Handler ejecuta un Runnable
-// en el hilo de la pantalla después de X milisegundos; al final de cada vuelta lo
-// volvemos a programar. Así podemos tocar las vistas sin runOnUiThread.
-// [No visto en clase] view.animate(): una animación cortita para que el topo "salte" del agujero.
-class PartidaActivity : PantallaBase() {
-
-    private lateinit var binding: ActivityPartidaBinding
+// Esta parte es de información externa que no sale en los vídeos
+// (Handler + postDelayed: el juego tiene que repetir una función cada 40 ms, el «bucle del juego».
+// El Handler la ejecuta en el hilo de la pantalla, así que no hace falta runOnUiThread.
+// SystemClock.elapsedRealtime() mide el tiempo para que la pausa no cuente).
+class PartidaActivity : PantallaBase()
+{
+    // Clave del extra que recibe esta pantalla (REGLA-0489-042)
+    object partidaConstants
+    {
+        const val DIFICULTAD = "DIFICULTAD"
+    }
 
     // ---------- Estados de la partida ----------
     private val CUENTA_ATRAS = 0
@@ -43,31 +52,32 @@ class PartidaActivity : PantallaBase() {
     private val TERMINADA = 3
     private var estado = CUENTA_ATRAS
 
-    // ---------- Configuración (sale del modo, la dificultad o el nivel) ----------
-    private var modo = Juego.CONTRARRELOJ
-    private var dificultad = "Fácil"
-    private var nivel = 0
-    private var numAgujeros = 3
-    private var duracionMs = 60000L           // 0 = sin tiempo (Infinito)
-    private var objetivo = 300
-    private var visibleBaseMs = 1500L         // cuánto se ve cada topo
-    private var saleCadaBaseMs = 1200L        // cada cuánto sale uno
+    // ---------- Vistas ----------
+    private lateinit var lblPartidaPuntos: TextView
+    private lateinit var lblPartidaVidas: TextView
+    private lateinit var imgPartidaCorazon: ImageView
+    private lateinit var lblPartidaVelocidad: TextView
+    private lateinit var lblPartidaCombo: TextView
+    private lateinit var lblPartidaMensaje: TextView
+    private lateinit var layPartidaPausa: FrameLayout
+    private lateinit var layPartidaAyuda: FrameLayout
+
+    // ---------- Configuración (sale de la dificultad que manda la API) ----------
+    private lateinit var dificultad: EstadoDificultad
     private var toposALaVez = 1
-    private var probEnfadado = 0              // de cada 100 apariciones
+    private var probEnfadado = 0
     private var probBomba = 0
     private var probDorado = 0
-    private var vidasIniciales = 0
-    private var incrementoPct = 0             // Infinito: % que acelera cada segundo
-    private var esJefe = false                // nivel 10
 
     // ---------- Lo que pasa durante la partida ----------
     private val agujeros = mutableListOf<Agujero>()
+    private val random = Random()
     private var reloj = 0L                    // ms jugados (no cuenta la pausa ni la cuenta atrás)
-    private var cuentaAtras = 3500L
+    private var cuentaAtras = ReglasJuego.CUENTA_ATRAS_MS
     private var ultimoTick = 0L
     private var proximaSalida = 0L
-    private var visibleActual = 1500L
-    private var saleCadaActual = 1200L
+    private var visibleActual = ReglasJuego.VISIBLE_BASE_MS
+    private var saleCadaActual = ReglasJuego.SALE_CADA_BASE_MS
     private var mensajeHasta = 0L             // hasta cuándo se ve el mensaje del centro
 
     private var puntos = 0
@@ -75,81 +85,92 @@ class PartidaActivity : PantallaBase() {
     private var aciertos = 0                  // toques que golpean un topo (hits)
     private var fallos = 0                    // toques en agujero vacío + bombas (errorsMade)
     private var escapados = 0
-    private var bombasTocadas = 0
     private var racha = 0
     private var mejorRacha = 0
     private var doradosGolpeados = 0
     private var sumaReaccion = 0L
     private var numReacciones = 0
 
-    // Jefe
-    private var golpesJefe = Juego.GOLPES_JEFE
-    private var proximoSalto = 0L
-
     // ---------- Bucle del juego ----------
     private val handler = Handler(Looper.getMainLooper())
-    private val bucle = object : Runnable {
-        override fun run() {
+    private val bucle = object : Runnable
+    {
+        override fun run()
+        {
             tick()
-            if (estado != TERMINADA) {
+            if(estado != TERMINADA)
+            {
                 handler.postDelayed(this, 40)
             }
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        binding = ActivityPartidaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_partida)
 
-        modo = intent.getStringExtra(Constantes.MODO) ?: Juego.CONTRARRELOJ
-        dificultad = intent.getStringExtra(Constantes.DIFICULTAD) ?: "Fácil"
-        nivel = intent.getIntExtra(Constantes.NIVEL, 0)
+        dificultad = intent.getSerializableExtra(partidaConstants.DIFICULTAD) as EstadoDificultad
+
+        lblPartidaPuntos    = findViewById<TextView>(R.id.LblPartidaPuntos)
+        lblPartidaVidas     = findViewById<TextView>(R.id.LblPartidaVidas)
+        imgPartidaCorazon   = findViewById<ImageView>(R.id.ImgPartidaCorazon)
+        lblPartidaVelocidad = findViewById<TextView>(R.id.LblPartidaVelocidad)
+        lblPartidaCombo     = findViewById<TextView>(R.id.LblPartidaCombo)
+        lblPartidaMensaje   = findViewById<TextView>(R.id.LblPartidaMensaje)
+        layPartidaPausa     = findViewById<FrameLayout>(R.id.LayPartidaPausa)
+        layPartidaAyuda     = findViewById<FrameLayout>(R.id.LayPartidaAyuda)
 
         configurar()
-        aplicarTema()
+        pintarTema()
         crearTablero()
-        prepararHud()
         prepararAyuda()
+        actualizarHud()
 
-        binding.btnPausa.setOnClickListener {
+        findViewById<TextView>(R.id.BtnPartidaPausa).setOnClickListener()
+        {
             pausar(false)
         }
-        binding.btnAyuda.setOnClickListener {
+
+        findViewById<TextView>(R.id.BtnPartidaAyuda).setOnClickListener()
+        {
             pausar(true)
         }
-        binding.btnContinuar.setOnClickListener {
+
+        findViewById<TextView>(R.id.BtnPartidaContinuar).setOnClickListener()
+        {
             reanudar()
-        }
-        binding.btnCerrarAyuda.setOnClickListener {
-            reanudar()
-        }
-        binding.btnReiniciar.setOnClickListener {
-            enviarPartida(true)       // salir a medias cuenta como abandono
-            estado = TERMINADA
-            val otra = Intent(this, PartidaActivity::class.java)
-            otra.putExtra(Constantes.MODO, modo)
-            otra.putExtra(Constantes.DIFICULTAD, dificultad)
-            otra.putExtra(Constantes.NIVEL, nivel)
-            startActivity(otra)
-            finish()
-        }
-        binding.btnSalir.setOnClickListener {
-            enviarPartida(true)
-            estado = TERMINADA
-            val menu = Intent(this, MenuActivity::class.java)
-            menu.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(menu)
-            finish()
         }
 
-        // El botón "atrás" de la tablet abre (o cierra) la pausa en vez de salir del juego.
-        // [No visto en clase] OnBackPressedCallback es la forma actual de capturar el botón atrás.
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (estado == PAUSA) {
+        findViewById<TextView>(R.id.BtnPartidaCerrarAyuda).setOnClickListener()
+        {
+            reanudar()
+        }
+
+        // Reiniciar: la partida a medias se guarda como abandonada y empieza otra igual
+        findViewById<TextView>(R.id.BtnPartidaReiniciar).setOnClickListener()
+        {
+            abandonar(true)
+        }
+
+        // Salir: se vuelve a la pantalla de dificultades (que es la que abrió esta)
+        findViewById<TextView>(R.id.BtnPartidaSalir).setOnClickListener()
+        {
+            abandonar(false)
+        }
+
+        // Esta parte es de información externa que no sale en los vídeos
+        // (OnBackPressedCallback: el botón «atrás» de la tablet abre la pausa en vez de salir)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true)
+        {
+            override fun handleOnBackPressed()
+            {
+                if(estado == PAUSA)
+                {
                     reanudar()
-                } else if (estado != TERMINADA) {
+                }
+                else if(estado != TERMINADA)
+                {
                     pausar(false)
                 }
             }
@@ -159,284 +180,263 @@ class PartidaActivity : PantallaBase() {
         handler.post(bucle)
     }
 
-    // Si la tablet se apaga o se sale de la app, pausamos
-    override fun onPause() {
+    // Si la tablet se apaga o se sale de la app, se pausa
+    override fun onPause()
+    {
         super.onPause()
-        if (estado == JUGANDO || estado == CUENTA_ATRAS) {
+        if(estado == JUGANDO || estado == CUENTA_ATRAS)
+        {
             pausar(false)
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroy()
+    {
         super.onDestroy()
         handler.removeCallbacks(bucle)
     }
 
     // =====================================================================
-    // CONFIGURACIÓN
+    // PREPARAR LA PARTIDA
     // =====================================================================
 
-    private fun configurar() {
-        if (modo == Juego.CONTRARRELOJ) {
-            val d = Juego.buscarContrarreloj(dificultad)
-            numAgujeros = d.agujeros
-            duracionMs = d.tiempo * 1000L
-            objetivo = d.objetivo
-            visibleBaseMs = d.tiempoVisibleMs.toLong()
-            saleCadaBaseMs = d.saleCadaMs.toLong()
-            toposALaVez = d.toposALaVez
-            // Las bombas aparecen a partir de Medio (GDD)
-            when (dificultad) {
-                "Fácil" -> { probEnfadado = 15; probBomba = 0; probDorado = 3 }
-                "Medio" -> { probEnfadado = 20; probBomba = 12; probDorado = 3 }
-                else -> { probEnfadado = 25; probBomba = 18; probDorado = 3 }
-            }
-        } else if (modo == Juego.INFINITO) {
-            val d = Juego.buscarInfinito(dificultad)
-            numAgujeros = d.agujeros
-            duracionMs = 0
-            vidasIniciales = d.vidas
-            incrementoPct = d.incremento
-            // Empieza a la velocidad de Fácil y va acelerando
-            val facil = Juego.contrarreloj[0]
-            visibleBaseMs = facil.tiempoVisibleMs.toLong()
-            saleCadaBaseMs = facil.saleCadaMs.toLong()
-            when (dificultad) {
-                "Fácil" -> { toposALaVez = 1; probEnfadado = 15; probBomba = 0; probDorado = 4 }
-                "Normal" -> { toposALaVez = 2; probEnfadado = 20; probBomba = 12; probDorado = 4 }
-                else -> { toposALaVez = 3; probEnfadado = 25; probBomba = 22; probDorado = 4 }
-            }
-        } else {
-            // HISTORIA
-            val n = Juego.buscarNivel(nivel)
-            numAgujeros = n.agujeros
-            duracionMs = n.tiempo * 1000L
-            objetivo = n.objetivo
-            esJefe = n.objetivo == 0
-            // Velocidad: niveles 1-3 como Fácil, 4-7 como Medio y 8-10 como Difícil
-            var velocidad = Juego.contrarreloj[0]
-            if (nivel >= 8) {
-                velocidad = Juego.contrarreloj[2]
-            } else if (nivel >= 4) {
-                velocidad = Juego.contrarreloj[1]
-            }
-            visibleBaseMs = velocidad.tiempoVisibleMs.toLong()
-            saleCadaBaseMs = velocidad.saleCadaMs.toLong()
-            toposALaVez = velocidad.toposALaVez
-            // Novedades de cada nivel (GDD): dorado en el 3, enfadado en el 4, bombas en el 6
-            if (nivel >= 3) probDorado = 4
-            if (nivel >= 4) probEnfadado = 20
-            if (nivel >= 6) probBomba = 12
+    private fun configurar()
+    {
+        vidas = dificultad.vidas
+        toposALaVez = ReglasJuego.toposALaVez(dificultad.orden)
+        probEnfadado = ReglasJuego.probEnfadado(dificultad.orden)
+        probBomba = ReglasJuego.probBomba(dificultad.orden)
+        probDorado = ReglasJuego.probDorado()
+
+        var record = 0
+        val anterior = dificultad.record
+        if(anterior != null)
+        {
+            record = anterior
         }
-        vidas = vidasIniciales
-        visibleActual = visibleBaseMs
-        saleCadaActual = saleCadaBaseMs
+        findViewById<TextView>(R.id.LblPartidaRecord).text = record.toString()
+        findViewById<TextView>(R.id.LblPartidaDificultad).text = dificultad.nombre
     }
 
-    private fun aplicarTema() {
-        val tema = Juego.tema
-        binding.imgFondo.setImageResource(tema.fondo)
-        binding.layHud.setBackgroundResource(tema.panel)
-        binding.layPanelPausa.setBackgroundResource(tema.panel)
-        binding.layPanelAyuda.setBackgroundResource(tema.panel)
-        binding.btnPausa.setBackgroundResource(tema.circulo)
-        binding.btnAyuda.setBackgroundResource(tema.circulo)
-        binding.btnContinuar.setBackgroundResource(tema.botonSecundario)
-        binding.btnCerrarAyuda.setBackgroundResource(tema.botonSecundario)
-        binding.btnReiniciar.setBackgroundResource(tema.botonPrincipal)
-        binding.imgTopoPausa.setImageResource(tema.topoNormal)
+    private fun pintarTema()
+    {
+        val tema = GestorAjustes.tema
+        findViewById<ImageView>(R.id.ImgPartidaFondo).setImageResource(tema.fondo)
+        findViewById<LinearLayout>(R.id.LayPartidaHud).setBackgroundResource(tema.panel)
+        findViewById<LinearLayout>(R.id.LayPartidaPanelPausa).setBackgroundResource(tema.panel)
+        findViewById<LinearLayout>(R.id.LayPartidaPanelAyuda).setBackgroundResource(tema.panel)
+        findViewById<TextView>(R.id.BtnPartidaPausa).setBackgroundResource(tema.circulo)
+        findViewById<TextView>(R.id.BtnPartidaAyuda).setBackgroundResource(tema.circulo)
+        findViewById<TextView>(R.id.BtnPartidaContinuar).setBackgroundResource(tema.botonSecundario)
+        findViewById<TextView>(R.id.BtnPartidaCerrarAyuda).setBackgroundResource(tema.botonSecundario)
+        findViewById<TextView>(R.id.BtnPartidaReiniciar).setBackgroundResource(tema.botonPrincipal)
+        findViewById<ImageView>(R.id.ImgPartidaTopoPausa).setImageResource(tema.topoNormal)
 
         val color = ContextCompat.getColor(this, tema.colorTexto)
-        val textos = listOf<TextView>(binding.lblPuntos, binding.lblEtiquetaTiempo, binding.lblTiempo,
-            binding.lblVidas, binding.lblVelocidad, binding.lblEtiquetaObjetivo, binding.lblObjetivo,
-            binding.lblPausa, binding.lblAyuda)
-        for (t in textos) {
-            t.setTextColor(color)
+        val textos = listOf<TextView>(lblPartidaPuntos, lblPartidaVidas, lblPartidaVelocidad,
+                                      findViewById(R.id.LblPartidaEtiquetaVidas),
+                                      findViewById(R.id.LblPartidaEtiquetaRecord),
+                                      findViewById(R.id.LblPartidaRecord),
+                                      findViewById(R.id.LblPartidaDificultad),
+                                      findViewById(R.id.LblPartidaPausa),
+                                      findViewById(R.id.LblPartidaAyuda),
+                                      findViewById(R.id.LblPartidaAyudaNormal),
+                                      findViewById(R.id.LblPartidaAyudaEnfadado),
+                                      findViewById(R.id.LblPartidaAyudaDorado),
+                                      findViewById(R.id.LblPartidaAyudaBomba))
+        for(texto in textos)
+        {
+            texto.setTextColor(color)
         }
     }
 
-    // Crea las filas de 3 agujeros (inflando item_agujero.xml, como en las listas personalizadas)
-    private fun crearTablero() {
-        binding.layTablero.removeAllViews()
+    // Crea las filas de 3 agujeros inflando item_agujero.xml (como en las listas personalizadas)
+    // Esta parte es de información externa que no sale en los vídeos
+    // (addView: las vistas infladas se añaden a un LinearLayout desde el código, sin adapter,
+    // porque el número de agujeros depende de la dificultad)
+    private fun crearTablero()
+    {
+        val layPartidaTablero = findViewById<LinearLayout>(R.id.LayPartidaTablero)
+        layPartidaTablero.removeAllViews()
         agujeros.clear()
-        val filas = numAgujeros / 3
-        if (filas == 1) {
-            binding.layTablero.addView(layoutInflater.inflate(R.layout.espacio, binding.layTablero, false))
+
+        val filas = dificultad.agujeros / 3
+        // Con una sola fila se pone un hueco arriba y otro abajo para que quede centrada
+        if(filas == 1)
+        {
+            layPartidaTablero.addView(layoutInflater.inflate(R.layout.espacio, layPartidaTablero, false))
         }
-        for (f in 1..filas) {
-            val fila = layoutInflater.inflate(R.layout.fila_tablero, binding.layTablero, false) as LinearLayout
-            for (c in 1..3) {
-                val item = ItemAgujeroBinding.inflate(layoutInflater, fila, false)
-                val agujero = Agujero(item)
-                item.layAgujero.setOnClickListener {
+        for(f in 1..filas)
+        {
+            val fila = layoutInflater.inflate(R.layout.fila_tablero, layPartidaTablero, false) as LinearLayout
+            for(c in 1..3)
+            {
+                val vista = layoutInflater.inflate(R.layout.item_agujero, fila, false)
+                val agujero = Agujero(vista)
+                vista.setOnClickListener()
+                {
                     tocar(agujero)
                 }
-                fila.addView(item.root)
+                fila.addView(vista)
                 agujeros.add(agujero)
             }
-            binding.layTablero.addView(fila)
+            layPartidaTablero.addView(fila)
         }
-        if (filas == 1) {
-            binding.layTablero.addView(layoutInflater.inflate(R.layout.espacio, binding.layTablero, false))
-        }
-    }
-
-    private fun prepararHud() {
-        if (modo == Juego.INFINITO) {
-            binding.layTiempo.visibility = View.GONE
-            binding.layVidas.visibility = View.VISIBLE
-            binding.lblEtiquetaObjetivo.text = getString(R.string.record)
-            binding.lblObjetivo.text = "" + Juego.record(modo, dificultad)
-        } else if (esJefe) {
-            binding.lblEtiquetaObjetivo.text = "JEFE"
-            binding.lblObjetivo.text = "" + golpesJefe + " golpes"
-        } else {
-            binding.lblObjetivo.text = "" + objetivo
-        }
-        actualizarHud()
-    }
-
-    private fun prepararAyuda() {
-        val tema = Juego.tema
-        pintarFilaAyuda(binding.filaNormal, tema.topoNormal, "Topo", "+" + Juego.PUNTOS_NORMAL + " puntos")
-        pintarFilaAyuda(binding.filaEnfadado, tema.topoEnfadado, "Enfadado", "2 golpes · +" + Juego.PUNTOS_ENFADADO)
-        if (modo == Juego.INFINITO) {
-            pintarFilaAyuda(binding.filaDorado, tema.topoDorado, "Dorado", "+" + Juego.PUNTOS_DORADO + " · ¡y +1 vida!")
-            pintarFilaAyuda(binding.filaBomba, tema.bomba, "Bomba", "¡No la toques! −1 vida")
-        } else {
-            pintarFilaAyuda(binding.filaDorado, tema.topoDorado, "Dorado", "+" + Juego.PUNTOS_DORADO + " puntos")
-            pintarFilaAyuda(binding.filaBomba, tema.bomba, "Bomba", "¡No la toques! " + Juego.PUNTOS_BOMBA + " puntos")
+        if(filas == 1)
+        {
+            layPartidaTablero.addView(layoutInflater.inflate(R.layout.espacio, layPartidaTablero, false))
         }
     }
 
-    private fun pintarFilaAyuda(fila: FilaAyudaBinding, dibujo: Int, nombre: String, descripcion: String) {
-        fila.imgFila.setImageResource(dibujo)
-        fila.lblNombre.text = nombre
-        fila.lblDescripcion.text = descripcion
+    // La leyenda de la ayuda: qué hace cada topo con los dibujos de la temática
+    private fun prepararAyuda()
+    {
+        val tema = GestorAjustes.tema
+        findViewById<ImageView>(R.id.ImgPartidaAyudaNormal).setImageResource(tema.topoNormal)
+        findViewById<ImageView>(R.id.ImgPartidaAyudaEnfadado).setImageResource(tema.topoEnfadado)
+        findViewById<ImageView>(R.id.ImgPartidaAyudaDorado).setImageResource(tema.topoDorado)
+        findViewById<ImageView>(R.id.ImgPartidaAyudaBomba).setImageResource(tema.bomba)
+        findViewById<TextView>(R.id.LblPartidaAyudaNormal).text =
+            getString(R.string.ayuda_normal, ReglasJuego.PUNTOS_NORMAL)
+        findViewById<TextView>(R.id.LblPartidaAyudaEnfadado).text =
+            getString(R.string.ayuda_enfadado, ReglasJuego.PUNTOS_ENFADADO)
+        findViewById<TextView>(R.id.LblPartidaAyudaDorado).text =
+            getString(R.string.ayuda_dorado, ReglasJuego.PUNTOS_DORADO)
     }
 
     // =====================================================================
     // BUCLE DEL JUEGO (se ejecuta cada 40 ms)
     // =====================================================================
 
-    private fun tick() {
+    private fun tick()
+    {
         val ahora = SystemClock.elapsedRealtime()
         val pasado = ahora - ultimoTick
         ultimoTick = ahora
 
-        if (estado == CUENTA_ATRAS) {
-            cuentaAtras = cuentaAtras - pasado
-            binding.lblMensaje.visibility = View.VISIBLE
-            if (cuentaAtras > 2500) {
-                ponerCuenta("3")
-            } else if (cuentaAtras > 1500) {
-                ponerCuenta("2")
-            } else if (cuentaAtras > 500) {
-                ponerCuenta("1")
-            } else if (cuentaAtras > 0) {
-                ponerCuenta("¡YA!")
-            } else {
-                binding.lblMensaje.visibility = View.GONE
-                estado = JUGANDO
-                proximaSalida = 0
+        if(estado == CUENTA_ATRAS)
+        {
+            avanzarCuentaAtras(pasado)
+        }
+        else if(estado == JUGANDO)
+        {
+            reloj = reloj + pasado
+            acelerar()
+            esconderTopos()
+            if(estado == JUGANDO)
+            {
+                if(reloj >= proximaSalida && contarFuera() < toposALaVez)
+                {
+                    sacarTopo()
+                    proximaSalida = reloj + saleCadaActual
+                }
+                // El mensaje del centro («¡COMBO x2!») se quita solo
+                if(mensajeHasta > 0 && reloj >= mensajeHasta)
+                {
+                    lblPartidaMensaje.visibility = View.GONE
+                    mensajeHasta = 0
+                }
+                actualizarHud()
             }
-            return
         }
-        if (estado != JUGANDO) {
-            return
+    }
+
+    // 3, 2, 1, ¡YA! antes de empezar
+    private fun avanzarCuentaAtras(pasado: Long)
+    {
+        cuentaAtras = cuentaAtras - pasado
+        lblPartidaMensaje.visibility = View.VISIBLE
+        if(cuentaAtras > 2500)
+        {
+            ponerCuenta(getString(R.string.cuenta_3))
         }
-
-        reloj = reloj + pasado
-
-        // Infinito: cada segundo los topos van un poco más rápido
-        if (modo == Juego.INFINITO) {
-            val segundos = (reloj / 1000).toInt()
-            val factor = Math.pow(1.0 - incrementoPct / 100.0, segundos.toDouble())
-            visibleActual = Math.max(450L, (visibleBaseMs * factor).toLong())
-            saleCadaActual = Math.max(350L, (saleCadaBaseMs * factor).toLong())
-            binding.lblVelocidad.text = "Velocidad x" + String.format("%.1f", 1.0 / factor)
+        else if(cuentaAtras > 1500)
+        {
+            ponerCuenta(getString(R.string.cuenta_2))
         }
+        else if(cuentaAtras > 500)
+        {
+            ponerCuenta(getString(R.string.cuenta_1))
+        }
+        else if(cuentaAtras > 0)
+        {
+            ponerCuenta(getString(R.string.cuenta_ya))
+        }
+        else
+        {
+            lblPartidaMensaje.visibility = View.GONE
+            estado = JUGANDO
+            proximaSalida = 0
+        }
+    }
 
-        // 1. Topos que se esconden y golpes que terminan
-        for (a in agujeros) {
-            if (a.estado == Agujero.GOLPEADO && reloj >= a.fin) {
+    // Cambia el número de la cuenta atrás y suena un «bip» cada vez que cambia
+    private fun ponerCuenta(texto: String)
+    {
+        if(lblPartidaMensaje.text.toString() != texto)
+        {
+            lblPartidaMensaje.text = texto
+            if(texto == getString(R.string.cuenta_ya))
+            {
+                Sonidos.efecto(Sonidos.YA)
+            }
+            else
+            {
+                Sonidos.efecto(Sonidos.CUENTA)
+            }
+        }
+    }
+
+    // Cada segundo los topos se ven un poco menos y salen un poco antes:
+    // tiempo = tiempo inicial x (1 - incremento/100) elevado a los segundos jugados
+    // Esta parte es de información externa que no sale en los vídeos
+    // (Math.pow y Math.max de Java para calcular la potencia y no bajar del mínimo)
+    private fun acelerar()
+    {
+        val segundos = (reloj / 1000).toInt()
+        val factor = Math.pow(1.0 - dificultad.incremento / 100.0, segundos.toDouble())
+        visibleActual = Math.max(ReglasJuego.VISIBLE_MINIMO_MS, (ReglasJuego.VISIBLE_BASE_MS * factor).toLong())
+        saleCadaActual = Math.max(ReglasJuego.SALE_CADA_MINIMO_MS, (ReglasJuego.SALE_CADA_BASE_MS * factor).toLong())
+        lblPartidaVelocidad.text = getString(R.string.partida_velocidad, 1.0 / factor)
+    }
+
+    // Topos que se esconden (se han escapado) y golpes que terminan
+    private fun esconderTopos()
+    {
+        for(a in agujeros)
+        {
+            if(a.estado == Agujero.GOLPEADO && reloj >= a.fin)
+            {
                 vaciar(a)
-            } else if (a.estado == Agujero.FUERA && a.tipo != Agujero.JEFE && reloj >= a.fin) {
-                if (a.tipo != Agujero.BOMBA) {
-                    // Un topo se ha escapado: se rompe la racha
+            }
+            else if(a.estado == Agujero.FUERA && reloj >= a.fin)
+            {
+                if(a.tipo != Agujero.BOMBA && estado == JUGANDO)
+                {
+                    // Un topo se ha escapado: se rompe la racha, se pierde una vida
+                    // y se burla un momento antes de esconderse (así el niño ve qué ha pasado)
                     escapados++
                     racha = 0
-                    if (modo == Juego.INFINITO) {
-                        perderVida()
-                    }
+                    a.estado = Agujero.GOLPEADO
+                    a.fin = reloj + 350
+                    a.imgTopo.setImageResource(GestorAjustes.tema.topoBurlon)
+                    perderVida()
                 }
-                vaciar(a)
-            } else if (a.tipo == Agujero.JEFE && a.estado == Agujero.FUERA && reloj >= a.fin) {
-                // El jefe vuelve a su cara de enfadado después del golpe
-                a.vista.imgTopo.setImageResource(Juego.tema.topoEnfadado)
-                a.vista.imgEfecto.visibility = View.INVISIBLE
-                a.vista.lblPuntos.visibility = View.INVISIBLE
-                a.fin = Long.MAX_VALUE
-            }
-        }
-        if (estado == TERMINADA) {
-            return
-        }
-
-        // 2. Sacar topos nuevos
-        if (esJefe) {
-            moverJefe()
-        } else if (reloj >= proximaSalida && contarFuera() < toposALaVez) {
-            sacarTopo()
-            proximaSalida = reloj + saleCadaActual
-        }
-
-        // 3. Mensaje del centro ("¡COMBO x2!")
-        if (mensajeHasta > 0 && reloj >= mensajeHasta) {
-            binding.lblMensaje.visibility = View.GONE
-            mensajeHasta = 0
-        }
-
-        actualizarHud()
-
-        // 4. ¿Se ha acabado el tiempo?
-        if (duracionMs > 0 && reloj >= duracionMs) {
-            if (modo == Juego.CONTRARRELOJ) {
-                if (puntos >= objetivo) {
-                    terminar(Constantes.VICTORIA)
-                } else {
-                    terminar(Constantes.TIEMPO)
-                }
-            } else if (esJefe) {
-                terminar(Constantes.TIEMPO)
-            } else {
-                // Historia: con 1 estrella (45 % del objetivo) ya se supera el nivel
-                if (Juego.calcularEstrellas(objetivo, puntos) >= 1) {
-                    terminar(Constantes.VICTORIA)
-                } else {
-                    terminar(Constantes.TIEMPO)
+                else
+                {
+                    vaciar(a)
                 }
             }
         }
     }
 
-    // Cambia el número de la cuenta atrás y suena un "bip" cada vez que cambia
-    private fun ponerCuenta(texto: String) {
-        if (binding.lblMensaje.text.toString() == texto) {
-            return
-        }
-        binding.lblMensaje.text = texto
-        if (texto == "¡YA!") {
-            Sonidos.efecto(Sonidos.YA)
-        } else {
-            Sonidos.efecto(Sonidos.CUENTA)
-        }
-    }
-
-    private fun contarFuera(): Int {
+    private fun contarFuera(): Int
+    {
         var total = 0
-        for (a in agujeros) {
-            if (a.estado != Agujero.VACIO) {
+        for(a in agujeros)
+        {
+            if(a.estado != Agujero.VACIO)
+            {
                 total++
             }
         }
@@ -444,243 +444,247 @@ class PartidaActivity : PantallaBase() {
     }
 
     // Elige un agujero libre al azar y saca un topo (o una bomba)
-    private fun sacarTopo() {
+    private fun sacarTopo()
+    {
         val libres = mutableListOf<Agujero>()
-        for (a in agujeros) {
-            if (a.estado == Agujero.VACIO) {
+        for(a in agujeros)
+        {
+            if(a.estado == Agujero.VACIO)
+            {
                 libres.add(a)
             }
         }
-        if (libres.isEmpty()) {
-            return
-        }
-        val a = libres[Random.nextInt(libres.size)]
 
-        val r = Random.nextInt(100)
-        if (r < probDorado) {
-            a.tipo = Agujero.DORADO
-        } else if (r < probDorado + probBomba) {
-            a.tipo = Agujero.BOMBA
-        } else if (r < probDorado + probBomba + probEnfadado) {
-            a.tipo = Agujero.ENFADADO
-        } else {
-            a.tipo = Agujero.NORMAL
-        }
-
-        val tema = Juego.tema
-        when (a.tipo) {
-            Agujero.DORADO -> { a.golpesQuedan = 1; a.vista.imgTopo.setImageResource(tema.topoDorado) }
-            Agujero.BOMBA -> { a.golpesQuedan = 1; a.vista.imgTopo.setImageResource(tema.bomba) }
-            Agujero.ENFADADO -> { a.golpesQuedan = 2; a.vista.imgTopo.setImageResource(tema.topoEnfadado) }
-            else -> { a.golpesQuedan = 1; a.vista.imgTopo.setImageResource(tema.topoNormal) }
-        }
-
-        var visible = visibleActual
-        if (a.tipo == Agujero.DORADO) {
-            visible = visibleActual * 8 / 10        // el dorado se escapa antes
-        } else if (a.tipo == Agujero.ENFADADO) {
-            visible = visibleActual * 13 / 10       // le damos un poco más para los 2 golpes
-        }
-        a.estado = Agujero.FUERA
-        a.golpeado = false
-        a.salio = reloj
-        a.fin = reloj + visible
-        mostrarTopo(a)
-    }
-
-    // Animación: el topo sube desde el agujero
-    private fun mostrarTopo(a: Agujero) {
-        val img = a.vista.imgTopo
-        img.scaleX = 1f
-        img.scaleY = 1f
-        img.translationY = img.height * 0.5f
-        img.visibility = View.VISIBLE
-        img.animate().translationY(0f).setDuration(120).start()
-        a.vista.imgEfecto.visibility = View.INVISIBLE
-        a.vista.lblPuntos.visibility = View.INVISIBLE
-    }
-
-    private fun vaciar(a: Agujero) {
-        a.estado = Agujero.VACIO
-        a.vista.imgTopo.visibility = View.INVISIBLE
-        a.vista.imgEfecto.visibility = View.INVISIBLE
-        a.vista.lblPuntos.visibility = View.INVISIBLE
-    }
-
-    // ---------- Jefe (nivel 10): un topo gigante que salta de agujero en agujero ----------
-
-    private fun moverJefe() {
-        if (reloj < proximoSalto) {
-            return
-        }
-        var actual: Agujero? = null
-        for (a in agujeros) {
-            if (a.tipo == Agujero.JEFE && a.estado == Agujero.FUERA) {
-                actual = a
+        if(libres.size > 0)
+        {
+            val a = libres[random.nextInt(libres.size)]
+            val r = random.nextInt(100)
+            if(r < probDorado)
+            {
+                a.tipo = Agujero.DORADO
             }
+            else if(r < probDorado + probBomba)
+            {
+                a.tipo = Agujero.BOMBA
+            }
+            else if(r < probDorado + probBomba + probEnfadado)
+            {
+                a.tipo = Agujero.ENFADADO
+            }
+            else
+            {
+                a.tipo = Agujero.NORMAL
+            }
+
+            val tema = GestorAjustes.tema
+            var visible = visibleActual
+            when(a.tipo)
+            {
+                Agujero.DORADO ->
+                {
+                    a.golpesQuedan = 1
+                    a.imgTopo.setImageResource(tema.topoDorado)
+                    visible = visibleActual * 8 / 10          // el dorado se escapa antes
+                }
+                Agujero.BOMBA ->
+                {
+                    a.golpesQuedan = 1
+                    a.imgTopo.setImageResource(tema.bomba)
+                }
+                Agujero.ENFADADO ->
+                {
+                    a.golpesQuedan = 2
+                    a.imgTopo.setImageResource(tema.topoEnfadado)
+                    visible = visibleActual * 13 / 10         // un poco más para los 2 golpes
+                }
+                else ->
+                {
+                    a.golpesQuedan = 1
+                    a.imgTopo.setImageResource(tema.topoNormal)
+                }
+            }
+
+            a.estado = Agujero.FUERA
+            a.golpeado = false
+            a.salio = reloj
+            a.fin = reloj + visible
+            mostrarTopo(a)
         }
-        // Elegimos otro agujero distinto al de ahora
-        var destino = agujeros[Random.nextInt(agujeros.size)]
-        while (destino == actual) {
-            destino = agujeros[Random.nextInt(agujeros.size)]
-        }
-        if (actual != null) {
-            vaciar(actual)
-            actual.tipo = Agujero.NORMAL
-        }
-        destino.tipo = Agujero.JEFE
-        destino.estado = Agujero.FUERA
-        destino.golpeado = false
-        destino.salio = reloj
-        destino.fin = Long.MAX_VALUE
-        destino.vista.imgTopo.setImageResource(Juego.tema.topoEnfadado)
-        mostrarTopo(destino)
-        destino.vista.imgTopo.scaleX = 1.3f
-        destino.vista.imgTopo.scaleY = 1.3f
-        // Cuantos menos golpes le quedan, más rápido salta
-        proximoSalto = reloj + 700 + golpesJefe * 60
+    }
+
+    // El topo sube desde el agujero
+    // Esta parte es de información externa que no sale en los vídeos
+    // (view.animate(): una animación de 0,12 s para que el topo «salte»)
+    private fun mostrarTopo(a: Agujero)
+    {
+        a.imgTopo.animate().cancel()
+        a.imgTopo.translationY = a.imgTopo.height * 0.5f
+        a.imgTopo.visibility = View.VISIBLE
+        a.imgTopo.animate().translationY(0f).setDuration(120).start()
+        a.imgEfecto.visibility = View.INVISIBLE
+        a.lblPuntos.visibility = View.INVISIBLE
+    }
+
+    private fun vaciar(a: Agujero)
+    {
+        a.imgTopo.animate().cancel()
+        a.imgTopo.translationY = 0f
+        a.estado = Agujero.VACIO
+        a.imgTopo.visibility = View.INVISIBLE
+        a.imgEfecto.visibility = View.INVISIBLE
+        a.lblPuntos.visibility = View.INVISIBLE
     }
 
     // =====================================================================
     // TOQUES
     // =====================================================================
 
-    private fun tocar(a: Agujero) {
-        if (estado != JUGANDO) {
-            return
-        }
-
-        // Agujero vacío (o un topo ya golpeado): fallo. No resta puntos, pero rompe la racha.
-        if (a.estado != Agujero.FUERA) {
-            fallos++
-            racha = 0
-            Sonidos.efecto(Sonidos.FALLO)
-            actualizarHud()
-            return
-        }
-
-        // Bomba: cuenta como error
-        if (a.tipo == Agujero.BOMBA) {
-            fallos++
-            bombasTocadas++
-            racha = 0
-            Sonidos.efecto(Sonidos.BOMBA)
-            a.estado = Agujero.GOLPEADO
-            a.fin = reloj + 600
-            a.vista.imgTopo.setImageResource(Juego.tema.explosion)
-            if (modo == Juego.INFINITO) {
-                mostrarPuntos(a, "−1 ❤")
-                perderVida()
-            } else {
-                puntos = Math.max(0, puntos + Juego.PUNTOS_BOMBA)
-                mostrarPuntos(a, "" + Juego.PUNTOS_BOMBA)
+    private fun tocar(a: Agujero)
+    {
+        if(estado == JUGANDO)
+        {
+            if(a.estado == Agujero.VACIO)
+            {
+                // Agujero vacío: fallo. No resta puntos, pero rompe la racha.
+                fallos++
+                racha = 0
+                Sonidos.efecto(Sonidos.FALLO)
             }
+            else if(a.estado == Agujero.FUERA && a.tipo == Agujero.BOMBA)
+            {
+                tocarBomba(a)
+            }
+            else if(a.estado == Agujero.FUERA)
+            {
+                golpearTopo(a)
+            }
+            // Si ya está GOLPEADO (se ve el golpe) no pasa nada: un doble toque rápido no es un fallo
             actualizarHud()
-            return
         }
+    }
 
-        // Es un topo: acierto
+    // Bomba: cuenta como error y quita una vida
+    private fun tocarBomba(a: Agujero)
+    {
+        fallos++
+        racha = 0
+        Sonidos.efecto(Sonidos.BOMBA)
+        a.estado = Agujero.GOLPEADO
+        a.fin = reloj + 600
+        a.imgTopo.setImageResource(GestorAjustes.tema.explosion)
+        mostrarPuntos(a, getString(R.string.partida_menos_vida))
+        perderVida()
+    }
+
+    private fun golpearTopo(a: Agujero)
+    {
         aciertos++
         racha++
-        if (racha > mejorRacha) {
+        if(racha > mejorRacha)
+        {
             mejorRacha = racha
         }
-        if (racha == Juego.ACIERTOS_PARA_COMBO) {
-            mostrarMensaje("¡COMBO x" + Juego.MULTIPLICADOR_COMBO + "!")
+        if(racha == ReglasJuego.ACIERTOS_PARA_COMBO)
+        {
+            mostrarMensaje(getString(R.string.partida_combo_mensaje, ReglasJuego.MULTIPLICADOR_COMBO))
             Sonidos.efecto(Sonidos.COMBO)
         }
+
         // Tiempo de reacción: desde que sale hasta el primer golpe
-        if (!a.golpeado) {
+        if(!a.golpeado)
+        {
             a.golpeado = true
             sumaReaccion = sumaReaccion + (reloj - a.salio)
             numReacciones++
         }
         a.golpesQuedan--
 
-        if (a.tipo == Agujero.JEFE) {
-            Sonidos.efecto(Sonidos.GOLPE)
-            golpearJefe(a)
-            actualizarHud()
-            return
-        }
-
-        if (a.golpesQuedan > 0) {
+        if(a.golpesQuedan > 0)
+        {
             // Enfadado después del primer golpe: se pone la tirita y aguanta un poquito más
-            a.vista.imgTopo.setImageResource(Juego.tema.topoEnfadadoTirita)
+            a.imgTopo.setImageResource(GestorAjustes.tema.topoEnfadadoTirita)
             Sonidos.efecto(Sonidos.GOLPE)
             a.fin = a.fin + 400
-            actualizarHud()
-            return
         }
-
-        // Topo derrotado: puntos (dobles si hay combo)
-        var base = Juego.PUNTOS_NORMAL
-        if (a.tipo == Agujero.ENFADADO) {
-            base = Juego.PUNTOS_ENFADADO
-        } else if (a.tipo == Agujero.DORADO) {
-            base = Juego.PUNTOS_DORADO
-            doradosGolpeados++
-            if (modo == Juego.INFINITO && vidas < vidasIniciales) {
-                vidas++
+        else
+        {
+            // Topo derrotado: puntos (dobles si hay combo)
+            var base = ReglasJuego.PUNTOS_NORMAL
+            if(a.tipo == Agujero.ENFADADO)
+            {
+                base = ReglasJuego.PUNTOS_ENFADADO
+                Sonidos.efecto(Sonidos.GOLPE)
             }
-        }
-        val ganados = base * multiplicador()
-        puntos = puntos + ganados
-        if (a.tipo == Agujero.DORADO) {
-            Sonidos.efecto(Sonidos.DORADO)
-        } else {
-            Sonidos.efecto(Sonidos.GOLPE)
-        }
+            else if(a.tipo == Agujero.DORADO)
+            {
+                base = ReglasJuego.PUNTOS_DORADO
+                doradosGolpeados++
+                Sonidos.efecto(Sonidos.DORADO)
+                // El dorado da una vida, sin pasar de las que había al empezar
+                if(vidas < dificultad.vidas)
+                {
+                    vidas++
+                }
+            }
+            else
+            {
+                Sonidos.efecto(Sonidos.GOLPE)
+            }
+            val ganados = base * multiplicador()
+            puntos = puntos + ganados
 
-        a.estado = Agujero.GOLPEADO
-        a.fin = reloj + 450
-        a.vista.imgTopo.setImageResource(Juego.tema.topoGolpeado)
-        a.vista.imgEfecto.visibility = View.VISIBLE
-        mostrarPuntos(a, "+" + ganados)
-        actualizarHud()
-    }
-
-    private fun golpearJefe(a: Agujero) {
-        golpesJefe--
-        puntos = puntos + Juego.PUNTOS_GOLPE_JEFE * multiplicador()
-        a.vista.imgTopo.setImageResource(Juego.tema.topoGolpeado)
-        a.vista.imgEfecto.visibility = View.VISIBLE
-        mostrarPuntos(a, "" + golpesJefe)
-        a.fin = reloj + 250
-        binding.lblObjetivo.text = "" + golpesJefe + " golpes"
-        if (golpesJefe <= 0) {
-            puntos = puntos + Juego.PUNTOS_JEFE_VENCIDO
-            terminar(Constantes.VICTORIA)
-        } else {
-            // Al recibir un golpe salta antes a otro agujero
-            proximoSalto = Math.min(proximoSalto, reloj + 400)
+            a.estado = Agujero.GOLPEADO
+            a.fin = reloj + 450
+            a.imgTopo.setImageResource(caraGolpeado(a.tipo))
+            a.imgEfecto.visibility = View.VISIBLE
+            mostrarPuntos(a, getString(R.string.partida_mas_puntos, ganados))
         }
     }
 
-    private fun multiplicador(): Int {
-        if (racha >= Juego.ACIERTOS_PARA_COMBO) {
-            return Juego.MULTIPLICADOR_COMBO
+    // Cada tipo de topo tiene su cara de golpeado (el dorado sigue dorado y el enfadado sigue enfadado)
+    private fun caraGolpeado(tipo: Int): Int
+    {
+        val tema = GestorAjustes.tema
+        var cara = tema.topoGolpeado
+        when(tipo)
+        {
+            Agujero.DORADO   -> cara = tema.topoDoradoGolpeado
+            Agujero.ENFADADO -> cara = tema.topoEnfadadoGolpeado
         }
-        return 1
+        return cara
     }
 
-    private fun perderVida() {
+    private fun multiplicador(): Int
+    {
+        var veces = 1
+        if(racha >= ReglasJuego.ACIERTOS_PARA_COMBO)
+        {
+            veces = ReglasJuego.MULTIPLICADOR_COMBO
+        }
+        return veces
+    }
+
+    private fun perderVida()
+    {
         Sonidos.efecto(Sonidos.VIDA)
         vidas--
-        if (vidas <= 0) {
+        if(vidas <= 0)
+        {
             vidas = 0
-            terminar(Constantes.SIN_VIDAS)
+            terminar()
         }
     }
 
-    private fun mostrarPuntos(a: Agujero, texto: String) {
-        a.vista.lblPuntos.text = texto
-        a.vista.lblPuntos.visibility = View.VISIBLE
+    private fun mostrarPuntos(a: Agujero, texto: String)
+    {
+        a.lblPuntos.text = texto
+        a.lblPuntos.visibility = View.VISIBLE
     }
 
-    private fun mostrarMensaje(texto: String) {
-        binding.lblMensaje.text = texto
-        binding.lblMensaje.visibility = View.VISIBLE
+    private fun mostrarMensaje(texto: String)
+    {
+        lblPartidaMensaje.text = texto
+        lblPartidaMensaje.visibility = View.VISIBLE
         mensajeHasta = reloj + 900
     }
 
@@ -688,52 +692,26 @@ class PartidaActivity : PantallaBase() {
     // BARRA DE ARRIBA
     // =====================================================================
 
-    private fun actualizarHud() {
-        binding.lblPuntos.text = "" + puntos
-
-        if (racha >= Juego.ACIERTOS_PARA_COMBO) {
-            binding.lblCombo.text = "COMBO x" + Juego.MULTIPLICADOR_COMBO
-        } else {
-            binding.lblCombo.text = "Racha " + racha
+    private fun actualizarHud()
+    {
+        lblPartidaPuntos.text = puntos.toString()
+        lblPartidaVidas.text = getString(R.string.partida_vidas, vidas)
+        if(vidas > 0)
+        {
+            imgPartidaCorazon.setImageResource(R.drawable.corazon_lleno)
+        }
+        else
+        {
+            imgPartidaCorazon.setImageResource(R.drawable.corazon_vacio)
         }
 
-        if (modo == Juego.INFINITO) {
-            binding.lblVidas.text = "x" + vidas
-            if (vidas > 0) {
-                binding.imgCorazon.setImageResource(R.drawable.corazon_lleno)
-            } else {
-                binding.imgCorazon.setImageResource(R.drawable.corazon_vacio)
-            }
-        } else {
-            var quedan = duracionMs - reloj
-            if (quedan < 0) {
-                quedan = 0
-            }
-            // El número y la barra salen del mismo valor (quedan), así siempre van a la par
-            binding.lblTiempo.text = "" + ((quedan + 999) / 1000) + " s"
-            pintarBarra(quedan.toFloat() / duracionMs.toFloat())
+        if(racha >= ReglasJuego.ACIERTOS_PARA_COMBO)
+        {
+            lblPartidaCombo.text = getString(R.string.partida_combo, ReglasJuego.MULTIPLICADOR_COMBO)
         }
-    }
-
-    // La barra verde mide lo que queda de tiempo: le cambiamos el ancho (layoutParams).
-    // Antes se encogía con scaleX y, como la barra tiene borde y esquinas redondas, el borde
-    // también se encogía y parecía que la barra se acababa antes que el tiempo.
-    private fun pintarBarra(fraccion: Float) {
-        val fondo = binding.vProgreso.parent as View
-        val anchoTotal = fondo.width
-        if (anchoTotal == 0) {
-            return          // la pantalla todavía no se ha dibujado: la barra sigue llena
-        }
-        val ancho = (anchoTotal * fraccion).toInt()
-        val params = binding.vProgreso.layoutParams
-        if (params.width != ancho) {
-            params.width = ancho
-            binding.vProgreso.layoutParams = params
-        }
-        if (ancho <= 0) {
-            binding.vProgreso.visibility = View.INVISIBLE
-        } else {
-            binding.vProgreso.visibility = View.VISIBLE
+        else
+        {
+            lblPartidaCombo.text = getString(R.string.partida_racha, racha)
         }
     }
 
@@ -741,138 +719,161 @@ class PartidaActivity : PantallaBase() {
     // PAUSA Y AYUDA
     // =====================================================================
 
-    private fun pausar(conAyuda: Boolean) {
-        if (estado == TERMINADA) {
-            return
-        }
-        estado = PAUSA
-        binding.lblMensaje.visibility = View.GONE
-        if (conAyuda) {
-            binding.layAyuda.visibility = View.VISIBLE
-            binding.layPausa.visibility = View.GONE
-        } else {
-            binding.layPausa.visibility = View.VISIBLE
-            binding.layAyuda.visibility = View.GONE
+    private fun pausar(conAyuda: Boolean)
+    {
+        if(estado != TERMINADA)
+        {
+            estado = PAUSA
+            handler.removeCallbacks(bucle)      // en pausa el bucle se para (no gasta batería)
+            lblPartidaMensaje.visibility = View.GONE
+            if(conAyuda)
+            {
+                layPartidaAyuda.visibility = View.VISIBLE
+                layPartidaPausa.visibility = View.GONE
+            }
+            else
+            {
+                layPartidaPausa.visibility = View.VISIBLE
+                layPartidaAyuda.visibility = View.GONE
+            }
         }
     }
 
-    private fun reanudar() {
-        binding.layPausa.visibility = View.GONE
-        binding.layAyuda.visibility = View.GONE
+    private fun reanudar()
+    {
+        layPartidaPausa.visibility = View.GONE
+        layPartidaAyuda.visibility = View.GONE
         ultimoTick = SystemClock.elapsedRealtime()
-        // Si se pausó durante la cuenta atrás, la repetimos entera
-        if (reloj == 0L) {
-            cuentaAtras = 3500
+        // Si se pausó durante la cuenta atrás, se repite entera
+        if(reloj == 0L)
+        {
+            lblPartidaMensaje.text = ""          // así el «3» vuelve a sonar
+            cuentaAtras = ReglasJuego.CUENTA_ATRAS_MS
             estado = CUENTA_ATRAS
-        } else {
+        }
+        else
+        {
             estado = JUGANDO
         }
+        // Se vuelve a lanzar el bucle (removeCallbacks antes, por si ya estaba programado)
+        handler.removeCallbacks(bucle)
+        handler.post(bucle)
     }
 
     // =====================================================================
     // FIN DE LA PARTIDA
     // =====================================================================
 
-    private fun terminar(resultado: String) {
-        if (estado == TERMINADA) {
-            return
-        }
-        estado = TERMINADA
-        handler.removeCallbacks(bucle)
-        if (resultado == Constantes.VICTORIA) {
-            Sonidos.efecto(Sonidos.VICTORIA)
-        } else {
-            Sonidos.efecto(Sonidos.FIN)
-        }
-
-        var estrellas = 0
-        if (modo == Juego.HISTORIA) {
-            if (esJefe) {
-                if (resultado == Constantes.VICTORIA) {
-                    estrellas = 3
-                }
-            } else {
-                estrellas = Juego.calcularEstrellas(objetivo, puntos)
-            }
-        }
-
-        // Apuntamos la partida en el progreso de la tablet y la enviamos a la API
-        var dificultadGuardada: String? = dificultad
-        if (modo == Juego.HISTORIA) {
-            dificultadGuardada = null
-        }
-        val nuevoRecord = Juego.apuntarPartida(modo, dificultadGuardada, nivel, puntos, estrellas)
-        enviarPartida(false)
-
-        val intent = Intent(this, ResultadoActivity::class.java)
-        intent.putExtra(Constantes.MODO, modo)
-        intent.putExtra(Constantes.DIFICULTAD, dificultad)
-        intent.putExtra(Constantes.NIVEL, nivel)
-        intent.putExtra(Constantes.RESULTADO, resultado)
-        intent.putExtra(Constantes.PUNTOS, puntos)
-        intent.putExtra(Constantes.ESTRELLAS, estrellas)
-        intent.putExtra(Constantes.ACIERTOS, aciertos)
-        intent.putExtra(Constantes.FALLOS, fallos)
-        intent.putExtra(Constantes.ESCAPADOS, escapados)
-        intent.putExtra(Constantes.BOMBAS, bombasTocadas)
-        intent.putExtra(Constantes.MEJOR_RACHA, mejorRacha)
-        intent.putExtra(Constantes.NUEVO_RECORD, nuevoRecord)
-        intent.putExtra(Constantes.OBJETIVO, objetivo)
-        startActivity(intent)
-        finish()
-    }
-
-    // POST api/sesiones con los datos de la partida (para el escritorio y las métricas)
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun enviarPartida(abandonada: Boolean) {
-        val segundos = (reloj / 1000).toInt()
-        if (abandonada && segundos < 1) {
-            return              // ni siquiera ha empezado a jugar
-        }
-
+    // Los datos de la partida tal como los pide POST api/sesiones
+    private fun crearSesion(abandonada: Boolean): SesionNueva
+    {
         var reaccion: Int? = null
-        if (numReacciones > 0) {
+        if(numReacciones > 0)
+        {
             reaccion = (sumaReaccion / numReacciones).toInt()
         }
-        // En Historia se envía el nivel y no la dificultad; en los otros modos, al revés
-        var dificultadApi: String? = dificultad
-        var nivelApi: Int? = null
-        if (modo == Juego.HISTORIA) {
-            dificultadApi = null
-            nivelApi = nivel
-        }
+        val segundos = Math.max(1, (reloj / 1000).toInt())
+        return SesionNueva(SharedData.MODO_INFINITO, segundos, fallos, puntos, dificultad.nombre, null,
+                           aciertos + fallos, escapados, aciertos, mejorRacha, doradosGolpeados,
+                           abandonada, reaccion)
+    }
 
-        val sesion = SesionNueva(
-            Juego.idModo(modo),
-            Math.max(1, segundos),
-            fallos,
-            puntos,
-            dificultadApi,
-            nivelApi,
-            aciertos + fallos,          // nAttempts = hits + errorsMade (regla de la API)
-            escapados,
-            aciertos,
-            mejorRacha,
-            doradosGolpeados,
-            abandonada,
-            reaccion
-        )
-        val token = Juego.cabeceraToken()
-        val contexto = applicationContext
-        GlobalScope.launch {
-            try {
-                val response = RetrofitClient.api().guardarPartida(token, sesion).execute()
-                if (!response.isSuccessful) {
-                    val mensaje = RetrofitClient.mensajeDeError(response)
-                    runOnUiThread {
-                        Toast.makeText(contexto, "No se ha guardado la partida: " + mensaje, Toast.LENGTH_LONG).show()
+    // Se han acabado las vidas: el resultado se enseña y se guarda en ResultadoActivity
+    private fun terminar()
+    {
+        if(estado != TERMINADA)
+        {
+            estado = TERMINADA
+            handler.removeCallbacks(bucle)
+            Sonidos.efecto(Sonidos.FIN)
+
+            val intent = Intent(this, ResultadoActivity::class.java)
+            intent.putExtra(ResultadoActivity.resultadoConstants.SESION, crearSesion(false))
+            intent.putExtra(ResultadoActivity.resultadoConstants.DIFICULTAD, dificultad)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    // Salir a medias desde la pausa: se guarda como abandonada (sirve para el informe de abandono).
+    // Se espera a que la API conteste antes de cerrar la pantalla: así, al volver a las dificultades,
+    // la partida ya está guardada. Si ni siquiera ha empezado a jugar, no se guarda nada.
+    private fun abandonar(reiniciar: Boolean)
+    {
+        val habiaEmpezado = reloj >= 1000
+        estado = TERMINADA
+        handler.removeCallbacks(bucle)
+        findViewById<TextView>(R.id.BtnPartidaReiniciar).isEnabled = false
+        findViewById<TextView>(R.id.BtnPartidaSalir).isEnabled = false
+        findViewById<TextView>(R.id.BtnPartidaContinuar).isEnabled = false
+        // Mientras la API contesta, la pausa dice «Guardando…» (así no parece que la tablet se ha colgado)
+        findViewById<TextView>(R.id.LblPartidaPausa).text = getString(R.string.guardando)
+
+        if(habiaEmpezado)
+        {
+            val sesion = crearSesion(true)
+            val token = GestorSesion.cabecera(this)
+            val sesionApi = RetrofitAddSesionClient.getInstance().create(ApiAddSesion::class.java)
+
+            GlobalScope.launch()
+            {
+                try
+                {
+                    val call = sesionApi.addSesion(token, sesion)
+                    val response = call.execute()
+                    if(response.body() != null)
+                    {
+                        runOnUiThread()
+                        {
+                            if(pantallaActiva())
+                            {
+                                cerrarPartida(reiniciar)
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Esta parte es de información externa que no sale en los vídeos
+                        // (response.code() es el código HTTP con el que ha respondido la API)
+                        val codigo = response.code()
+                        runOnUiThread()
+                        {
+                            if(pantallaActiva())
+                            {
+                                Avisos.errorApi(this@PartidaActivity, codigo)
+                                cerrarPartida(reiniciar)
+                            }
+                        }
                     }
                 }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    Toast.makeText(contexto, "Sin conexión: la partida no se ha guardado", Toast.LENGTH_LONG).show()
+                catch(e: Exception)
+                {
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            Avisos.errorConexion(this@PartidaActivity)
+                            cerrarPartida(reiniciar)
+                        }
+                    }
                 }
             }
         }
+        else
+        {
+            cerrarPartida(reiniciar)
+        }
+    }
+
+    // Después de abandonar: otra partida igual (Reiniciar) o volver a las dificultades (Salir)
+    private fun cerrarPartida(reiniciar: Boolean)
+    {
+        if(reiniciar && !isFinishing)
+        {
+            val otra = Intent(this, PartidaActivity::class.java)
+            otra.putExtra(partidaConstants.DIFICULTAD, dificultad)
+            startActivity(otra)
+        }
+        finish()
     }
 }

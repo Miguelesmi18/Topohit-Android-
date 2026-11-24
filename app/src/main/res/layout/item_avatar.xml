@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Un avatar de la rejilla (el elegido lleva el fondo "seleccion") -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/alto_avatar_rejilla"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/ImgListAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/separacion_mini"
+        android:padding="@dimen/separacion_mini" />
+</FrameLayout>

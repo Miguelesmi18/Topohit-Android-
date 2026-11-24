@@ -1,73 +1,99 @@
 package com.groundstudio.topohit.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.groundstudio.topohit.R
-import com.groundstudio.topohit.data_model.Sesion
-import com.groundstudio.topohit.util.Juego
+import com.groundstudio.topohit.datamodel.Partida
 
-// Adaptador del historial de partidas del Perfil (RecyclerView + ViewHolder, vídeo 19)
-class HistorialAdapter(private val partidas: List<Sesion>) : RecyclerView.Adapter<HistorialAdapter.HistorialViewHolder>() {
+// Adapter del historial de partidas del Perfil (RecyclerView + ViewHolder, REGLA-0489-052)
+class HistorialAdapter (private val context: Context,
+                        private var partidas: List<Partida>):
+    RecyclerView.Adapter<HistorialAdapter.HistorialViewHolder>()
+{
+    private val layout = R.layout.item_partida
 
-    class HistorialViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val lblFecha: TextView = view.findViewById(R.id.lblFecha)
-        val lblModo: TextView = view.findViewById(R.id.lblModo)
-        val lblDificultad: TextView = view.findViewById(R.id.lblDificultad)
-        val lblPuntos: TextView = view.findViewById(R.id.lblPuntos)
-        val lblResultado: TextView = view.findViewById(R.id.lblResultado)
+    class HistorialViewHolder(val view: View):
+        RecyclerView.ViewHolder(view)
+    {
+        val lblFecha:      TextView
+        val lblDificultad: TextView
+        val lblPuntos:     TextView
+        val lblPrecision:  TextView
+        val lblEstado:     TextView
+
+        init
+        {
+            lblFecha      = view.findViewById(R.id.LblListPartidaFecha)
+            lblDificultad = view.findViewById(R.id.LblListPartidaDificultad)
+            lblPuntos     = view.findViewById(R.id.LblListPartidaPuntos)
+            lblPrecision  = view.findViewById(R.id.LblListPartidaPrecision)
+            lblEstado     = view.findViewById(R.id.LblListPartidaEstado)
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistorialViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_historial, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistorialViewHolder
+    {
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return HistorialViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: HistorialViewHolder, position: Int) {
-        val p = partidas[position]
-        val modo = p.modo ?: ""
-        holder.lblFecha.text = formatearFecha(p.dateTime)
-        holder.lblModo.text = modo
-        if (p.levelReached != null) {
-            holder.lblDificultad.text = "Nivel " + p.levelReached
-        } else {
-            holder.lblDificultad.text = p.difficulty ?: ""
-        }
-        holder.lblPuntos.text = "" + p.finalScore
-        holder.lblResultado.text = resultado(p, modo)
+    override fun onBindViewHolder(holder: HistorialViewHolder, position: Int)
+    {
+        val partida = partidas[position]
+        bindPartida(holder, partida)
     }
 
-    override fun getItemCount(): Int {
-        return partidas.size
+    override fun getItemCount() = partidas.size
+
+    fun bindPartida(holder: HistorialViewHolder, partida: Partida)
+    {
+        holder.lblFecha.text = formatearFecha(partida.dateTime)
+
+        var dificultad = partida.difficulty
+        if(dificultad == null)
+        {
+            dificultad = ""
+        }
+        holder.lblDificultad.text = dificultad
+        holder.lblPuntos.text = context.getString(R.string.puntos_cantidad, partida.finalScore)
+
+        if(partida.nAttempts > 0)
+        {
+            holder.lblPrecision.text = context.getString(R.string.porcentaje, partida.hits * 100 / partida.nAttempts)
+        }
+        else
+        {
+            holder.lblPrecision.text = context.getString(R.string.sin_dato)
+        }
+
+        if(partida.abandoned)
+        {
+            holder.lblEstado.text = context.getString(R.string.partida_abandonada)
+        }
+        else
+        {
+            holder.lblEstado.text = context.getString(R.string.partida_terminada)
+        }
     }
 
-    // "2026-10-29T17:40:12" -> "29/10 17:40"
-    private fun formatearFecha(fecha: String?): String {
-        if (fecha == null || fecha.length < 16) {
-            return fecha ?: ""
+    // "2026-10-29T17:40:12" -> "29/10 17:40" (el texto que manda la API, cortado con substring)
+    private fun formatearFecha(fecha: String?): String
+    {
+        var texto = ""
+        if(fecha != null && fecha.length >= 16)
+        {
+            texto = fecha.substring(8, 10) + "/" + fecha.substring(5, 7) + " " + fecha.substring(11, 16)
         }
-        return fecha.substring(8, 10) + "/" + fecha.substring(5, 7) + " " + fecha.substring(11, 16)
+        return texto
     }
 
-    private fun resultado(p: Sesion, modo: String): String {
-        if (p.abandoned) {
-            return "Abandonada"
-        }
-        if (modo.equals(Juego.HISTORIA, true) && p.levelReached != null) {
-            val estrellas = Juego.calcularEstrellas(Juego.buscarNivel(p.levelReached).objetivo, p.finalScore)
-            if (estrellas == 1) {
-                return "1 estrella"
-            }
-            return "" + estrellas + " estrellas"
-        }
-        if (modo.equals(Juego.CONTRARRELOJ, true) && p.difficulty != null) {
-            if (p.finalScore >= Juego.buscarContrarreloj(p.difficulty).objetivo) {
-                return "Victoria"
-            }
-            return "¡Casi!"
-        }
-        return "Sin vidas"
+    fun setPartidas(nuevas: List<Partida>)
+    {
+        partidas = nuevas
+        notifyDataSetChanged()
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Espacio vacío para centrar el tablero de 3 agujeros -->
+<!-- Hueco vacío para centrar el tablero cuando solo tiene una fila (Fácil) -->
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="0dp"

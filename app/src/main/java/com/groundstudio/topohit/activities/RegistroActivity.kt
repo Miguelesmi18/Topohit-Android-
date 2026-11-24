@@ -3,115 +3,190 @@ package com.groundstudio.topohit.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.groundstudio.topohit.api.RetrofitClient
-import com.groundstudio.topohit.data_model.RegistroPeticion
-import com.groundstudio.topohit.databinding.ActivityRegistroBinding
-import com.groundstudio.topohit.util.Almacen
-import com.groundstudio.topohit.util.Cifrado
-import com.groundstudio.topohit.util.Avatares
-import com.groundstudio.topohit.util.Juego
-import kotlinx.coroutines.DelicateCoroutinesApi
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.groundstudio.topohit.Avisos
+import com.groundstudio.topohit.Cifrado
+import com.groundstudio.topohit.GestorAjustes
+import com.groundstudio.topohit.GestorSesion
+import com.groundstudio.topohit.R
+import com.groundstudio.topohit.adapters.AvataresAdapter
+import com.groundstudio.topohit.api.ApiRegistro
+import com.groundstudio.topohit.api.RetrofitRegistroClient
+import com.groundstudio.topohit.datamodel.RegistroPeticion
+import com.groundstudio.topohit.datamodel.SesionUsuario
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-// Crear cuenta (POST api/auth/registro). Si va bien, la API ya devuelve el token y entramos.
-class RegistroActivity : PantallaBase() {
+// Crear cuenta (POST api/auth/registro) eligiendo avatar.
+// Si va bien, la API ya devuelve el token y se entra directamente en el menú.
+class RegistroActivity : PantallaBase()
+{
+    private lateinit var txtRegistroUsuario: EditText
+    private lateinit var txtRegistroContrasena: EditText
+    private lateinit var txtRegistroRepetir: EditText
+    private lateinit var btnRegistroCrear: TextView
+    private lateinit var prgRegistroCargando: ProgressBar
+    private lateinit var lstRegistroAvatares: RecyclerView
+    private lateinit var adapter: AvataresAdapter
 
-    private lateinit var binding: ActivityRegistroBinding
-    private var avatarElegido = 1          // CAMBIO 19/11: id del avatar (1 a 12)
+    // Mínimos que también comprueba la API
+    private val MINIMO_USUARIO = 3
+    private val MINIMO_CONTRASENA = 4
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        binding = ActivityRegistroBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_registro)
 
-        val tema = Juego.tema
-        binding.imgFondo.setImageResource(tema.fondo)
-        binding.layPanelDatos.setBackgroundResource(tema.panel)
-        binding.layPanelAvatar.setBackgroundResource(tema.panel)
-        binding.btnCrear.setBackgroundResource(tema.botonPrincipal)
-        binding.btnAtras.setBackgroundResource(tema.circulo)
-        val color = ContextCompat.getColor(this, tema.colorTexto)
-        binding.lblAvatar.setTextColor(color)
-        binding.lblNota.setTextColor(color)
-        binding.lblNotaAvatar.setTextColor(color)
+        txtRegistroUsuario    = findViewById<EditText>(R.id.TxtRegistroUsuario)
+        txtRegistroContrasena = findViewById<EditText>(R.id.TxtRegistroContrasena)
+        txtRegistroRepetir    = findViewById<EditText>(R.id.TxtRegistroRepetir)
+        btnRegistroCrear      = findViewById<TextView>(R.id.BtnRegistroCrear)
+        prgRegistroCargando   = findViewById<ProgressBar>(R.id.PrgRegistroCargando)
+        lstRegistroAvatares   = findViewById<RecyclerView>(R.id.LstRegistroAvatares)
+        val btnRegistroAtras  = findViewById<TextView>(R.id.BtnRegistroAtras)
 
-        // Rejilla de avatares: al tocar uno se marca
-        Avatares.pintar(binding.selAvatares, avatarElegido)
-        val imagenes = Avatares.imagenes(binding.selAvatares)
-        for (i in 0..imagenes.size - 1) {
-            imagenes[i].setOnClickListener {
-                avatarElegido = i + 1              // la imagen i es el avatar i + 1
-                Avatares.pintar(binding.selAvatares, avatarElegido)
-            }
+        pintarTema()
+
+        // Rejilla de 6 columnas: dos filas de 6 avatares
+        // Esta parte es de información externa que no sale en los vídeos
+        // (GridLayoutManager: el vídeo 19 solo nombra la «grid», no la programa)
+        adapter = AvataresAdapter(this, 1)
+        lstRegistroAvatares.layoutManager = GridLayoutManager(this, 6)
+        lstRegistroAvatares.adapter = adapter
+
+        adapter.setOnClickListener()
+        {
+            adapter.setElegido(lstRegistroAvatares.getChildAdapterPosition(it) + 1)
         }
 
-        binding.btnAtras.setOnClickListener {
+        btnRegistroAtras.setOnClickListener()
+        {
             finish()
         }
-        binding.btnCrear.setOnClickListener {
+
+        btnRegistroCrear.setOnClickListener()
+        {
             crearCuenta()
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun crearCuenta() {
-        val usuario = binding.txtUsuario.text.toString().trim()
-        val contrasena = binding.txtContrasena.text.toString()
-        val repetir = binding.txtRepetir.text.toString()
+    private fun pintarTema()
+    {
+        val tema = GestorAjustes.tema
+        val color = ContextCompat.getColor(this, tema.colorTexto)
+        findViewById<ImageView>(R.id.ImgRegistroFondo).setImageResource(tema.fondo)
+        findViewById<LinearLayout>(R.id.LayRegistroDatos).setBackgroundResource(tema.panel)
+        findViewById<LinearLayout>(R.id.LayRegistroAvatar).setBackgroundResource(tema.panel)
+        findViewById<TextView>(R.id.BtnRegistroAtras).setBackgroundResource(tema.circulo)
+        findViewById<TextView>(R.id.LblRegistroAvatar).setTextColor(color)
+        findViewById<TextView>(R.id.LblRegistroNota).setTextColor(color)
+        findViewById<TextView>(R.id.LblRegistroNotaAvatar).setTextColor(color)
+        btnRegistroCrear.setBackgroundResource(tema.botonPrincipal)
+    }
 
-        // Las mismas reglas que comprueba la API
-        if (usuario.length < 3) {
-            Toast.makeText(this, "El usuario tiene que tener 3 letras o más", Toast.LENGTH_LONG).show()
-            return
+    // Comprueba los datos antes de llamar a la API. Devuelve el texto del error o 0 si está bien.
+    private fun comprobar(usuario: String, contrasena: String, repetir: String): Int
+    {
+        var error = 0
+        if(usuario.length < MINIMO_USUARIO)
+        {
+            error = R.string.error_usuario_corto
         }
-        if (contrasena.length < 4) {
-            Toast.makeText(this, "La contraseña tiene que tener 4 caracteres o más", Toast.LENGTH_LONG).show()
-            return
+        else if(contrasena.length < MINIMO_CONTRASENA)
+        {
+            error = R.string.error_contrasena_corta
         }
-        if (contrasena != repetir) {
-            Toast.makeText(this, "Las contraseñas no son iguales", Toast.LENGTH_LONG).show()
-            return
+        else if(contrasena != repetir)
+        {
+            error = R.string.error_contrasenas_distintas
         }
+        return error
+    }
 
-        binding.prgCargando.visibility = View.VISIBLE
-        binding.btnCrear.isEnabled = false
-        GlobalScope.launch {
-            try {
-                // La contraseña se cifra aquí, dentro de la corrutina: bcrypt tarda un poco
-                // y así la pantalla no se queda congelada
-                val hash = Cifrado.hash(contrasena)
-                val response = RetrofitClient.api().registro(RegistroPeticion(usuario, hash, avatarElegido)).execute()
-                val respuesta = response.body()
-                runOnUiThread {
-                    binding.prgCargando.visibility = View.GONE
-                    binding.btnCrear.isEnabled = true
-                    if (response.isSuccessful && respuesta != null) {
-                        Juego.token = respuesta.token
-                        Juego.idUsuario = respuesta.idUsuario
-                        Juego.username = respuesta.username
-                        Juego.rol = respuesta.rol
-                        Juego.avatar = respuesta.avatarId    // CAMBIO 19/11: el que ha guardado la API
-                        Juego.progreso = null
-                        Almacen.guardarSesion(this@RegistroActivity)
-                        Toast.makeText(this@RegistroActivity, "¡Cuenta creada!", Toast.LENGTH_SHORT).show()
-                        // Vamos al menú y cerramos el login que había debajo
-                        val intent = Intent(this@RegistroActivity, MenuActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    } else {
-                        Toast.makeText(this@RegistroActivity, RetrofitClient.mensajeDeError(response), Toast.LENGTH_LONG).show()
+    private fun crearCuenta()
+    {
+        val usuario = txtRegistroUsuario.text.toString().trim()
+        val contrasena = txtRegistroContrasena.text.toString()
+        val repetir = txtRegistroRepetir.text.toString()
+        val avatar = adapter.getElegido()
+
+        val error = comprobar(usuario, contrasena, repetir)
+        if(error == 0)
+        {
+            cargando(true)
+            val registroApi = RetrofitRegistroClient.getInstance().create(ApiRegistro::class.java)
+
+            GlobalScope.launch()
+            {
+                try
+                {
+                    val hash = Cifrado.hash(contrasena)
+                    val call = registroApi.registro(RegistroPeticion(usuario, hash, avatar))
+                    val response = call.execute()
+                    val respuesta = response.body()
+
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            cargando(false)
+                            if(respuesta != null)
+                            {
+                                GestorSesion.guardar(this@RegistroActivity,
+                                                     SesionUsuario(respuesta.token, respuesta.idUsuario,
+                                                                   respuesta.username, respuesta.rol, respuesta.avatarId))
+                                Avisos.bien(this@RegistroActivity, R.string.cuenta_creada)
+                                val intent = Intent(this@RegistroActivity, MenuActivity::class.java)
+                                // Esta parte es de información externa que no sale en los vídeos
+                                // (las flags cierran también el login que había debajo)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                            }
+                            else
+                            {
+                                // Los datos ya se han comprobado: si la API dice que no, es que el usuario ya existe
+                                Avisos.toast(this@RegistroActivity, R.string.error_usuario_existe)
+                            }
+                        }
                     }
                 }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    binding.prgCargando.visibility = View.GONE
-                    binding.btnCrear.isEnabled = true
-                    Toast.makeText(this@RegistroActivity, "No se puede conectar con la API", Toast.LENGTH_LONG).show()
+                catch(e: Exception)
+                {
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            cargando(false)
+                            Avisos.errorConexion(this@RegistroActivity)
+                        }
+                    }
                 }
             }
         }
+        else
+        {
+            Avisos.toast(this, error)
+        }
+    }
+
+    private fun cargando(activo: Boolean)
+    {
+        if(activo)
+        {
+            prgRegistroCargando.visibility = View.VISIBLE
+        }
+        else
+        {
+            prgRegistroCargando.visibility = View.GONE
+        }
+        btnRegistroCrear.isEnabled = !activo
     }
 }

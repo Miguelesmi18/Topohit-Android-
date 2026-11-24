@@ -4,139 +4,246 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.groundstudio.topohit.Avisos
+import com.groundstudio.topohit.GestorAjustes
+import com.groundstudio.topohit.GestorSesion
 import com.groundstudio.topohit.R
-import com.groundstudio.topohit.databinding.ActivityResultadoBinding
-import com.groundstudio.topohit.util.Juego
+import com.groundstudio.topohit.Sonidos
+import com.groundstudio.topohit.api.ApiAddSesion
+import com.groundstudio.topohit.api.ApiGetDificultades
+import com.groundstudio.topohit.api.RetrofitAddSesionClient
+import com.groundstudio.topohit.api.RetrofitGetDificultadesClient
+import com.groundstudio.topohit.datamodel.EstadoDificultad
+import com.groundstudio.topohit.datamodel.SesionNueva
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-// Pantalla final: Victoria, ¡Se acabó el tiempo! o ¡Se acabaron las vidas!
-class ResultadoActivity : PantallaBase() {
+// Fin de la partida: «¡Se acabaron las vidas!», los puntos y los datos de la partida.
+// Aquí se guarda la partida en la API (POST api/sesiones) y, después, se vuelven a pedir las
+// dificultades (REGLA-0489-074: recargar para comprobar) para saber si con esta partida se ha
+// abierto la siguiente. Las dos llamadas van una detrás de otra.
+class ResultadoActivity : PantallaBase()
+{
+    // Claves de los extras que recibe esta pantalla (REGLA-0489-042)
+    object resultadoConstants
+    {
+        const val SESION = "SESION"
+        const val DIFICULTAD = "DIFICULTAD"
+    }
 
-    private lateinit var binding: ActivityResultadoBinding
+    private lateinit var sesion: SesionNueva
+    private lateinit var dificultad: EstadoDificultad
+    private lateinit var lblResultadoGuardado: TextView
+    private lateinit var lblResultadoDesbloqueo: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        binding = ActivityResultadoBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_resultado)
 
-        val modo = intent.getStringExtra(Constantes.MODO) ?: Juego.CONTRARRELOJ
-        val dificultad = intent.getStringExtra(Constantes.DIFICULTAD) ?: "Fácil"
-        val nivel = intent.getIntExtra(Constantes.NIVEL, 0)
-        val resultado = intent.getStringExtra(Constantes.RESULTADO) ?: Constantes.TIEMPO
-        val puntos = intent.getIntExtra(Constantes.PUNTOS, 0)
-        val estrellas = intent.getIntExtra(Constantes.ESTRELLAS, 0)
-        val objetivo = intent.getIntExtra(Constantes.OBJETIVO, 0)
+        sesion = intent.getSerializableExtra(resultadoConstants.SESION) as SesionNueva
+        dificultad = intent.getSerializableExtra(resultadoConstants.DIFICULTAD) as EstadoDificultad
+        lblResultadoGuardado   = findViewById<TextView>(R.id.LblResultadoGuardado)
+        lblResultadoDesbloqueo = findViewById<TextView>(R.id.LblResultadoDesbloqueo)
 
-        // Temática
-        val tema = Juego.tema
-        binding.imgFondo.setImageResource(tema.fondo)
-        binding.layPanel.setBackgroundResource(tema.panel)
-        binding.btnSiguiente.setBackgroundResource(tema.botonPrincipal)
-        binding.btnRepetir.setBackgroundResource(tema.botonSecundario)
-        binding.btnMenu.setBackgroundResource(tema.botonSecundario)
+        pintarTema()
+        pintarDatos()
+
+        findViewById<TextView>(R.id.BtnResultadoRepetir).setOnClickListener()
+        {
+            val otra = Intent(this, PartidaActivity::class.java)
+            otra.putExtra(PartidaActivity.partidaConstants.DIFICULTAD, dificultad)
+            startActivity(otra)
+            finish()
+        }
+
+        // Vuelve a la pantalla de dificultades, que está debajo
+        findViewById<TextView>(R.id.BtnResultadoDificultades).setOnClickListener()
+        {
+            finish()
+        }
+
+        findViewById<TextView>(R.id.BtnResultadoMenu).setOnClickListener()
+        {
+            val menu = Intent(this, MenuActivity::class.java)
+            // Esta parte es de información externa que no sale en los vídeos
+            // (CLEAR_TOP vuelve al menú que ya estaba abierto y cierra las pantallas de encima)
+            menu.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(menu)
+            finish()
+        }
+
+        // Hasta que la partida no esté guardada no se puede seguir (si no, la pantalla de
+        // dificultades podría pedir los datos antes de que la API los tenga)
+        activarBotones(false)
+        guardarPartida()
+    }
+
+    private fun activarBotones(activos: Boolean)
+    {
+        findViewById<TextView>(R.id.BtnResultadoRepetir).isEnabled = activos
+        findViewById<TextView>(R.id.BtnResultadoDificultades).isEnabled = activos
+        findViewById<TextView>(R.id.BtnResultadoMenu).isEnabled = activos
+    }
+
+    private fun pintarTema()
+    {
+        val tema = GestorAjustes.tema
         val color = ContextCompat.getColor(this, tema.colorTexto)
-        binding.lblTitulo.setTextColor(color)
-        binding.lblPuntos.setTextColor(color)
-        binding.lblSubtitulo.setTextColor(color)
+        findViewById<ImageView>(R.id.ImgResultadoFondo).setImageResource(tema.fondo)
+        findViewById<ImageView>(R.id.ImgResultadoTopo).setImageResource(tema.topoBurlon)
+        findViewById<LinearLayout>(R.id.LayResultadoPanel).setBackgroundResource(tema.panel)
+        findViewById<TextView>(R.id.BtnResultadoRepetir).setBackgroundResource(tema.botonPrincipal)
+        findViewById<TextView>(R.id.BtnResultadoDificultades).setBackgroundResource(tema.botonSecundario)
+        findViewById<TextView>(R.id.BtnResultadoMenu).setBackgroundResource(tema.botonSecundario)
+        findViewById<TextView>(R.id.LblResultadoTitulo).setTextColor(color)
+        findViewById<TextView>(R.id.LblResultadoPuntos).setTextColor(color)
+        findViewById<TextView>(R.id.LblResultadoSubtitulo).setTextColor(color)
+        lblResultadoGuardado.setTextColor(color)
+    }
 
-        // Datos de la partida
-        binding.lblPuntos.text = "" + puntos + " puntos"
-        binding.lblAciertos.text = "" + intent.getIntExtra(Constantes.ACIERTOS, 0)
-        binding.lblFallos.text = "" + intent.getIntExtra(Constantes.FALLOS, 0)
-        binding.lblEscapados.text = "" + intent.getIntExtra(Constantes.ESCAPADOS, 0)
-        binding.lblBombas.text = "" + intent.getIntExtra(Constantes.BOMBAS, 0)
-        binding.lblRacha.text = "" + intent.getIntExtra(Constantes.MEJOR_RACHA, 0)
-        if (intent.getBooleanExtra(Constantes.NUEVO_RECORD, false)) {
-            binding.lblNuevoRecord.visibility = View.VISIBLE
-        }
+    private fun pintarDatos()
+    {
+        findViewById<TextView>(R.id.LblResultadoPuntos).text = getString(R.string.puntos_cantidad, sesion.finalScore)
+        findViewById<TextView>(R.id.LblResultadoAciertos).text = sesion.hits.toString()
+        findViewById<TextView>(R.id.LblResultadoFallos).text = sesion.errorsMade.toString()
+        findViewById<TextView>(R.id.LblResultadoEscapados).text = sesion.molesEscaped.toString()
+        findViewById<TextView>(R.id.LblResultadoDorados).text = sesion.goldenHits.toString()
+        findViewById<TextView>(R.id.LblResultadoRacha).text = sesion.maxCombo.toString()
 
-        val imagenes = listOf<ImageView>(binding.imgEstrella1, binding.imgEstrella2, binding.imgEstrella3)
-
-        // Título, estrellas y dibujo según cómo ha terminado
-        if (resultado == Constantes.VICTORIA) {
-            binding.imgTopo.setImageResource(tema.topoNormal)
-            if (modo == Juego.HISTORIA && estrellas < 3) {
-                binding.lblTitulo.text = "¡Nivel superado!"
-            } else {
-                binding.lblTitulo.text = "¡Objetivo conseguido!"
-            }
-        } else if (resultado == Constantes.SIN_VIDAS) {
-            binding.imgTopo.setImageResource(tema.topoBurlon)
-            binding.lblTitulo.text = "¡Se acabaron las vidas!"
-        } else {
-            binding.imgTopo.setImageResource(tema.topoBurlon)
-            binding.lblTitulo.text = "¡Se acabó el tiempo!"
+        // Récord: si no había jugado nunca o ha superado el anterior, ¡nuevo récord!
+        val lblResultadoSubtitulo = findViewById<TextView>(R.id.LblResultadoSubtitulo)
+        val record = dificultad.record
+        if(record != null && sesion.finalScore == record)
+        {
+            lblResultadoSubtitulo.text = getString(R.string.resultado_igualado)
         }
-
-        if (modo == Juego.HISTORIA) {
-            for (i in 0..2) {
-                if (i < estrellas) {
-                    imagenes[i].setImageResource(R.drawable.estrella_llena)
-                } else {
-                    imagenes[i].setImageResource(R.drawable.estrella_vacia)
-                }
-            }
-            if (resultado != Constantes.VICTORIA) {
-                binding.lblSubtitulo.text = "¡Casi! Inténtalo otra vez"
-            } else if (objetivo > 0 && estrellas < 3) {
-                binding.lblSubtitulo.text = "Consigue " + objetivo + " puntos para las 3 estrellas"
-            }
-        } else if (modo == Juego.INFINITO) {
-            for (img in imagenes) {
-                img.setImageResource(R.drawable.corazon_vacio)
-            }
-            val record = Juego.record(modo, dificultad)
-            if (puntos >= record) {
-                binding.lblSubtitulo.text = "¡Es tu mejor partida!"
-            } else {
-                binding.lblSubtitulo.text = "Récord: " + record + " · ¡Te faltan " + (record - puntos) + "!"
-            }
-        } else {
-            // Contrarreloj: sin estrellas
-            binding.layEstrellas.visibility = View.GONE
-            if (resultado == Constantes.VICTORIA) {
-                binding.lblSubtitulo.text = "Objetivo: " + objetivo
-            } else {
-                binding.lblSubtitulo.text = "¡Casi! Te faltaron " + (objetivo - puntos) + " puntos"
-            }
+        else if(record == null || sesion.finalScore > record)
+        {
+            findViewById<TextView>(R.id.LblResultadoNuevoRecord).visibility = View.VISIBLE
+            lblResultadoSubtitulo.text = getString(R.string.resultado_mejor)
+            Sonidos.efecto(Sonidos.VICTORIA)
         }
-
-        // Botón "Siguiente" solo en Historia, si se ha superado y hay otro nivel
-        val haySiguiente = modo == Juego.HISTORIA && resultado == Constantes.VICTORIA && nivel < Juego.niveles.size
-        if (haySiguiente) {
-            binding.btnSiguiente.visibility = View.VISIBLE
-        } else {
-            binding.btnSiguiente.visibility = View.GONE
-        }
-        if (resultado != Constantes.VICTORIA) {
-            binding.btnRepetir.text = getString(R.string.reintentar)
-        }
-
-        binding.btnRepetir.setOnClickListener {
-            jugar(modo, dificultad, nivel)
-        }
-        binding.btnSiguiente.setOnClickListener {
-            // Volvemos al mapa, que abre el aviso del nivel siguiente
-            val intent = Intent(this, MapaHistoriaActivity::class.java)
-            intent.putExtra(Constantes.NIVEL, nivel + 1)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(intent)
-            finish()
-        }
-        binding.btnMenu.setOnClickListener {
-            val intent = Intent(this, MenuActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(intent)
-            finish()
+        else
+        {
+            lblResultadoSubtitulo.text = getString(R.string.resultado_record, record, record - sesion.finalScore)
         }
     }
 
-    private fun jugar(modo: String, dificultad: String, nivel: Int) {
-        val intent = Intent(this, PartidaActivity::class.java)
-        intent.putExtra(Constantes.MODO, modo)
-        intent.putExtra(Constantes.DIFICULTAD, dificultad)
-        intent.putExtra(Constantes.NIVEL, nivel)
-        startActivity(intent)
-        finish()
+    // POST api/sesiones. Si va bien, se piden otra vez las dificultades para ver si se ha abierto alguna.
+    private fun guardarPartida()
+    {
+        val token = GestorSesion.cabecera(this)
+        val sesionApi = RetrofitAddSesionClient.getInstance().create(ApiAddSesion::class.java)
+
+        GlobalScope.launch()
+        {
+            try
+            {
+                val call = sesionApi.addSesion(token, sesion)
+                val response = call.execute()
+                val creada = response.body()
+
+                if(creada != null)
+                {
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            lblResultadoGuardado.text = getString(R.string.resultado_guardada)
+                        }
+                    }
+                    comprobarDesbloqueo(token)
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            activarBotones(true)
+                        }
+                    }
+                }
+                else
+                {
+                    // Esta parte es de información externa que no sale en los vídeos
+                    // (response.code() es el código HTTP con el que ha respondido la API)
+                    val codigo = response.code()
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            lblResultadoGuardado.text = getString(R.string.error_guardar_partida)
+                            activarBotones(true)
+                            Avisos.errorApi(this@ResultadoActivity, codigo)
+                        }
+                    }
+                }
+            }
+            catch(e: Exception)
+            {
+                runOnUiThread()
+                {
+                    if(pantallaActiva())
+                    {
+                        lblResultadoGuardado.text = getString(R.string.error_guardar_partida)
+                        activarBotones(true)
+                        Avisos.errorConexion(this@ResultadoActivity)
+                    }
+                }
+            }
+        }
+    }
+
+    // Se llama desde la corrutina de guardarPartida, después del POST (una llamada detrás de otra).
+    // Si la dificultad siguiente estaba cerrada por puntos y ahora está abierta, se celebra.
+    private fun comprobarDesbloqueo(token: String)
+    {
+        val dificultadesApi = RetrofitGetDificultadesClient.getInstance().create(ApiGetDificultades::class.java)
+        try
+        {
+            val call = dificultadesApi.getDificultades(token)
+            val response = call.execute()
+            val estados = response.body()
+            if(estados != null)
+            {
+                // Récord que tenía en esta dificultad ANTES de la partida
+                var recordAntes = 0
+                val record = dificultad.record
+                if(record != null)
+                {
+                    recordAntes = record
+                }
+
+                var abierta = ""
+                for(estado in estados)
+                {
+                    val esLaSiguiente = estado.dificultadAnterior == dificultad.nombre
+                    val antesCerrada = recordAntes < estado.puntosDesbloqueo
+                    val laAbreEsta = sesion.finalScore >= estado.puntosDesbloqueo
+                    if(esLaSiguiente && estado.abierta && antesCerrada && laAbreEsta)
+                    {
+                        abierta = estado.nombre
+                    }
+                }
+                if(abierta != "")
+                {
+                    runOnUiThread()
+                    {
+                        if(pantallaActiva())
+                        {
+                            lblResultadoDesbloqueo.text = getString(R.string.resultado_desbloqueada, abierta)
+                            lblResultadoDesbloqueo.visibility = View.VISIBLE
+                            Sonidos.efecto(Sonidos.COMBO)
+                        }
+                    }
+                }
+            }
+        }
+        catch(e: Exception)
+        {
+            // Sin conexión: no se puede saber si se ha abierto; lo verá en la pantalla de dificultades
+        }
     }
 }

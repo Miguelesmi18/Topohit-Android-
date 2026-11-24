@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ranking: una pestaña por dificultad y la lista de los 10 mejores -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ImgRankingFondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_partida_normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margen_pequeno">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/BtnRankingAtras"
+                style="@style/BotonRedondo"
+                android:contentDescription="@string/volver"
+                android:text="@string/atras" />
+
+            <TextView
+                style="@style/Titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:shadowColor="@color/blanco"
+                android:shadowRadius="8"
+                android:text="@string/ranking" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/LayRankingPanel"
+            android:layout_width="@dimen/ancho_panel_ranking"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margen_pequeno"
+            android:layout_weight="1"
+            android:background="@drawable/panel_crema"
+            android:orientation="vertical"
+            android:padding="@dimen/separacion">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/BtnRankingFacil"
+                    style="@style/BotonTema"
+                    android:layout_marginEnd="@dimen/separacion_pequena"
+                    android:background="@drawable/btn_naranja" />
+
+                <TextView
+                    android:id="@+id/BtnRankingNormal"
+                    style="@style/BotonTema"
+                    android:layout_marginEnd="@dimen/separacion_pequena"
+                    android:background="@drawable/btn_verde" />
+
+                <TextView
+                    android:id="@+id/BtnRankingDificil"
+                    style="@style/BotonTema"
+                    android:background="@drawable/btn_verde" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/LblRankingVacio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margen"
+                android:gravity="center"
+                android:text="@string/cargando"
+                android:textColor="@color/marron"
+                android:textSize="@dimen/texto_normal" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/LstRanking"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/separacion_pequena"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

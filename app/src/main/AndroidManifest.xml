@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Para llamar a la API (vídeo 35) -->
+    <!-- Para llamar a la API (REGLA-0489-067) -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- usesCleartextTraffic: la API va por http (puerto 5110), no por https -->
+    <!-- Esta parte es de información externa que no sale en los vídeos
+         (usesCleartextTraffic: la API del ordenador de clase va por http, no por https) -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,7 +15,7 @@
         android:theme="@style/Theme.Topohit"
         android:usesCleartextTraffic="true">
 
-        <!-- Todas las pantallas en horizontal: el juego es para tablet -->
+        <!-- Todas las pantallas en horizontal: el juego es para tablet (REGLA-0489-041) -->
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true"
@@ -27,14 +28,12 @@
         </activity>
         <activity android:name=".activities.RegistroActivity" android:screenOrientation="sensorLandscape" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".activities.MenuActivity" android:screenOrientation="sensorLandscape" />
-        <activity android:name=".activities.ModoActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.DificultadActivity" android:screenOrientation="sensorLandscape" />
-        <activity android:name=".activities.MapaHistoriaActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.PartidaActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.ResultadoActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.PerfilActivity" android:screenOrientation="sensorLandscape" />
-        <activity android:name=".activities.RecordsActivity" android:screenOrientation="sensorLandscape" />
-        <activity android:name=".activities.AjustesActivity" android:screenOrientation="sensorLandscape" android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".activities.RankingActivity" android:screenOrientation="sensorLandscape" />
+        <activity android:name=".activities.AjustesActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.ComoJugarActivity" android:screenOrientation="sensorLandscape" />
     </application>
 
