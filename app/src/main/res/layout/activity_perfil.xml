@@ -77,6 +77,16 @@
                     android:layout_weight="1" />
 
                 <TextView
+                    android:id="@+id/BtnPerfilEstadisticas"
+                    style="@style/BotonJuego"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/alto_boton_pequeno"
+                    android:layout_marginBottom="@dimen/margen_pequeno"
+                    android:background="@drawable/btn_naranja"
+                    android:text="@string/mis_estadisticas"
+                    android:textSize="@dimen/texto_normal" />
+
+                <TextView
                     android:id="@+id/BtnPerfilCambiarAvatar"
                     style="@style/BotonJuego"
                     android:layout_width="match_parent"

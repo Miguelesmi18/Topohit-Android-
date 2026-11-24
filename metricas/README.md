@@ -43,15 +43,24 @@ Resultado con la semilla 42: accuracy 0,913, precision 0,875, recall 1,0 y ROC-A
 Las variables más importantes son los errores por minuto (0,67) y las ayudas (0,18): el modelo **descubre las reglas
 de frustración** que se programaron.
 
-## Pestaña «Mètriques» (tablet)
+## Pestaña «Mètriques» (tablet): hecha
+
+Al final se ha hecho como pidió el equipo: **en la tablet, las estadísticas propias del niño**.
+- El script es `app/src/main/python/estadisticas_jugador.py`, con el mismo estilo que `03_analisis.py`.
+- Recibe las partidas de `GET api/sesiones/mias` desde Kotlin y devuelve los números y 7 gráficas en base64.
+- Chaquopy usa Python 3.13. En Chaquopy, scikit-learn solo existe hasta Python 3.10, así que **el modelo no va en la tablet**.
+
+`03_analisis.py` (todos los jugadores, con el modelo de abandono) es para el **escritorio**:
+
+## generar_informe() (escritorio)
 
 `generar_informe(ruta_csv)` de `03_analisis.py` devuelve un diccionario con tres partes:
 - `metricas`: los números;
 - `modelo`: accuracy, precision, recall y ROC-AUC;
 - `graficas`: cada gráfica en PNG y base64.
 
-Es lo que llamará la app Android con Chaquopy. No lleva textos de conclusiones, como pide el PDF.
-En el escritorio se pueden enseñar los PNG de `graficas/` y los números de `graficas/metricas.json`.
+No lleva textos de conclusiones, como pide el PDF. En el escritorio se enseñarán los PNG de `graficas/` y los
+números de `graficas/metricas.json`, con las partidas de `GET api/sesiones/todas`.
 
 ## Código externo
 

@@ -123,6 +123,14 @@
     <string name="porcentaje">%1$d %%</string>
     <string name="partida_abandonada">Abandonada</string>
     <string name="partida_terminada">Terminada</string>
+    <string name="mis_estadisticas">Mis estadísticas</string>
+    <string name="preparando_estadisticas">Preparando tus estadísticas…</string>
+    <string name="error_estadisticas">No se han podido preparar las estadísticas</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="puntos_de_media">Puntos de media</string>
+    <string name="duracion_media">Segundos por partida</string>
+    <string name="dias_jugados">Días jugados</string>
+    <string name="ayudas_por_partida">Ayudas por partida</string>
     <string name="perfil_sin_partidas">Todavía no has jugado ninguna partida</string>
     <string name="guardar">Guardar</string>
     <string name="cancelar">Cancelar</string>

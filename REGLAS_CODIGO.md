@@ -153,6 +153,10 @@ Ejemplos que ya están en la app, con su motivo:
 | jBCrypt | el profesor de 0490 da `jbcrypt.jar`, pero ningún vídeo lo programa |
 | `usesCleartextTraffic` | la API va por `http` en el ordenador de clase |
 | `Intent.flags` (`CLEAR_TASK`, `CLEAR_TOP`) | cerrar sesión o volver al menú sin dejar pantallas detrás |
+| Chaquopy (`Python.start`, `getModule`, `callAttr`) | el reto de Métricas pide ejecutar Python dentro de la app |
+| `Base64` + `BitmapFactory` | pintar las gráficas que Python manda en base64 |
+| `android:pageSizeCompat` | que numpy funcione en las tablets con páginas de 16 KB |
+| En Python: backend `Agg`, `base64` | dibujar sin ventana y pasar las gráficas a la app |
 
 Para elegir agujero y tipo de topo se usa `java.util.Random`, que sí sale en clase (087).
 

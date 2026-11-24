@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mis estadísticas (pestaña «Mètriques»): los números del niño arriba y sus gráficas debajo -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ImgMetricasFondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_partida_normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margen_pequeno">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/BtnMetricasAtras"
+                style="@style/BotonRedondo"
+                android:contentDescription="@string/volver"
+                android:text="@string/atras" />
+
+            <TextView
+                style="@style/Titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:shadowColor="@color/blanco"
+                android:shadowRadius="8"
+                android:text="@string/mis_estadisticas" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/LayMetricasPanel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margen_pequeno"
+            android:layout_weight="1"
+            android:background="@drawable/panel_crema"
+            android:orientation="vertical"
+            android:padding="@dimen/separacion">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout style="@style/CajaDato">
+
+                    <TextView
+                        android:id="@+id/LblMetricasPartidas"
+                        style="@style/DatoNumero"
+                        android:text="@string/sin_dato" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/partidas" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/CajaDato">
+
+                    <TextView
+                        android:id="@+id/LblMetricasRecord"
+                        style="@style/DatoNumero"
+                        android:text="@string/sin_dato" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/record_minuscula" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/CajaDato">
+
+                    <TextView
+                        android:id="@+id/LblMetricasMedia"
+                        style="@style/DatoNumero"
+                        android:text="@string/sin_dato" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/puntos_de_media" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/CajaDato">
+
+                    <TextView
+                        android:id="@+id/LblMetricasPrecision"
+                        style="@style/DatoNumero"
+                        android:text="@string/sin_dato" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/precision" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/CajaDato">
+
+                    <TextView
+                        android:id="@+id/LblMetricasDuracion"
+                        style="@style/DatoNumero"
+                        android:text="@string/sin_dato" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/duracion_media" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/CajaDato">
+
+                    <TextView
+                        android:id="@+id/LblMetricasDias"
+                        style="@style/DatoNumero"
+                        android:text="@string/sin_dato" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/dias_jugados" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/CajaDato">
+
+                    <TextView
+                        android:id="@+id/LblMetricasAyudas"
+                        style="@style/DatoNumero"
+                        android:text="@string/sin_dato" />
+
+                    <TextView
+                        style="@style/DatoEtiqueta"
+                        android:text="@string/ayudas_por_partida" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/LblMetricasEstado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margen"
+                android:gravity="center"
+                android:text="@string/preparando_estadisticas"
+                android:textColor="@color/marron"
+                android:textSize="@dimen/texto_normal" />
+
+            <TextView
+                android:id="@+id/BtnMetricasReintentar"
+                style="@style/BotonJuego"
+                android:layout_width="@dimen/ancho_boton_reintentar"
+                android:layout_height="@dimen/alto_boton_pequeno"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/separacion"
+                android:background="@drawable/btn_verde"
+                android:text="@string/reintentar"
+                android:textSize="@dimen/texto_normal"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/LstMetricasGraficas"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/separacion_pequena"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

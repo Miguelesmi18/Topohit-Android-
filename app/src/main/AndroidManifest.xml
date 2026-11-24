@@ -5,7 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Esta parte es de información externa que no sale en los vídeos
-         (usesCleartextTraffic: la API del ordenador de clase va por http, no por https) -->
+         (usesCleartextTraffic: la API del ordenador de clase va por http, no por https;
+          pageSizeCompat: en las tablets nuevas con páginas de memoria de 16 KB, las librerías de
+          cálculo de Python (numpy) solo funcionan en el modo de compatibilidad; en las demás no hace nada) -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Topohit"
+        android:pageSizeCompat="enabled"
         android:usesCleartextTraffic="true">
 
         <!-- Todas las pantallas en horizontal: el juego es para tablet (REGLA-0489-041) -->
@@ -33,6 +36,7 @@
         <activity android:name=".activities.ResultadoActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.PerfilActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.RankingActivity" android:screenOrientation="sensorLandscape" />
+        <activity android:name=".activities.MetricasActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.AjustesActivity" android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.ComoJugarActivity" android:screenOrientation="sensorLandscape" />
     </application>

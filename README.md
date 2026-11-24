@@ -21,6 +21,27 @@ Tiene una pestaña por dificultad, con los 10 mejores récords, y la pestaña **
 récord de cada una, para que los niños compitan entre ellos aunque jueguen en dificultades distintas.
 La fila del jugador va resaltada.
 
+## Mis estadísticas (pestaña «Mètriques» del reto de Métricas)
+
+Se abre desde **Perfil → Mis estadísticas** y enseña las métricas **propias** del niño que ha entrado.
+
+1. `MetricasActivity` pide sus partidas a la API (`GET api/sesiones/mias`).
+2. Se las pasa en JSON a `app/src/main/python/estadisticas_jugador.py`, que se ejecuta dentro de la app con **Chaquopy**.
+3. Python devuelve los números (partidas, récord, puntos de media, precisión, segundos por partida, días jugados y
+   ayudas) y 7 gráficas de Matplotlib en base64. `GraficasAdapter` las pinta de dos en dos.
+
+Las estadísticas de todos los niños y el modelo de abandono van en el escritorio.
+
+Lo que cambia en la app por Chaquopy:
+
+- **Python 3.13** con pandas 2.1 y matplotlib 3.8. Solo para `arm64-v8a` (tablets) y `x86_64` (emulador).
+  El APK de depuración pasa de unos 16 MB a unos 115 MB.
+- **`minSdk` 24** (Android 7.0), porque esos paquetes de Chaquopy lo piden. Antes era 23.
+- **`compileSdk` 36** y `android:pageSizeCompat="enabled"` en el manifest. Los emuladores y tablets nuevos
+  (Android 15 o más, con páginas de memoria de 16 KB) no cargan la librería de cálculo de numpy de Chaquopy, que está
+  hecha para 4 KB. Con ese atributo funciona en modo de compatibilidad. En las tablets normales no hace nada.
+  Probado en el emulador `ps16k` de Android 17.
+
 ## Métricas (carpeta `metricas/`)
 
 Contiene el pipeline en Python del reto «Mètriques dels jocs»: el playtest, la simulación de 400 sesiones, las gráficas,
@@ -31,11 +52,13 @@ el árbol de decisión y el informe PDF. Está aquí porque la pestaña «Mètri
 
 1. Android Studio → **Open** → esta carpeta. Si Gradle dice que no admite la versión de Java (por ejemplo «25.0.3»),
    en *Settings → Build Tools → Gradle → Gradle JDK* elegid un **JDK 17 o 21** (Gradle 8.9 no funciona con Java 25).
-2. Arrancad la API (perfil **http**, puerto 5110). Hace falta `07_solo_infinito.sql` en la base de datos.
-3. Ejecutad la app en un emulador de **tablet en horizontal** (por ejemplo *Pixel Tablet*).
+2. **Instalad Python 3.13** en el ordenador. Chaquopy lo usa al compilar para meter pandas y matplotlib en la app.
+   En Windows: `pymanager install 3.13` o el instalador de python.org. La primera compilación descarga unos 30 MB de paquetes.
+3. Arrancad la API (perfil **http**, puerto 5110). Hace falta `07_solo_infinito.sql` en la base de datos.
+4. Ejecutad la app en un emulador de **tablet en horizontal** (por ejemplo *Pixel Tablet*).
    - Desde el emulador la API está en `http://10.0.2.2:5110/api/` (`SharedData.PROJECT_ROOT`).
    - En una tablet de verdad: cambiad la IP en `SharedData.PROJECT_ROOT` (misma wifi y puerto 5110 abierto en el cortafuegos).
-4. Usuarios de prueba: `marc` / `marc1234`, `ona` / `ona1234`… También se puede **Crear cuenta** eligiendo avatar.
+5. Usuarios de prueba: `marc` / `marc1234`, `ona` / `ona1234`… También se puede **Crear cuenta** eligiendo avatar.
 
 ## Pantallas
 

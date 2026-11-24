@@ -1,5 +1,6 @@
 package com.groundstudio.topohit.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
@@ -78,6 +79,11 @@ class PerfilActivity : PantallaBase()
             finish()
         }
 
+        findViewById<TextView>(R.id.BtnPerfilEstadisticas).setOnClickListener()
+        {
+            startActivity(Intent(this, MetricasActivity::class.java))
+        }
+
         findViewById<TextView>(R.id.BtnPerfilCambiarAvatar).setOnClickListener()
         {
             avataresAdapter.setElegido(GestorSesion.getAvatar(this))
@@ -113,6 +119,7 @@ class PerfilActivity : PantallaBase()
         findViewById<LinearLayout>(R.id.LayPerfilHistorial).setBackgroundResource(tema.panel)
         findViewById<LinearLayout>(R.id.LayPerfilPanelAvatares).setBackgroundResource(tema.panel)
         findViewById<TextView>(R.id.BtnPerfilCambiarAvatar).setBackgroundResource(tema.botonSecundario)
+        findViewById<TextView>(R.id.BtnPerfilEstadisticas).setBackgroundResource(tema.botonPrincipal)
         btnPerfilGuardarAvatar.setBackgroundResource(tema.botonPrincipal)
         val textos = listOf<TextView>(findViewById(R.id.LblPerfilNombre), findViewById(R.id.LblPerfilHistorialTitulo),
                                       findViewById(R.id.LblPerfilElige), lblPerfilVacio)
