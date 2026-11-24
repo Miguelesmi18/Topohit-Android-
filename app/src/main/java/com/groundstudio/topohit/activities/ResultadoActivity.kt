@@ -44,7 +44,9 @@ class ResultadoActivity : PantallaBase()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resultado)
 
+        // getSerializableExtra: recoge el objeto que ha enviado la pantalla anterior en el Intent (as Tipo lo convierte)
         sesion = intent.getSerializableExtra(resultadoConstants.SESION) as SesionNueva
+        // getSerializableExtra: recoge el objeto que ha enviado la pantalla anterior en el Intent (as Tipo lo convierte)
         dificultad = intent.getSerializableExtra(resultadoConstants.DIFICULTAD) as EstadoDificultad
         lblResultadoGuardado   = findViewById<TextView>(R.id.LblResultadoGuardado)
         lblResultadoDesbloqueo = findViewById<TextView>(R.id.LblResultadoDesbloqueo)
@@ -139,6 +141,9 @@ class ResultadoActivity : PantallaBase()
         val token = GestorSesion.cabecera(this)
         val sesionApi = RetrofitAddSesionClient.getInstance().create(ApiAddSesion::class.java)
 
+        // GlobalScope.launch: lo de dentro se ejecuta en segundo plano. Las llamadas a la API tardan y,
+        // si se hicieran en el hilo de la pantalla, la app se congelaría (Android no lo deja).
+        // Dentro, call.execute() espera la respuesta y response.body() es el JSON ya pasado a objetos (null si hay error).
         GlobalScope.launch()
         {
             try
@@ -149,6 +154,8 @@ class ResultadoActivity : PantallaBase()
 
                 if(creada != null)
                 {
+                    // runOnUiThread: las vistas solo se pueden cambiar desde el hilo de la pantalla, no desde el launch.
+                    // pantallaActiva() comprueba que el niño no ha salido de la pantalla mientras llegaba la respuesta.
                     runOnUiThread()
                     {
                         if(pantallaActiva())

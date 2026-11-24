@@ -101,6 +101,7 @@ class RankingAdapter (private val context: Context,
     fun setPuestos(nuevos: List<PuestoRanking>)
     {
         puestos = nuevos
+        // notifyDataSetChanged: avisa al RecyclerView de que la lista ha cambiado para que la vuelva a pintar
         notifyDataSetChanged()
     }
 }

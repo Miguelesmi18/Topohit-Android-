@@ -168,6 +168,7 @@ class DificultadesAdapter (private val context: Context,
     fun setDificultades(nuevas: List<EstadoDificultad>)
     {
         dificultades = nuevas
+        // notifyDataSetChanged: avisa al RecyclerView de que la lista ha cambiado para que la vuelva a pintar
         notifyDataSetChanged()
     }
 

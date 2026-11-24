@@ -100,6 +100,9 @@ class LoginActivity : PantallaBase()
             cargando(true)
             val loginApi = RetrofitLoginClient.getInstance().create(ApiLogin::class.java)
 
+            // GlobalScope.launch: lo de dentro se ejecuta en segundo plano. Las llamadas a la API tardan y,
+            // si se hicieran en el hilo de la pantalla, la app se congelaría (Android no lo deja).
+            // Dentro, call.execute() espera la respuesta y response.body() es el JSON ya pasado a objetos (null si hay error).
             GlobalScope.launch()
             {
                 try
@@ -111,6 +114,8 @@ class LoginActivity : PantallaBase()
                     val response = call.execute()
                     val respuesta = response.body()
 
+                    // runOnUiThread: las vistas solo se pueden cambiar desde el hilo de la pantalla, no desde el launch.
+                    // pantallaActiva() comprueba que el niño no ha salido de la pantalla mientras llegaba la respuesta.
                     runOnUiThread()
                     {
                         if(pantallaActiva())

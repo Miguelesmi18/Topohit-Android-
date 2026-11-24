@@ -94,6 +94,7 @@ class HistorialAdapter (private val context: Context,
     fun setPartidas(nuevas: List<Partida>)
     {
         partidas = nuevas
+        // notifyDataSetChanged: avisa al RecyclerView de que la lista ha cambiado para que la vuelva a pintar
         notifyDataSetChanged()
     }
 }

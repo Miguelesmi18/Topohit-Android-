@@ -59,6 +59,7 @@ class GraficasAdapter (private val context: Context,
     fun setGraficas(nuevas: List<Grafica>)
     {
         graficas = nuevas
+        // notifyDataSetChanged: avisa al RecyclerView de que la lista ha cambiado para que la vuelva a pintar
         notifyDataSetChanged()
     }
 }

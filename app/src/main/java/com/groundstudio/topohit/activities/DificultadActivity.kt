@@ -55,6 +55,7 @@ class DificultadActivity : PantallaBase()
 
         adapter.setOnClickListener()
         {
+            // getChildAdapterPosition(it): la posición en la lista de la fila que se ha pulsado (it es la fila)
             elegir(lstDificultades.getChildAdapterPosition(it))
         }
 
@@ -103,6 +104,9 @@ class DificultadActivity : PantallaBase()
         val token = GestorSesion.cabecera(this)
         val dificultadesApi = RetrofitGetDificultadesClient.getInstance().create(ApiGetDificultades::class.java)
 
+        // GlobalScope.launch: lo de dentro se ejecuta en segundo plano. Las llamadas a la API tardan y,
+        // si se hicieran en el hilo de la pantalla, la app se congelaría (Android no lo deja).
+        // Dentro, call.execute() espera la respuesta y response.body() es el JSON ya pasado a objetos (null si hay error).
         GlobalScope.launch()
         {
             try
@@ -113,6 +117,8 @@ class DificultadActivity : PantallaBase()
 
                 if(local != null)
                 {
+                    // runOnUiThread: las vistas solo se pueden cambiar desde el hilo de la pantalla, no desde el launch.
+                    // pantallaActiva() comprueba que el niño no ha salido de la pantalla mientras llegaba la respuesta.
                     runOnUiThread()
                     {
                         if(pantallaActiva())

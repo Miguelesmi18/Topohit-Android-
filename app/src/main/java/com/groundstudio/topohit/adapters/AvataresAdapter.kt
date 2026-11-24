@@ -64,6 +64,7 @@ class AvataresAdapter (private val context: Context,
     fun setElegido(avatarId: Int)
     {
         elegido = avatarId
+        // notifyDataSetChanged: avisa al RecyclerView de que la lista ha cambiado para que la vuelva a pintar
         notifyDataSetChanged()
     }
 
