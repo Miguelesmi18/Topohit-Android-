@@ -13,6 +13,7 @@ Actualizado: 24/11/2026.
 3. **Cada partida se envía a la API** (`POST api/sesiones`) con `modeId = 3`, la `difficulty` **con tilde**
    tal como la devuelve la API (`Fácil`, `Normal`, `Difícil`) y `levelReached = null`.
    `nAttempts = hits + errorsMade`. `avgReactionMs = null` si no ha golpeado ningún topo.
+   `helpClicks` = veces que ha pulsado la ayuda (?) en la partida.
 4. **Una dificultad cerrada no se puede jugar.** Se pinta con el candado y debajo:
    - si le faltan puntos: «Consigue X puntos en <anterior> para desbloquearla»;
    - si la ha bloqueado el tutor: el motivo del tutor o, si no hay, «Tu tutor ha bloqueado esta dificultad».

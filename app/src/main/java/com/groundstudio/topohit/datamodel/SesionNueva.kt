@@ -6,6 +6,7 @@ import java.io.Serializable
 // Lo que se envía a POST api/sesiones al acabar una partida.
 // Reglas de la API: modeId = 3 (Infinito), difficulty con tilde, levelReached = null,
 // nAttempts = hits + errorsMade y avgReactionMs = null si no se ha golpeado ningún topo.
+// helpClicks = veces que se ha pulsado la ayuda (?) durante la partida (métrica de abandono).
 // Es Serializable porque PartidaActivity se la pasa a ResultadoActivity, que es quien la envía.
 data class SesionNueva (@SerializedName("modeId") var modeId: Int,
                         @SerializedName("sessionLength") var sessionLength: Int,
@@ -19,4 +20,5 @@ data class SesionNueva (@SerializedName("modeId") var modeId: Int,
                         @SerializedName("maxCombo") var maxCombo: Int,
                         @SerializedName("goldenHits") var goldenHits: Int,
                         @SerializedName("abandoned") var abandoned: Boolean,
-                        @SerializedName("avgReactionMs") var avgReactionMs: Int?) : Serializable
+                        @SerializedName("avgReactionMs") var avgReactionMs: Int?,
+                        @SerializedName("helpClicks") var helpClicks: Int) : Serializable

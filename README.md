@@ -68,4 +68,4 @@ com.groundstudio.topohit
 
 `modeId = 3`, `difficulty` con tilde (`Fácil`…), `levelReached = null`, `sessionLength`, `errorsMade`, `finalScore`,
 `nAttempts = hits + errorsMade`, `molesEscaped`, `hits`, `maxCombo`, `goldenHits`, `abandoned` (salir desde la pausa)
-y `avgReactionMs` (`null` si no ha golpeado ningún topo).
+`avgReactionMs` (`null` si no ha golpeado ningún topo) y `helpClicks` (veces que ha pulsado la ayuda ?).

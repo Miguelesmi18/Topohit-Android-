@@ -88,6 +88,7 @@ class PartidaActivity : PantallaBase()
     private var racha = 0
     private var mejorRacha = 0
     private var doradosGolpeados = 0
+    private var ayudas = 0                    // veces que pulsa la ayuda ? (helpClicks)
     private var sumaReaccion = 0L
     private var numReacciones = 0
 
@@ -728,6 +729,7 @@ class PartidaActivity : PantallaBase()
             lblPartidaMensaje.visibility = View.GONE
             if(conAyuda)
             {
+                ayudas++
                 layPartidaAyuda.visibility = View.VISIBLE
                 layPartidaPausa.visibility = View.GONE
             }
@@ -775,7 +777,7 @@ class PartidaActivity : PantallaBase()
         val segundos = Math.max(1, (reloj / 1000).toInt())
         return SesionNueva(SharedData.MODO_INFINITO, segundos, fallos, puntos, dificultad.nombre, null,
                            aciertos + fallos, escapados, aciertos, mejorRacha, doradosGolpeados,
-                           abandonada, reaccion)
+                           abandonada, reaccion, ayudas)
     }
 
     // Se han acabado las vidas: el resultado se enseña y se guarda en ResultadoActivity
