@@ -13,6 +13,8 @@ siguiendo lo que se enseña en clase (módulo 0489). Las normas de código está
 - Los puntos de desbloqueo, las vidas y la aceleración se cambian en el escritorio (pantalla **Dificultades**).
 - Todo lo decide la API (`GET api/sesiones/dificultades`); la tablet solo lo pinta. La API tampoco deja guardar
   partidas de una dificultad cerrada (403).
+- **Cambios del 24/11 (4):** Historia y Contrarreloj se han borrado también de la base de datos y de la API.
+  `SesionNueva` ya no lleva `levelReached`. Probado en el emulador el 25/11: login, dificultades, partida guardada y ranking.
 
 ## Ranking
 
@@ -102,6 +104,6 @@ com.groundstudio.topohit
 
 ## Datos que se envían (`POST api/sesiones`)
 
-`modeId = 3`, `difficulty` con tilde (`Fácil`…), `levelReached = null`, `sessionLength`, `errorsMade`, `finalScore`,
+`modeId = 3`, `difficulty` con tilde (`Fácil`…), `sessionLength`, `errorsMade`, `finalScore`,
 `nAttempts = hits + errorsMade`, `molesEscaped`, `hits`, `maxCombo`, `goldenHits`, `abandoned` (salir desde la pausa)
 `avgReactionMs` (`null` si no ha golpeado ningún topo) y `helpClicks` (veces que ha pulsado la ayuda ?).
