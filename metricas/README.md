@@ -17,6 +17,8 @@ python 02_simulacion.py
 python 03_analisis.py
 ```
 
+Las **conclusiones** para la presentación técnica están en [`CONCLUSIONES.md`](CONCLUSIONES.md).
+
 ## Reglas de la simulación
 
 - **Habilidad:** cada niño tiene una habilidad entre 0 y 1. Cuanta más tiene, más dura la partida, más puntos y aciertos
