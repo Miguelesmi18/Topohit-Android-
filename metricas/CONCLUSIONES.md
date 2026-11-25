@@ -65,17 +65,14 @@ Las variables que más pesan son los **errores por minuto (0,67)** y las **ayuda
 1. **Primera partida más amable (dificultad).** El abandono se decide en la primera partida en Fácil. Que el primer
    minuto vaya más lento (los topos más rato fuera) y que los primeros topos que se escapan no quiten vida: ahora,
    con 5 escapados en Fácil se acaba la partida.
-2. **Que tocar el topo cuente (diseño).** En las pruebas del 25/11 en el emulador, tocar la cabeza del topo, que sobresale
-   por encima del agujero, no cuenta: solo cuenta tocar el agujero. Un niño de 5 años toca el topo. Hacer que toda la imagen
-   del topo reciba el toque bajaría los errores en Fácil, que es la variable que más pesa.
-3. **Ayuda antes de que la pidan (ayudas).** Pedir 2 ayudas ya es señal de abandono. Si un niño falla seguido o pide ayuda
+2. **Ayuda antes de que la pidan (ayudas).** Pedir 2 ayudas ya es señal de abandono. Si un niño falla seguido o pide ayuda
    2 veces, enseñar solo la animación de «toca el topo» y bajar la velocidad un momento.
-4. **Tutorial antes de la primera partida (tutoriales).** Ahora «Cómo jugar» solo sale si se pulsa el botón «?» del menú.
+3. **Tutorial antes de la primera partida (tutoriales).** Ahora «Cómo jugar» solo sale si se pulsa el botón «?» del menú.
    Enseñarlo solo la primera vez, con un topo de práctica que no quita vidas.
-5. **Un paso entre Fácil y Normal (niveles).** Normal es donde más se sale a medias: pasa de 3 a 6 agujeros y acelera más.
+4. **Un paso entre Fácil y Normal (niveles).** Normal es donde más se sale a medias: pasa de 3 a 6 agujeros y acelera más.
    Se puede empezar Normal más lento (aceleración desde el escritorio) o con menos agujeros al principio.
    El tutor ya puede bajar los 500 puntos para abrir Normal si un niño se atasca.
-6. **Volver cada día (retención).** DAU/MAU de 0,11: juegan pocos días. La clasificación total y el aviso de
+5. **Volver cada día (retención).** DAU/MAU de 0,11: juegan pocos días. La clasificación total y el aviso de
    «¡Has desbloqueado…!» ayudan; se podría añadir un reto del día.
 
 ## Siguiente paso
