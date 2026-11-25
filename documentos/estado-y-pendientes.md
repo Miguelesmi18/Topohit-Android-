@@ -112,7 +112,7 @@ El aviso de desbloqueo («¡Has desbloqueado Normal!») se probó de verdad el 2
 ## Para que funcione en otro ordenador
 
 1. `git pull` en los tres repositorios.
-2. **API**: .NET 8, perfil `http`, puerto 5110. `appsettings.json` ya viene en el repositorio (desde el 25/11). Si solo tenéis .NET 9 o superior: `DOTNET_ROLL_FORWARD=Major dotnet run --launch-profile http`.
+2. **API**: .NET 8, perfil `http`, puerto 5110. `appsettings.json` ya viene en el repositorio (desde el 25/11). Si solo tenéis .NET 9 o superior, arranca igual (desde el 25/11 el `.csproj` lleva `RollForward=Major`), también desde Visual Studio.
 3. **Android Studio**: *Settings → Build Tools → Gradle → Gradle JDK* = **JDK 17 o 21**. Gradle 8.9 no funciona con Java 25, que es el que trae el Android Studio nuevo.
 4. **Python**: doble clic en `instalar_librerias.bat` del Android (Python 3.13 para compilar) y del escritorio
    (librerías de la pantalla Métricas).
