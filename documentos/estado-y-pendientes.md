@@ -2,6 +2,17 @@
 
 Actualizado: 25/11/2026 · Equipo: Borja, Miguel y Daniil (DAM)
 
+## Qué se hizo el 25/11/2026 (última parte) · música por temática, informe de métricas, guía y API sin .NET 8
+
+| Qué | Commit | Detalle |
+| --- | --- | --- |
+| **Música por temática** | Android `8234621` | Cada temática tiene su canción: `musica_normal.mp3` (la de antes), `musica_halloween.mp3` («Topos en el prado nocturno», celesta y pizzicato, sin dar miedo, 2:27) y `musica_navidad.mp3` («Tiptoe In The Snow», cascabeles y glockenspiel, 2:57). Campo `musica` en `Tematica`; `Sonidos.cambiarMusica()` para la canción de antes y pone la nueva al elegir la temática en el Menú o en Ajustes. Probado en el emulador (cada cambio para un reproductor y arranca otro, sin errores). **Falta escucharlas en la tablet** |
+| **Informe de métricas v2** | Android `6db15f6`, `3a2ca7d`, `923386f` · escritorio `2cb032c`, `167a365`, `55f1e2f` | `metricas/informe_metricas.pdf`, ahora de **14 páginas**: explicación corta en cada apartado, columna «Qué mide» en los indicadores, hoja «Cómo leer los resultados del modelo» (VP, VN, FP y FN con las cuentas de accuracy, precision y recall, ROC y AUC, importancias) y **dos hojas del árbol de decisión paso a paso** (dibujo simplificado en castellano, cómo leer cada caja, dos niños bajando por el árbol y las reglas que ha aprendido, que coinciden con la regla de frustración de la simulación). Mismos datos y números que la tablet y el escritorio. `analisis.py` del escritorio sigue siendo una copia exacta de `03_analisis.py` |
+| **Guía «Cómo funciona Topohit»** | Android `712a975`, `04dffd6` | `documentos/Guia-como-funciona-Topohit.pdf` (y su `.html`), 13 páginas para estudiar: diagrama de las cuatro piezas, el viaje de una partida, cómo hablan sin cable (IP, puerto, cortafuegos), seguridad, llamadas de la API, archivos y librerías, métricas, sonido y música, puesta en marcha en la Tab A, problemas típicos, glosario, 13 preguntas de repaso y **anexo con usuarios y contraseñas** |
+| **La API arranca sin .NET 8** | API `497c261`, `29469f2`, `c1a599a` | `<RollForward>Major</RollForward>` en `TopohitAPI.csproj`: arranca con .NET 9 o superior, también con ▶ en Visual Studio. `instalar_dotnet.bat` comprueba .NET y, si falta, instala el SDK 8 con winget |
+| **Documentos en el repositorio** | Android `bdcfdb1` | Estos documentos están ahora en `Topohit-Android-/documentos/` |
+| **Airtable** | — | Subtareas nuevas en Done: G15.5 (tablet de 32 bits), G14.10 (contraste), G14.11 (icono e imágenes), G14.12 (botón de música), G14.13 (música por temática), G07.9 (contraseña de la BD y arranque sin .NET 8), G12.7 (informe v2), G18.6 (documentos y `.bat`) y G18.7 (guía). Puestas al día G15.4 (el modelo también en la tablet) y G14.5 (accesibilidad, Done). Horas reales aproximadas |
+
 ## Qué se hizo el 25/11/2026 (tarde-noche, 2) · tablet de 32 bits, icono, música e imágenes
 
 | Qué | Detalle |
@@ -19,7 +30,7 @@ Actualizado: 25/11/2026 · Equipo: Borja, Miguel y Daniil (DAM)
 | **Modelo de abandono en la tablet** | Android `366e0ac` | El PDF de Métricas pide que la vista «Mètriques» enseñe el resultado del modelo. En **Perfil → Mis estadísticas** sale ahora la fila «Modelo: ¿volverá a jugar?» (accuracy, precision, recall y ROC-AUC) y 3 gráficas más (matriz de confusión, curva ROC e importancia de cada variable). `modelo_abandono.py` hace con numpy el mismo árbol que el escritorio, porque Chaquopy no tiene scikit-learn para Python 3.13. Da **los mismos números que el escritorio** (0,913 / 0,875 / 1,0 / 0,865), comprobado contra scikit-learn y en el emulador |
 | **Título legible en Halloween** | Android `366e0ac` | El título de 7 pantallas (Ranking, Perfil, Ajustes, Cómo jugar, Dificultades, Crear cuenta y Mis estadísticas) sale del color de la temática (`colorTitulo`): crema con sombra marrón en Halloween; en Normal y Navidad, igual que antes. Probado en el emulador |
 | **Contraseña nueva de la BD** | API `2039d24` | Se cambió la contraseña del login `jocs_dam02` (`ALTER LOGIN`). **Decisión del equipo:** `appsettings.json` **se sube a git** (proyecto de clase en un entorno cerrado); ya no hay que crearlo a mano. Fuera `appsettings.ejemplo.json`. Probado: la API arranca y lee la BD. **Proyectada usa el mismo login: hay que ponerle la contraseña nueva** |
-| **`instalar_librerias.bat`** | Android `366e0ac`, escritorio `56d522c` | Doble clic: instala Python 3.11 con winget si falta, las librerías (`requirements.txt`) y comprueba que se cargan. En el Android, Python 3.13 (Chaquopy) y las de `metricas/`; en el escritorio, las de la pantalla Métricas. Probados los dos |
+| **`instalar_librerias.bat`** | Android `366e0ac`, escritorio `56d522c` | Doble clic: instala Python 3.11 con winget si falta, las librerías (`requirements.txt`) y comprueba que se cargan. En el Android, Python 3.11 (Chaquopy; era 3.13 hasta pasar a la tablet de 32 bits) y las de `metricas/`; en el escritorio, las de la pantalla Métricas. Probados los dos |
 | **Figma** | — | Texto marrón en los botones naranjas y verdes del arte y títulos como en la app (ver «Cuando se pueda») |
 | Documentos | API `7c482a5` y este | README de los 3 repos, `REGLAS_CODIGO.md`, `metricas/README.md`, `CAMBIOS_18-11.md` (histórico), `resumen-del-proyecto.md` (checklist revisado) y `topohit-diseno-del-juego.md` |
 
@@ -214,10 +225,13 @@ El aviso de desbloqueo («¡Has desbloqueado Normal!») se probó de verdad el 2
   que es lo que usan las apps. `api/modos/avatares` no existe ni hace falta (los avatares van dentro de cada app); el README de la
   API lo avisa en la sección del 19/11.
 - [ ] **Entregar el informe de Métricas** (`Topohit-Android-/metricas/informe_metricas.pdf`, la v1 era para el 21/11).
-  **v2 generada el 25/11** (11 páginas): portada, métricas capturadas y derivadas, playtest real y simulación,
-  las 7 gráficas de datos, el modelo (indicadores, matriz de confusión, ROC, importancias y árbol), dónde se ve
-  cada cosa (tablet y escritorio) y un anexo con los archivos y las librerías. Mismos datos y números que las apps.
-  Se genera con `python 03_analisis.py` desde `metricas/`.
+  **v2 generada el 25/11** (14 páginas): portada, métricas capturadas y derivadas, playtest real y simulación,
+  las 7 gráficas de datos, el modelo (indicadores, matriz de confusión, ROC, importancias y árbol), cómo leer los
+  resultados, el árbol de decisión paso a paso, dónde se ve cada cosa (tablet y escritorio) y un anexo con los
+  archivos y las librerías. Mismos datos y números que las apps. Se genera con `python 03_analisis.py` desde `metricas/`.
+- [ ] **Probar en la Galaxy Tab A (32 bits)** la versión nueva: que «Mis estadísticas» funcione con Python 3.11, que suene la
+  canción de cada temática y que la tablet llegue a la API (IP del PC en `SharedData.kt`, misma wifi y puerto 5110 abierto).
+- [ ] **Avisar a Proyectada** de la contraseña nueva de `jocs_dam02` (usa el mismo login).
 - [x] **Figma** (hecho el 25/11 por la noche): en «🎨 Arte · Temáticas», 69 textos de botones, pestañas y chips naranjas y verdes
   pasan a marrón sin contorno (Normal y Halloween), y los 18 títulos sobre el cielo van como en la app: crema con contorno
   marrón en Halloween y marrón con contorno blanco en Normal y Navidad.
