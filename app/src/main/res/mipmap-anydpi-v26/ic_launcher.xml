@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Icono adaptable: el fondo (cielo con rayos de sol y colina) y delante el topo saliendo del agujero con el martillo.
+     El dibujo está dentro de la zona visible del icono (72 dp de 108) para que no se corte en ninguna forma. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@color/verde" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <background android:drawable="@drawable/ic_launcher_fondo" />
+    <foreground android:drawable="@drawable/ic_launcher_frente" />
 </adaptive-icon>

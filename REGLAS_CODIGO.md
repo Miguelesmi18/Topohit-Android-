@@ -158,7 +158,7 @@ Ejemplos que ya están en la app, con su motivo:
 | `Base64` + `BitmapFactory` | pintar las gráficas que Python manda en base64 |
 | `android:pageSizeCompat` | que numpy funcione en las tablets con páginas de 16 KB |
 | `setShadowLayer` | cambiar desde el código la sombra del título según la temática (`PantallaBase.pintarTitulo()`) |
-| En Python: árbol de decisión, `train_test_split` y métricas hechos con numpy (`modelo_abandono.py`) | Chaquopy no tiene scikit-learn para Python 3.13 |
+| En Python: árbol de decisión, `train_test_split` y métricas hechos con numpy (`modelo_abandono.py`) | Chaquopy no tiene scikit-learn para Python 3.11 en 32 bits |
 | En Python: backend `Agg`, `base64` | dibujar sin ventana y pasar las gráficas a la app |
 
 Para elegir agujero y tipo de topo se usa `java.util.Random`, que sí sale en clase (087).

@@ -44,7 +44,7 @@ def tabla_jugadores(df):
 # niños que vuelven y que no en las dos partes (stratify=y)
 
 # Esta parte es de información externa que no sale en los vídeos
-# (Chaquopy no tiene scikit-learn para Python 3.13, así que train_test_split, el árbol de decisión
+# (Chaquopy no tiene scikit-learn para Python 3.11 en 32 bits, así que train_test_split, el árbol de decisión
 #  y las métricas del modelo se hacen aquí con numpy, siguiendo los pasos de scikit-learn.
 #  Con random_state=42 sale la misma separación que en el escritorio y los mismos números)
 

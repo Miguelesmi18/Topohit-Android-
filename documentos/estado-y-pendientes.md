@@ -2,6 +2,16 @@
 
 Actualizado: 25/11/2026 · Equipo: Borja, Miguel y Daniil (DAM)
 
+## Qué se hizo el 25/11/2026 (tarde-noche, 2) · tablet de 32 bits, icono, música e imágenes
+
+| Qué | Detalle |
+| --- | --- |
+| **Tablet de 32 bits** | La tablet de clase es una **Samsung Galaxy Tab A de 32 bits** (`armeabi-v7a`). Chaquopy solo tiene Python 3.11 o anterior para 32 bits, así que la app pasa de **Python 3.13 a 3.11** (pandas 2.1.3, numpy 1.26.2 y matplotlib 3.6.0) y se compila también para `armeabi-v7a`. Los scripts de «Mis estadísticas» se probaron con esas versiones exactas y dan los mismos números; en el emulador funciona. El APK pesa unos 141 MB. **Falta probarlo en la Tab A de verdad.** Para compilar hace falta Python 3.11 (`instalar_librerias.bat` ya lo instala) |
+| **Icono nuevo** | Cielo con rayos de sol, colina, el topo saliendo del agujero, el martillo y estrellas (`ic_launcher_fondo.png` y `ic_launcher_frente.png`), dentro de la zona visible del icono adaptable. También el de Android 7 (`mipmap-xxhdpi/ic_launcher.png`) |
+| **Botón de música en el menú** | Botón redondo con el altavoz (🔊 / 🔇) junto a «?» y Ajustes: pone o quita la música con un toque y lo guarda (lo mismo que el de Ajustes) |
+| **Música de fondo nueva** | `res/raw/musica_fondo.mp3`: instrumental alegre (xilófono, marimba, ukelele) de 2:57, sin el silencio del final para que el bucle no tenga hueco y con el volumen igualado a la anterior |
+| **Imágenes con restos blancos** | Quitada la mancha blanca junto al martillo de `logo_halloween.png`, el blanco dentro de la mecha de `topo_navidad_07_bomba_regalo.png` y los puntitos sueltos alrededor de `topo_normal_09_dorado_golpeado.png`. El resto del dibujo no cambia |
+
 ## Qué se hizo el 25/11/2026 (noche)
 
 | Qué | Commit | Detalle |
@@ -9,7 +19,7 @@ Actualizado: 25/11/2026 · Equipo: Borja, Miguel y Daniil (DAM)
 | **Modelo de abandono en la tablet** | Android `366e0ac` | El PDF de Métricas pide que la vista «Mètriques» enseñe el resultado del modelo. En **Perfil → Mis estadísticas** sale ahora la fila «Modelo: ¿volverá a jugar?» (accuracy, precision, recall y ROC-AUC) y 3 gráficas más (matriz de confusión, curva ROC e importancia de cada variable). `modelo_abandono.py` hace con numpy el mismo árbol que el escritorio, porque Chaquopy no tiene scikit-learn para Python 3.13. Da **los mismos números que el escritorio** (0,913 / 0,875 / 1,0 / 0,865), comprobado contra scikit-learn y en el emulador |
 | **Título legible en Halloween** | Android `366e0ac` | El título de 7 pantallas (Ranking, Perfil, Ajustes, Cómo jugar, Dificultades, Crear cuenta y Mis estadísticas) sale del color de la temática (`colorTitulo`): crema con sombra marrón en Halloween; en Normal y Navidad, igual que antes. Probado en el emulador |
 | **Contraseña nueva de la BD** | API `2039d24` | Se cambió la contraseña del login `jocs_dam02` (`ALTER LOGIN`). **Decisión del equipo:** `appsettings.json` **se sube a git** (proyecto de clase en un entorno cerrado); ya no hay que crearlo a mano. Fuera `appsettings.ejemplo.json`. Probado: la API arranca y lee la BD. **Proyectada usa el mismo login: hay que ponerle la contraseña nueva** |
-| **`instalar_librerias.bat`** | Android `366e0ac`, escritorio `56d522c` | Doble clic: instala Python 3.13 con winget si falta, las librerías (`requirements.txt`) y comprueba que se cargan. En el Android, Python 3.13 (Chaquopy) y las de `metricas/`; en el escritorio, las de la pantalla Métricas. Probados los dos |
+| **`instalar_librerias.bat`** | Android `366e0ac`, escritorio `56d522c` | Doble clic: instala Python 3.11 con winget si falta, las librerías (`requirements.txt`) y comprueba que se cargan. En el Android, Python 3.13 (Chaquopy) y las de `metricas/`; en el escritorio, las de la pantalla Métricas. Probados los dos |
 | **Figma** | — | Texto marrón en los botones naranjas y verdes del arte y títulos como en la app (ver «Cuando se pueda») |
 | Documentos | API `7c482a5` y este | README de los 3 repos, `REGLAS_CODIGO.md`, `metricas/README.md`, `CAMBIOS_18-11.md` (histórico), `resumen-del-proyecto.md` (checklist revisado) y `topohit-diseno-del-juego.md` |
 
@@ -114,7 +124,7 @@ El aviso de desbloqueo («¡Has desbloqueado Normal!») se probó de verdad el 2
 1. `git pull` en los tres repositorios.
 2. **API**: .NET 8, perfil `http`, puerto 5110. `appsettings.json` ya viene en el repositorio (desde el 25/11). Si solo tenéis .NET 9 o superior, arranca igual (desde el 25/11 el `.csproj` lleva `RollForward=Major`), también desde Visual Studio.
 3. **Android Studio**: *Settings → Build Tools → Gradle → Gradle JDK* = **JDK 17 o 21**. Gradle 8.9 no funciona con Java 25, que es el que trae el Android Studio nuevo.
-4. **Python**: doble clic en `instalar_librerias.bat` del Android (Python 3.13 para compilar) y del escritorio
+4. **Python**: doble clic en `instalar_librerias.bat` del Android (Python 3.11 para compilar) y del escritorio
    (librerías de la pantalla Métricas).
 5. **Emulador**: una tablet en horizontal. La URL de la API está en `SharedData.PROJECT_ROOT` (`http://10.0.2.2:5110/api/`). En una tablet real se pone la IP del PC.
 6. **Usuarios de prueba**: `marc` / `marc1234` (jugador) y `profe` / `profe1234` (educador).
@@ -153,7 +163,7 @@ El aviso de desbloqueo («¡Has desbloqueado Normal!») se probó de verdad el 2
 - [x] **Dos vistas de Métricas conectadas a la BD (a través de la API), cada una con su consulta:**
   - [x] **Android** (hecho el 24/11): **Perfil → Mis estadísticas**. Son las estadísticas **propias** del niño
     (`GET api/sesiones/mias`) con Python dentro de la app (Chaquopy): 7 números y 7 gráficas. Probado en el emulador.
-    Para compilar hace falta **Python 3.13** en el PC. La app pasa a `minSdk` 24 y el APK pesa unos 115 MB.
+    Para compilar hace falta **Python 3.11** en el PC (era 3.13 hasta el 25/11). La app pasa a `minSdk` 24 y el APK pesa unos 115 MB.
   - [x] **Escritorio** (hecho y probado el 24/11): pantalla **Métricas**
     con las estadísticas de **todos** los jugadores (`GET api/sesiones/todas`) y el modelo de abandono.
     Ejecuta `Python/metricas_escritorio.py`, que hace 11 gráficas y 15 tarjetas. El script está probado con las partidas reales.

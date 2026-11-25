@@ -40,7 +40,7 @@ Se abre desde **Perfil → Mis estadísticas** y enseña las métricas **propias
 4. **Modelo de abandono (25/11):** `modelo_abandono.py` entrena el árbol de decisión que predice si un niño volverá a
    jugar (con las sesiones simuladas que van dentro de la app) y devuelve accuracy, precision, recall y ROC-AUC
    (la fila «Modelo: ¿volverá a jugar?») y 3 gráficas: matriz de confusión, curva ROC e importancia de cada variable.
-   Es lo que pide el PDF de Métricas para la vista «Mètriques». Chaquopy no tiene scikit-learn para Python 3.13,
+   Es lo que pide el PDF de Métricas para la vista «Mètriques». Chaquopy no tiene scikit-learn para Python 3.11 en 32 bits,
    así que el árbol está hecho con numpy; da los mismos números que el escritorio.
 
 Las estadísticas de todos los niños van en el escritorio.
@@ -51,7 +51,9 @@ con sombra marrón, porque el marrón no se leía sobre el cielo morado; en Norm
 
 Lo que cambia en la app por Chaquopy:
 
-- **Python 3.13** con pandas 2.1 y matplotlib 3.8. Solo para `arm64-v8a` (tablets) y `x86_64` (emulador).
+- **Python 3.11** con pandas 2.1.3, numpy 1.26.2 y matplotlib 3.6.0, para `armeabi-v7a` (tablets de 32 bits, como la
+  **Samsung Galaxy Tab A** de clase), `arm64-v8a` (tablets de 64 bits) y `x86_64` (emulador). Hasta el 25/11 era Python 3.13,
+  pero Chaquopy solo tiene Python 3.11 o anterior para 32 bits.
   El APK de depuración pasa de unos 16 MB a unos 115 MB.
 - **`minSdk` 24** (Android 7.0), porque esos paquetes de Chaquopy lo piden. Antes era 23.
 - **`compileSdk` 36** y `android:pageSizeCompat="enabled"` en el manifest. Los emuladores y tablets nuevos
@@ -68,9 +70,9 @@ el árbol de decisión y el informe PDF. La tablet usa sus propios scripts (`app
 
 1. Android Studio → **Open** → esta carpeta. Si Gradle dice que no admite la versión de Java (por ejemplo «25.0.3»),
    en *Settings → Build Tools → Gradle → Gradle JDK* elegid un **JDK 17 o 21** (Gradle 8.9 no funciona con Java 25).
-2. **Instalad Python 3.13** en el ordenador. Chaquopy lo usa al compilar para meter pandas y matplotlib en la app.
-   Lo más fácil: doble clic en **`instalar_librerias.bat`** (instala Python 3.13 con winget si no está y las librerías de
-   `metricas/requirements.txt`). A mano: `pymanager install 3.13` o el instalador de python.org. La primera compilación descarga unos 30 MB de paquetes.
+2. **Instalad Python 3.11** en el ordenador. Chaquopy lo usa al compilar para meter pandas y matplotlib en la app.
+   Lo más fácil: doble clic en **`instalar_librerias.bat`** (instala Python 3.11 con winget si no está y las librerías de
+   `metricas/requirements.txt`). A mano: `pymanager install 3.11` o el instalador de python.org. La primera compilación descarga unos 30 MB de paquetes.
 3. Arrancad la API (perfil **http**, puerto 5110). Hace falta `07_solo_infinito.sql` en la base de datos.
 4. Ejecutad la app en un emulador de **tablet en horizontal** (por ejemplo *Pixel Tablet*).
    - Desde el emulador la API está en `http://10.0.2.2:5110/api/` (`SharedData.PROJECT_ROOT`).

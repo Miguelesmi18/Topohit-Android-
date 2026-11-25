@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.groundstudio.topohit.Avatares
 import com.groundstudio.topohit.Avisos
 import com.groundstudio.topohit.GestorAjustes
+import com.groundstudio.topohit.Sonidos
 import com.groundstudio.topohit.GestorSesion
 import com.groundstudio.topohit.R
 import com.groundstudio.topohit.Tematicas
@@ -44,6 +45,11 @@ class MenuActivity : PantallaBase()
         findViewById<TextView>(R.id.BtnMenuPerfil).setOnClickListener()
         {
             startActivity(Intent(this, PerfilActivity::class.java))
+        }
+
+        findViewById<TextView>(R.id.BtnMenuMusica).setOnClickListener()
+        {
+            cambiarMusica()
         }
 
         findViewById<TextView>(R.id.BtnMenuComoJugar).setOnClickListener()
@@ -87,6 +93,38 @@ class MenuActivity : PantallaBase()
         }
     }
 
+    // Pone o quita la música con un toque y lo guarda en los ajustes (igual que el botón de Ajustes)
+    private fun cambiarMusica()
+    {
+        GestorAjustes.musica = !GestorAjustes.musica
+        GestorAjustes.guardar(this)
+        if(GestorAjustes.musica)
+        {
+            Sonidos.sonarMusica()
+        }
+        else
+        {
+            Sonidos.pausarMusica()
+        }
+        pintarMusica()
+    }
+
+    // El botón enseña el altavoz con sonido o tachado, y su descripción dice lo que hará al tocarlo
+    private fun pintarMusica()
+    {
+        val btnMenuMusica = findViewById<TextView>(R.id.BtnMenuMusica)
+        if(GestorAjustes.musica)
+        {
+            btnMenuMusica.text = getString(R.string.icono_musica_si)
+            btnMenuMusica.contentDescription = getString(R.string.musica_quitar)
+        }
+        else
+        {
+            btnMenuMusica.text = getString(R.string.icono_musica_no)
+            btnMenuMusica.contentDescription = getString(R.string.musica_poner)
+        }
+    }
+
     private fun cambiarTema(tema: Tematica)
     {
         GestorAjustes.tema = tema
@@ -113,6 +151,8 @@ class MenuActivity : PantallaBase()
         btnMenuPerfil.setTextColor(ContextCompat.getColor(this, tema.colorTextoBotonSecundario))
         findViewById<TextView>(R.id.BtnMenuComoJugar).setBackgroundResource(tema.circulo)
         findViewById<TextView>(R.id.BtnMenuAjustes).setBackgroundResource(tema.circulo)
+        findViewById<TextView>(R.id.BtnMenuMusica).setBackgroundResource(tema.circulo)
+        pintarMusica()
         findViewById<LinearLayout>(R.id.LayMenuTematicas).setBackgroundResource(tema.panel)
         findViewById<TextView>(R.id.LblMenuTematica).setTextColor(ContextCompat.getColor(this, tema.colorTexto))
         findViewById<TextView>(R.id.LblMenuHola).text = getString(R.string.menu_hola, GestorSesion.getUsername(this))

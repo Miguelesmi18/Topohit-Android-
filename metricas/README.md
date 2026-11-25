@@ -51,7 +51,7 @@ Al final se ha hecho como pidió el equipo: **en la tablet, las estadísticas pr
 - El script es `app/src/main/python/estadisticas_jugador.py`, con el mismo estilo que `03_analisis.py`.
 - Recibe las partidas de `GET api/sesiones/mias` desde Kotlin y devuelve los números y 7 gráficas en base64.
 - **El modelo también va en la tablet (25/11)**, porque el PDF pide sus resultados en la vista «Mètriques».
-  Chaquopy usa Python 3.13 y no tiene scikit-learn (solo existe hasta Python 3.10), así que
+  Chaquopy usa Python 3.11 (por la tablet de 32 bits) y ahí no tiene scikit-learn para 32 bits, así que
   `app/src/main/python/modelo_abandono.py` hace con numpy el mismo árbol de decisión que `03_analisis.py`
   (mismas features, `max_depth=4`, 80/20 estratificado, `random_state=42`), con las sesiones simuladas
   (`app/src/main/python/sesiones_simuladas.csv`, copia de `datos/`). Sale **lo mismo que en el escritorio**:

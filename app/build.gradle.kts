@@ -17,9 +17,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        // Solo los procesadores de las tablets (arm64) y del emulador (x86_64): así el APK pesa menos
+        // Los procesadores de las tablets: armeabi-v7a (32 bits, la Samsung Galaxy Tab A de clase) y arm64-v8a,
+        // y el del emulador (x86_64). Los demás se dejan fuera para que el APK pese menos
         ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64")
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
         }
     }
 
@@ -39,11 +40,12 @@ android {
 }
 
 // Esta parte es de información externa que no sale en los vídeos
-// (Chaquopy: Python 3.13 con pandas y matplotlib para las gráficas de «Mis estadísticas».
-//  Para compilar hace falta Python 3.13 instalado en el ordenador)
+// (Chaquopy: Python 3.11 con pandas y matplotlib para las gráficas de «Mis estadísticas».
+//  3.11 porque es el último que Chaquopy tiene para tablets de 32 bits (la Galaxy Tab A); 3.12 y más solo van en 64 bits.
+//  Para compilar hace falta Python 3.11 instalado en el ordenador)
 chaquopy {
     defaultConfig {
-        version = "3.13"
+        version = "3.11"
         pip {
             install("pandas")
             install("matplotlib")

@@ -7,6 +7,10 @@
     <string name="atras">←</string>
     <string name="icono_ajustes">≡</string>
     <string name="icono_ayuda">\?</string>
+    <string name="icono_musica_si">🔊</string>
+    <string name="icono_musica_no">🔇</string>
+    <string name="musica_quitar">Quitar la música</string>
+    <string name="musica_poner">Poner la música</string>
     <string name="icono_pausa">II</string>
     <string name="cero">0</string>
     <string name="uno">1</string>

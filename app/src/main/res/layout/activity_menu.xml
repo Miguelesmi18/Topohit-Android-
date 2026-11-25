@@ -46,6 +46,14 @@
         android:layout_margin="@dimen/margen_pequeno"
         android:orientation="horizontal">
 
+        <!-- Música: se pone o se quita con un toque (lo mismo que en Ajustes) -->
+        <TextView
+            android:id="@+id/BtnMenuMusica"
+            style="@style/BotonRedondo"
+            android:layout_marginEnd="@dimen/margen_pequeno"
+            android:contentDescription="@string/musica_quitar"
+            android:text="@string/icono_musica_si" />
+
         <TextView
             android:id="@+id/BtnMenuComoJugar"
             style="@style/BotonRedondo"
