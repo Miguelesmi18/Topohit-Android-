@@ -166,6 +166,9 @@ class ResultadoActivity : PantallaBase()
                     comprobarDesbloqueo(token)
                     runOnUiThread()
                     {
+                        // CAMBIO 25/11: con la partida ya guardada, el récord y las partidas se ponen al día
+                        // (si no, «Repetir» empezaba con el récord de antes)
+                        actualizarRecord()
                         if(pantallaActiva())
                         {
                             activarBotones(true)
@@ -201,6 +204,18 @@ class ResultadoActivity : PantallaBase()
                 }
             }
         }
+    }
+
+    // CAMBIO 25/11: la dificultad que se pasa a «Repetir» lleva el récord nuevo y una partida más.
+    // Se llama después de comprobarDesbloqueo, que necesita el récord de ANTES de la partida.
+    private fun actualizarRecord()
+    {
+        val record = dificultad.record
+        if(record == null || sesion.finalScore > record)
+        {
+            dificultad.record = sesion.finalScore
+        }
+        dificultad.partidas = dificultad.partidas + 1
     }
 
     // Se llama desde la corrutina de guardarPartida, después del POST (una llamada detrás de otra).

@@ -15,6 +15,11 @@ siguiendo lo que se enseña en clase (módulo 0489). Las normas de código está
   partidas de una dificultad cerrada (403).
 - **Cambios del 24/11 (4):** Historia y Contrarreloj se han borrado también de la base de datos y de la API.
   `SesionNueva` ya no lleva `levelReached`. Probado en el emulador el 25/11: login, dificultades, partida guardada y ranking.
+- **Cambios del 25/11:** «Repetir» empezaba la partida siguiente con el récord de antes: el marcador enseñaba el récord viejo
+  y salía «¡NUEVO RÉCORD!» sin superarlo. Ahora `ResultadoActivity`, cuando la partida se ha guardado, pone al día el récord
+  y las partidas de la dificultad (`actualizarRecord()`).
+- **Desbloqueo probado de verdad (25/11):** con el umbral de Normal bajado a 10 un momento, una partida de 25 puntos en Fácil
+  sacó «¡Has desbloqueado Normal!» y Normal pasó a abierta (Difícil siguió con candado). Después se dejó en 500.
 
 ## Ranking
 
