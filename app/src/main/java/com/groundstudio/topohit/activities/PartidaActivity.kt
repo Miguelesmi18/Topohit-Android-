@@ -776,7 +776,7 @@ class PartidaActivity : PantallaBase()
             reaccion = (sumaReaccion / numReacciones).toInt()
         }
         val segundos = Math.max(1, (reloj / 1000).toInt())
-        return SesionNueva(SharedData.MODO_INFINITO, segundos, fallos, puntos, dificultad.nombre, null,
+        return SesionNueva(SharedData.MODO_INFINITO, segundos, fallos, puntos, dificultad.nombre,
                            aciertos + fallos, escapados, aciertos, mejorRacha, doradosGolpeados,
                            abandonada, reaccion, ayudas)
     }

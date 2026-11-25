@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 // Lo que se envía a POST api/sesiones al acabar una partida.
-// Reglas de la API: modeId = 3 (Infinito), difficulty con tilde, levelReached = null,
+// Reglas de la API: modeId = 3 (Infinito), difficulty con tilde,
 // nAttempts = hits + errorsMade y avgReactionMs = null si no se ha golpeado ningún topo.
 // helpClicks = veces que se ha pulsado la ayuda (?) durante la partida (métrica de abandono).
 // Es Serializable porque PartidaActivity se la pasa a ResultadoActivity, que es quien la envía.
@@ -13,7 +13,6 @@ data class SesionNueva (@SerializedName("modeId") var modeId: Int,
                         @SerializedName("errorsMade") var errorsMade: Int,
                         @SerializedName("finalScore") var finalScore: Int,
                         @SerializedName("difficulty") var difficulty: String,
-                        @SerializedName("levelReached") var levelReached: Int?,
                         @SerializedName("nAttempts") var nAttempts: Int,
                         @SerializedName("molesEscaped") var molesEscaped: Int,
                         @SerializedName("hits") var hits: Int,

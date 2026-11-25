@@ -11,7 +11,8 @@ Actualizado: 24/11/2026.
 1. **Compila sin errores** (`gradlew assembleDebug`) antes de dar nada por terminado.
 2. **Solo existe el modo Infinito.** Ni Historia ni Contrarreloj: ni pantallas, ni textos, ni constantes.
 3. **Cada partida se envía a la API** (`POST api/sesiones`) con `modeId = 3`, la `difficulty` **con tilde**
-   tal como la devuelve la API (`Fácil`, `Normal`, `Difícil`) y `levelReached = null`.
+   tal como la devuelve la API (`Fácil`, `Normal`, `Difícil`). Ya no se envía `levelReached`
+   (era de Historia y la API lo ha quitado el 24/11).
    `nAttempts = hits + errorsMade`. `avgReactionMs = null` si no ha golpeado ningún topo.
    `helpClicks` = veces que ha pulsado la ayuda (?) en la partida.
 4. **Una dificultad cerrada no se puede jugar.** Se pinta con el candado y debajo:
@@ -164,4 +165,4 @@ Para elegir agujero y tipo de topo se usa `java.util.Random`, que sí sale en cl
 
 - **Cifrado** (0490): la tablet calcula bcrypt con una **sal fija** y envía el hash. Los PDF no dicen quién
   cifra. Preguntar al profesor de 0490 en la entrevista si lo quiere así o con la sal aleatoria en la API.
-- El escritorio sigue enseñando las partidas antiguas de Historia y Contrarreloj (están en la BD).
+- Las partidas de Historia y Contrarreloj se borraron de la BD el 24/11 (`10_quitar_historia_contrarreloj.sql`).
