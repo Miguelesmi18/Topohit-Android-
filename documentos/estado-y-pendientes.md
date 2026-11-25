@@ -213,7 +213,11 @@ El aviso de desbloqueo («¡Has desbloqueado Normal!») se probó de verdad el 2
 - [x] **Avatar en la API** (cerrado el 25/11): `avatarId` está en el login, el registro, `PUT api/auth/avatar` y `api/usuarios`,
   que es lo que usan las apps. `api/modos/avatares` no existe ni hace falta (los avatares van dentro de cada app); el README de la
   API lo avisa en la sección del 19/11.
-- [ ] **Entregar el informe de Métricas v1** (`Topohit-Android-/metricas/informe_metricas.pdf`, era para el 21/11).
+- [ ] **Entregar el informe de Métricas** (`Topohit-Android-/metricas/informe_metricas.pdf`, la v1 era para el 21/11).
+  **v2 generada el 25/11** (11 páginas): portada, métricas capturadas y derivadas, playtest real y simulación,
+  las 7 gráficas de datos, el modelo (indicadores, matriz de confusión, ROC, importancias y árbol), dónde se ve
+  cada cosa (tablet y escritorio) y un anexo con los archivos y las librerías. Mismos datos y números que las apps.
+  Se genera con `python 03_analisis.py` desde `metricas/`.
 - [x] **Figma** (hecho el 25/11 por la noche): en «🎨 Arte · Temáticas», 69 textos de botones, pestañas y chips naranjas y verdes
   pasan a marrón sin contorno (Normal y Halloween), y los 18 títulos sobre el cielo van como en la app: crema con contorno
   marrón en Halloween y marrón con contorno blanco en Normal y Navidad.

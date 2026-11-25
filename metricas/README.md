@@ -8,7 +8,7 @@ Se ejecuta desde esta carpeta, en este orden:
 | --- | --- | --- |
 | `01_playtest.py` | Descarga las partidas reales de Infinito de la API (`GET api/sesiones/todas` con el usuario `profe`) y saca el mínimo, la media y el máximo de cada variable por dificultad | `datos/playtest.csv`, `datos/rangos.csv` |
 | `02_simulacion.py` | Genera **400 sesiones** con esos rangos y con las reglas de frustración | `datos/sesiones_simuladas.csv` |
-| `03_analisis.py` | Calcula las métricas derivadas, hace las 11 gráficas (Matplotlib) y entrena un árbol de decisión que predice `returning_player` | `informe_metricas.pdf`, `graficas/*.png`, `graficas/metricas.json` |
+| `03_analisis.py` | Calcula las métricas derivadas, hace las 11 gráficas (Matplotlib) y entrena un árbol de decisión que predice `returning_player` | `informe_metricas.pdf` (v2 del 25/11, 11 páginas), `graficas/*.png`, `graficas/metricas.json` |
 
 ```
 pip install -r requirements.txt
