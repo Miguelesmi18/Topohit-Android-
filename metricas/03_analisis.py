@@ -591,9 +591,8 @@ def hoja_explicacion_modelo(pdf, resultado):
             "Suman 1 entre todas. Las tres que más usa el árbol: " + ", ".join(primeras) + ".",
         ]),
         ("El árbol de decisión", [
-            "Una serie de preguntas de sí o no sobre la primera partida (por ejemplo, «¿errores_por_minuto ≤ X?»).",
-            "En cada caja: la pregunta, gini (lo mezclados que están los dos grupos: 0 = todos iguales), samples (niños",
-            "que llegan), value ([no vuelven, vuelven]) y class (lo que predice). Profundidad máxima: 4 preguntas.",
+            "Una serie de preguntas de sí o no sobre la primera partida. Como es lo más difícil de entender,",
+            "tiene dos hojas propias a continuación: «El árbol de decisión, paso a paso».",
         ]),
         ("Por qué se separa en entrenamiento y prueba", [
             "El modelo aprende con el 80 % de los niños y se evalúa con el otro 20 %, que no ha visto nunca: así los",
@@ -649,6 +648,255 @@ def hoja_anexo(pdf):
     plt.close(fig)
 
 
+# ---------- El árbol de decisión, paso a paso (lo más difícil de entender del informe)
+NOMBRES_FEATURES = {
+    "errores_por_minuto": "errores por minuto", "help_clicks": "ayudas pedidas",
+    "avg_reaction_ms": "tiempo de reacción (ms)", "session_length": "duración (s)",
+    "final_score": "puntos", "hits": "aciertos", "moles_escaped": "topos escapados",
+    "errors_made": "errores", "abandoned": "abandonó (0 = no, 1 = sí)",
+}
+AZUL = "#9CC3F0"
+NARANJA = "#F5B57A"
+
+
+def coma(numero):
+    texto_numero = str(round(float(numero), 2))
+    if texto_numero.endswith(".0"):
+        texto_numero = texto_numero[:-2]
+    return texto_numero.replace(".", ",")
+
+
+# Lo que hay en un nodo del árbol: cuántos niños llegan y cuántos vuelven
+def datos_nodo(arbol, nodo):
+    total = int(arbol.n_node_samples[nodo])
+    fracciones = arbol.value[nodo][0]
+    vuelven = int(round(float(fracciones[1]) / float(fracciones.sum()) * total))
+    return total, vuelven
+
+
+def pregunta(arbol, nodo):
+    nombre = NOMBRES_FEATURES.get(FEATURES[arbol.feature[nodo]], FEATURES[arbol.feature[nodo]])
+    return "¿" + nombre + " ≤ " + coma(arbol.threshold[nodo]) + "?"
+
+
+def caja_nodo(ax, x, y, arbol, nodo, ancho=22):
+    total, vuelven = datos_nodo(arbol, nodo)
+    porcentaje = round(vuelven * 100 / total)
+    color = AZUL
+    if vuelven * 2 < total:
+        color = NARANJA
+    lineas = []
+    if arbol.children_left[nodo] != -1:
+        lineas.append(pregunta(arbol, nodo))
+    lineas.append(str(total) + " niños · vuelven " + str(vuelven) + " (" + str(porcentaje) + " %)")
+    ax.text(x, y, "\n".join(lineas), ha="center", va="center", fontsize=8.3, color=MARRON,
+            bbox=dict(boxstyle="round,pad=0.6", facecolor=color, edgecolor=MARRON, linewidth=1.2))
+
+
+def flecha(ax, x1, y1, x2, y2, etiqueta):
+    ax.annotate("", xy=(x2, y2 + 6), xytext=(x1, y1 - 6),
+                arrowprops=dict(arrowstyle="->", color=MARRON, linewidth=1.3))
+    ax.text((x1 + x2) / 2 + (2 if x2 > x1 else -2), (y1 + y2) / 2, etiqueta, fontsize=9, weight="bold",
+            color="#E07B12", ha="center")
+
+
+# Dibujo del árbol simplificado: las dos primeras preguntas y los grupos que salen
+def dibujo_arbol(fig, arbol):
+    ax = fig.add_axes([0.03, 0.08, 0.94, 0.48])
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 100)
+    ax.axis("off")
+    raiz = 0
+    caja_nodo(ax, 50, 90, arbol, raiz)
+    hijos = [(arbol.children_left[raiz], 25, "Sí"), (arbol.children_right[raiz], 75, "No")]
+    for nodo, x, etiqueta in hijos:
+        flecha(ax, 50, 90, x, 55, etiqueta)
+        caja_nodo(ax, x, 55, arbol, nodo)
+        if arbol.children_left[nodo] != -1:
+            nietos = [(arbol.children_left[nodo], x - 12.5, "Sí"), (arbol.children_right[nodo], x + 12.5, "No")]
+            for nieto, xn, etiqueta_nieto in nietos:
+                flecha(ax, x, 55, xn, 17, etiqueta_nieto)
+                caja_nodo(ax, xn, 17, arbol, nieto)
+    ax.text(50, -1, "Azul: en ese grupo vuelve la mayoría · Naranja: no vuelve la mayoría.\n"
+            "Debajo, el árbol hace hasta 2 preguntas más (dibujo completo en la hoja del modelo).",
+            ha="center", va="top", fontsize=8, color="dimgray", style="italic")
+
+
+# Un niño concreto bajando por el árbol: qué le pregunta y por dónde va
+def recorrido(modelo, fila, real):
+    arbol = modelo.tree_
+    nodo = 0
+    lineas = []
+    paso = 1
+    while arbol.children_left[nodo] != -1:
+        nombre = FEATURES[arbol.feature[nodo]]
+        valor = float(fila[nombre])
+        cumple = valor <= arbol.threshold[nodo]
+        respuesta = "No → va a la derecha"
+        siguiente = arbol.children_right[nodo]
+        if cumple:
+            respuesta = "Sí → va a la izquierda"
+            siguiente = arbol.children_left[nodo]
+        lineas.append("  " + str(paso) + ". " + pregunta(arbol, nodo) + "  Tiene " + coma(valor) + "  →  " + respuesta)
+        nodo = siguiente
+        paso = paso + 1
+    total, vuelven = datos_nodo(arbol, nodo)
+    prediccion = "VUELVE"
+    if vuelven * 2 < total:
+        prediccion = "NO VUELVE"
+    verdad = "no volvió"
+    if real == 1:
+        verdad = "volvió"
+    lineas.append("  Llega a un grupo de " + str(total) + " niños del entrenamiento donde volvieron " + str(vuelven) +
+                  "  →  predice " + prediccion + ". En realidad " + verdad + ".")
+    return lineas
+
+
+# Junta las condiciones de una misma variable: «más de 4,62 y hasta 8,57» → «entre 4,62 y 8,57»
+def juntar_condiciones(condiciones):
+    limites = {}
+    orden = []
+    for nombre, tipo, valor in condiciones:
+        if nombre not in limites:
+            limites[nombre] = [None, None]
+            orden.append(nombre)
+        if tipo == "más de":
+            limites[nombre][0] = valor
+        else:
+            limites[nombre][1] = valor
+    partes = []
+    for nombre in orden:
+        minimo, maximo = limites[nombre]
+        if minimo != None and maximo != None:
+            partes.append(nombre + " entre " + coma(minimo) + " y " + coma(maximo))
+        elif minimo != None:
+            partes.append(nombre + " más de " + coma(minimo))
+        else:
+            partes.append(nombre + " hasta " + coma(maximo))
+    return ", ".join(partes)
+
+
+# Las reglas que ha aprendido, en palabras: un camino hasta cada hoja con muchos niños
+def reglas(modelo, minimo=10):
+    arbol = modelo.tree_
+    resultado = []
+    pendientes = [(0, [])]
+    while len(pendientes) > 0:
+        nodo, condiciones = pendientes.pop(0)
+        if arbol.children_left[nodo] == -1:
+            total, vuelven = datos_nodo(arbol, nodo)
+            if total >= minimo:
+                prediccion = "vuelve"
+                if vuelven * 2 < total:
+                    prediccion = "no vuelve"
+                frase = "Si " + juntar_condiciones(condiciones) + "  →  " + prediccion + " (" + str(vuelven) +                         " de " + str(total) + " volvieron)"
+                partes = textwrap.wrap(frase, 100)
+                for p in range(len(partes)):
+                    if p == 0:
+                        resultado.append("  · " + partes[p])
+                    else:
+                        resultado.append("     " + partes[p])
+        else:
+            nombre = NOMBRES_FEATURES.get(FEATURES[arbol.feature[nodo]], FEATURES[arbol.feature[nodo]])
+            umbral = coma(arbol.threshold[nodo])
+            pendientes.append((arbol.children_left[nodo], condiciones + [(nombre, "hasta", float(arbol.threshold[nodo]))]))
+            pendientes.append((arbol.children_right[nodo], condiciones + [(nombre, "más de", float(arbol.threshold[nodo]))]))
+    return resultado
+
+
+def hoja_arbol(pdf, resultado, jugadores):
+    modelo = resultado["modelo"]
+    arbol = modelo.tree_
+    total_raiz, vuelven_raiz = datos_nodo(arbol, 0)
+
+    # ---- Hoja 1: qué es, cómo aprende, gini y el dibujo simplificado
+    fig = nueva_hoja("4. El árbol de decisión, paso a paso (1/2)")
+    y = 0.91
+    bloques = [
+        ("Qué es", [
+            "Es como el juego «¿Quién es quién?»: para adivinar si un niño volverá a jugar, hace preguntas de sí o no",
+            "sobre su primera partida («¿cuántos errores por minuto hizo?», «¿cuántas ayudas pidió?»…). Según la",
+            "respuesta va por un camino o por otro, y al final llega a un grupo de niños parecidos: si en ese grupo",
+            "la mayoría volvió, predice «vuelve»; si no, «no vuelve».",
+        ]),
+        ("Cómo aprende (con el 80 % de los niños, los de entrenamiento)", [
+            "1. Prueba todas las preguntas posibles: cada variable con cada número de corte.",
+            "2. Se queda con la que mejor separa a los que vuelven de los que no (la que más baja el gini).",
+            "3. Repite lo mismo dentro de cada grupo nuevo, hasta hacer 4 preguntas seguidas (max_depth = 4)",
+            "   o hasta que un grupo tenga a todos iguales. Nadie le dice qué preguntas hacer: las encuentra solo.",
+        ]),
+        ("Qué es el gini (lo «mezclado» que está un grupo)", [
+            "0 = todos los niños del grupo son iguales (todos vuelven o ninguno) · 0,5 = mitad y mitad.",
+            "Al empezar hay " + str(total_raiz) + " niños: " + str(vuelven_raiz) + " vuelven y " +
+            str(total_raiz - vuelven_raiz) + " no → gini = " + coma(arbol.impurity[0]) + " (muy mezclado). Cada pregunta",
+            "busca grupos con el gini más bajo posible, es decir, más «puros».",
+        ]),
+        ("Las primeras preguntas del árbol", [
+            "Cada caja dice la pregunta y cuántos niños de entrenamiento llegan; las flechas son las respuestas.",
+        ]),
+    ]
+    for titulo, lineas in bloques:
+        fig.text(0.08, y, titulo, fontsize=10.5, weight="bold", color="#E07B12")
+        y = texto(fig, y - 0.021, lineas, tam=8.8, separacion=0.0178) - 0.008
+    dibujo_arbol(fig, arbol)
+    pdf.savefig(fig)
+    plt.close(fig)
+
+    # ---- Hoja 2: leer el dibujo de scikit-learn, dos niños de ejemplo y las reglas
+    fig = nueva_hoja("4. El árbol de decisión, paso a paso (2/2)")
+    fig.text(0.08, 0.91, "Cómo leer cada caja del dibujo completo (el de scikit-learn)", fontsize=10.5,
+             weight="bold", color="#E07B12")
+    filas = [
+        [FEATURES[arbol.feature[0]] + " <= " + str(round(float(arbol.threshold[0]), 3)),
+         "La pregunta. Sí (True): izquierda · No (False): derecha"],
+        ["gini = " + str(round(float(arbol.impurity[0]), 3)), "Lo mezclado del grupo (0 = todos iguales)"],
+        ["samples = " + str(total_raiz), "Niños de entrenamiento que llegan a la caja"],
+        ["value = [" + str(total_raiz - vuelven_raiz) + ", " + str(vuelven_raiz) + "]", "Cuántos [no vuelven, vuelven] hay"],
+        ["class = Vuelve", "Lo que predice: lo de la mayoría de la caja"],
+        ["Color", "Azul: vuelve · naranja: no vuelve (fuerte = grupo puro)"],
+    ]
+    tabla(fig, 0.885, 0.16, filas, ["En la caja pone…", "Significa"], [0.38, 0.62])
+
+    X = jugadores[FEATURES]
+    y_real = jugadores["returning_player"].to_numpy()
+    predicciones = modelo.predict(X)
+    hojas = modelo.apply(X)
+    ejemplos = []
+    for clase in [1, 0]:
+        mejor = -1
+        tam_mejor = -1
+        for i in range(len(y_real)):
+            if y_real[i] == clase and predicciones[i] == clase:
+                tam = int(arbol.n_node_samples[hojas[i]])
+                if tam > tam_mejor:
+                    tam_mejor = tam
+                    mejor = i
+        if mejor >= 0:
+            ejemplos.append(mejor)
+
+    y = 0.68
+    fig.text(0.08, y, "Dos niños de los datos bajando por el árbol", fontsize=10.5, weight="bold", color="#E07B12")
+    y = y - 0.022
+    letras = ["A", "B"]
+    for k in range(len(ejemplos)):
+        i = ejemplos[k]
+        fila = X.iloc[i]
+        fig.text(0.08, y, "Niño " + letras[k] + ": primera partida con " + coma(fila["errores_por_minuto"]) +
+                 " errores por minuto, " + coma(fila["help_clicks"]) + " ayudas y " + coma(fila["avg_reaction_ms"]) +
+                 " ms de reacción.", fontsize=8.8, color=MARRON, weight="bold")
+        y = texto(fig, y - 0.019, recorrido(modelo, fila, y_real[i]), tam=8.3, separacion=0.0168) - 0.01
+
+    fig.text(0.08, y, "Las reglas que ha aprendido (grupos de 10 niños o más)", fontsize=10.5, weight="bold", color="#E07B12")
+    y = texto(fig, y - 0.021, reglas(modelo), tam=8.2, separacion=0.0168) - 0.006
+    texto(fig, y, [
+        "Fíjate en las dos primeras preguntas: «¿más de 3,98 errores por minuto?» y «¿más de 1,5 ayudas?». Son casi",
+        "exactamente la regla de frustración que se programó en la simulación (4 errores por minuto o 2 ayudas). El",
+        "árbol la ha descubierto solo, mirando los datos: eso es lo que hace un modelo de predicción.",
+    ], tam=8.8, separacion=0.0178)
+    pdf.savefig(fig)
+    plt.close(fig)
+
+
 def guardar_todo(ruta_csv):
     df = cargar(ruta_csv)
     jugadores = tabla_jugadores(df)
@@ -676,6 +924,7 @@ def guardar_todo(ruta_csv):
                                                                  ("abandono_ayudas", graficas["abandono_ayudas"])])
         hoja_graficas(pdf, "3. Visualización de los datos (4)", [("abandono_errores", graficas["abandono_errores"])])
         hoja_modelo(pdf, resultado, graficas)
+        hoja_arbol(pdf, resultado, jugadores)
         hoja_vistas(pdf)
         hoja_anexo(pdf)
 
