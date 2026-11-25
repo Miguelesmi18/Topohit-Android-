@@ -110,7 +110,7 @@
                 android:background="@drawable/chip_naranja"
                 android:fontFamily="sans-serif-black"
                 android:gravity="center"
-                android:textColor="@color/blanco"
+                android:textColor="@color/marron"
                 android:textSize="@dimen/texto_pequeno" />
 
             <!-- Récord de esta dificultad -->
@@ -272,7 +272,7 @@
                 android:paddingRight="@dimen/separacion"
                 android:paddingBottom="@dimen/separacion_mini"
                 android:text="@string/partida_pausa"
-                android:textColor="@color/blanco"
+                android:textColor="@color/marron"
                 android:textSize="@dimen/texto_mini"
                 android:textStyle="bold" />
 

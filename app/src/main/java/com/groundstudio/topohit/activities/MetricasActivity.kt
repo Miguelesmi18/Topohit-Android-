@@ -80,6 +80,7 @@ class MetricasActivity : PantallaBase()
         findViewById<TextView>(R.id.BtnMetricasAtras).setBackgroundResource(tema.circulo)
         findViewById<LinearLayout>(R.id.LayMetricasPanel).setBackgroundResource(tema.panel)
         btnMetricasReintentar.setBackgroundResource(tema.botonPrincipal)
+        btnMetricasReintentar.setTextColor(ContextCompat.getColor(this, tema.colorTextoBoton))
         lblMetricasEstado.setTextColor(ContextCompat.getColor(this, tema.colorTexto))
     }
 

@@ -112,7 +112,7 @@
             android:paddingTop="@dimen/separacion_mini"
             android:paddingRight="@dimen/separacion"
             android:paddingBottom="@dimen/separacion_mini"
-            android:textColor="@color/blanco"
+            android:textColor="@color/marron"
             android:textSize="@dimen/texto_pequeno"
             android:textStyle="bold" />
     </LinearLayout>

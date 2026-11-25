@@ -92,7 +92,7 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <!-- Chip con texto blanco («¡NUEVO RÉCORD!») -->
+    <!-- Chip naranja con texto marrón («¡NUEVO RÉCORD!»): con blanco no se leía bien -->
     <style name="Chip">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -102,7 +102,7 @@
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingRight">18dp</item>
         <item name="android:paddingBottom">6dp</item>
-        <item name="android:textColor">@color/blanco</item>
+        <item name="android:textColor">@color/marron</item>
         <item name="android:textSize">@dimen/texto_pequeno</item>
     </style>
 
@@ -203,7 +203,7 @@
         <item name="android:fontFamily">sans-serif-black</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingBottom">4dp</item>
-        <item name="android:textColor">@color/blanco</item>
+        <item name="android:textColor">@color/marron</item>
         <item name="android:textSize">@dimen/texto_grande</item>
     </style>
     <style name="TituloPaso" parent="Titulo">

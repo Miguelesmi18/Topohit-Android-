@@ -88,6 +88,7 @@ class LoginActivity : PantallaBase()
         findViewById<TextView>(R.id.BtnLoginRegistro).setBackgroundResource(tema.botonSecundario)
         findViewById<TextView>(R.id.BtnLoginAjustes).setBackgroundResource(tema.circulo)
         btnLoginEntrar.setBackgroundResource(tema.botonPrincipal)
+        btnLoginEntrar.setTextColor(ContextCompat.getColor(this, tema.colorTextoBoton))
     }
 
     private fun entrar()

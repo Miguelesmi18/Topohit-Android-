@@ -97,13 +97,15 @@
                     style="@style/BotonTema"
                     android:layout_marginEnd="@dimen/separacion_pequena"
                     android:background="@drawable/btn_naranja"
-                    android:text="@string/musica" />
+                    android:text="@string/musica"
+                    android:textColor="@color/marron" />
 
                 <TextView
                     android:id="@+id/BtnAjustesEfectos"
                     style="@style/BotonTema"
                     android:background="@drawable/btn_naranja"
-                    android:text="@string/efectos" />
+                    android:text="@string/efectos"
+                    android:textColor="@color/marron" />
             </LinearLayout>
 
             <LinearLayout

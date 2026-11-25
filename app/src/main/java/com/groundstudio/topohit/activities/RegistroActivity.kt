@@ -91,6 +91,7 @@ class RegistroActivity : PantallaBase()
         findViewById<TextView>(R.id.LblRegistroNota).setTextColor(color)
         findViewById<TextView>(R.id.LblRegistroNotaAvatar).setTextColor(color)
         btnRegistroCrear.setBackgroundResource(tema.botonPrincipal)
+        btnRegistroCrear.setTextColor(ContextCompat.getColor(this, tema.colorTextoBoton))
     }
 
     // Comprueba los datos antes de llamar a la API. Devuelve el texto del error o 0 si está bien.
