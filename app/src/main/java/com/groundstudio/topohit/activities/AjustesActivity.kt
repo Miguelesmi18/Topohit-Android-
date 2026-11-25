@@ -102,6 +102,7 @@ class AjustesActivity : PantallaBase()
     {
         GestorAjustes.tema = tema
         GestorAjustes.guardar(this)
+        Sonidos.cambiarMusica(applicationContext)     // cada temática tiene su canción
         pintar()
     }
 

@@ -31,6 +31,7 @@ object Sonidos
     private var soundPool: SoundPool? = null
     private val ids = mutableListOf<Int>()        // id de cada efecto dentro del SoundPool
     private var musica: MediaPlayer? = null
+    private var musicaActual = 0                    // la canción que está cargada (R.raw...), 0 = ninguna
 
     // Cuántas pantallas del juego se ven ahora mismo (0 = la app está en segundo plano)
     private var pantallasVisibles = 0
@@ -55,13 +56,42 @@ object Sonidos
             }
             soundPool = pool
 
-            val mp = MediaPlayer.create(context, R.raw.musica_fondo)
-            if(mp != null)
+            cargarMusica(context)
+        }
+    }
+
+    // Carga la canción de la temática elegida (cada temática tiene la suya)
+    private fun cargarMusica(context: Context)
+    {
+        val cancion = GestorAjustes.tema.musica
+        val mp = MediaPlayer.create(context, cancion)
+        if(mp != null)
+        {
+            mp.isLooping = true
+            mp.setVolume(0.4f, 0.4f)      // más baja que los efectos
+            musica = mp
+            musicaActual = cancion
+        }
+    }
+
+    // Al cambiar de temática (Menú o Ajustes): si la canción es otra, se para la de antes,
+    // se libera y suena la nueva (si la música está puesta)
+    fun cambiarMusica(context: Context)
+    {
+        if(GestorAjustes.tema.musica != musicaActual)
+        {
+            val anterior = musica
+            if(anterior != null)
             {
-                mp.isLooping = true
-                mp.setVolume(0.4f, 0.4f)      // más baja que los efectos
-                musica = mp
+                anterior.stop()
+                // Esta parte es de información externa que no sale en los vídeos
+                // (release: libera la canción anterior para que no se quede ocupando memoria)
+                anterior.release()
             }
+            musica = null
+            musicaActual = 0
+            cargarMusica(context)
+            sonarMusica()
         }
     }
 

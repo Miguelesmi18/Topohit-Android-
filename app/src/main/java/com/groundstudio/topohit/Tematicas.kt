@@ -13,7 +13,7 @@ object Tematicas
                           R.drawable.bomba, R.drawable.explosion,
                           R.drawable.btn_naranja, R.drawable.btn_verde, R.drawable.panel_crema,
                           R.drawable.circulo_crema, R.color.marron, R.color.marron, R.color.marron,
-                          R.color.marron, R.color.blanco)
+                          R.color.marron, R.color.blanco, R.raw.musica_normal)
 
     val HALLOWEEN = Tematica("Halloween", R.drawable.fondo_partida_halloween, R.drawable.logo_halloween,
                              R.drawable.topo_halloween_01_feliz_bruja, R.drawable.topo_halloween_02_golpeado_bruja,
@@ -23,7 +23,7 @@ object Tematicas
                              R.drawable.topo_halloween_07_bomba_calabaza, R.drawable.topo_halloween_08_explosion_calabaza,
                              R.drawable.btn_naranja_halloween, R.drawable.btn_morado, R.drawable.panel_morado_oscuro,
                              R.drawable.circulo_crema, R.color.crema_halloween, R.color.marron, R.color.blanco,
-                             R.color.crema_halloween, R.color.marron)
+                             R.color.crema_halloween, R.color.marron, R.raw.musica_halloween)
 
     val NAVIDAD = Tematica("Navidad", R.drawable.fondo_partida_navidad, R.drawable.logo_navidad,
                            R.drawable.topo_navidad_01_feliz_papanoel, R.drawable.topo_navidad_02_golpeado_papanoel,
@@ -33,7 +33,7 @@ object Tematicas
                            R.drawable.topo_navidad_07_bomba_regalo, R.drawable.topo_navidad_08_explosion_regalo,
                            R.drawable.btn_rojo, R.drawable.btn_verde_navidad, R.drawable.panel_blanco_nieve,
                            R.drawable.circulo_blanco_nieve, R.color.marron_navidad, R.color.blanco, R.color.blanco,
-                           R.color.marron, R.color.blanco)
+                           R.color.marron, R.color.blanco, R.raw.musica_navidad)
 
     // Devuelve la temática a partir de su nombre (si no la encuentra, la Normal)
     fun porNombre(nombre: String): Tematica

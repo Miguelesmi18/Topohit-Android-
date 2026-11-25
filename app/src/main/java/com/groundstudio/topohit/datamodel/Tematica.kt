@@ -7,6 +7,7 @@ package com.groundstudio.topohit.datamodel
 // que con blanco no se leen bien)
 // colorTitulo y colorSombraTitulo: el título de las pantallas, que va encima del cielo del fondo
 // (en Halloween el cielo es morado y el marrón no se lee: va en crema con sombra marrón)
+// musica: la canción de fondo de la temática (R.raw...)
 class Tematica (val nombre: String,
                 val fondo: Int,
                 val logo: Int,
@@ -28,4 +29,5 @@ class Tematica (val nombre: String,
                 val colorTextoBoton: Int,
                 val colorTextoBotonSecundario: Int,
                 val colorTitulo: Int,
-                val colorSombraTitulo: Int)
+                val colorSombraTitulo: Int,
+                val musica: Int)

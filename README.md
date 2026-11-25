@@ -21,6 +21,20 @@ siguiendo lo que se enseña en clase (módulo 0489). Las normas de código está
 - **Desbloqueo probado de verdad (25/11):** con el umbral de Normal bajado a 10 un momento, una partida de 25 puntos en Fácil
   sacó «¡Has desbloqueado Normal!» y Normal pasó a abierta (Difícil siguió con candado). Después se dejó en 500.
 
+## Música por temática (25/11)
+
+Cada temática tiene su canción de fondo (campo `musica` de `Tematica`):
+
+| Temática | Archivo (`res/raw/`) |
+| --- | --- |
+| Normal | `musica_normal.mp3` (antes `musica_fondo.mp3`) |
+| Halloween | `musica_halloween.mp3` |
+| Navidad | `musica_navidad.mp3` |
+
+Al cambiar de temática en el Menú o en Ajustes, `Sonidos.cambiarMusica()` para la canción de antes, la libera
+y pone la nueva (si la música está activada). Al abrir la app suena la de la temática guardada. El botón del altavoz
+del menú y el de Ajustes siguen quitando o poniendo la música, sea cual sea.
+
 ## Ranking
 
 Tiene una pestaña por dificultad, con los 10 mejores récords, y la pestaña **Total**
