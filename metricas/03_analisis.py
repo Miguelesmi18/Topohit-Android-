@@ -304,6 +304,7 @@ def generar_informe(ruta_csv):
 # Esta parte es de información externa que no sale en los vídeos
 # (PdfPages: juntar en un PDF varias hojas hechas con Matplotlib)
 from matplotlib.backends.backend_pdf import PdfPages
+import textwrap
 
 VERSION = "versión 2 · 25/11/2026"
 A4 = (8.27, 11.69)
@@ -339,17 +340,17 @@ NOMBRES_VALORES = {
 
 # Qué enseña cada gráfica (solo la descripción, sin interpretarla)
 PIES = {
-    "duracion": "Histograma de la duración de las partidas (session_length), en segundos.",
-    "puntuaciones": "Histograma de la puntuación final de cada partida, con un color por dificultad.",
-    "errores_dificultad": "Media de errores por partida y % de partidas abandonadas en cada dificultad.",
-    "intentos_puntuacion": "Cada punto es una partida: toques totales (n_attempts) frente a la puntuación final.",
-    "actividad_diaria": "Jugadores distintos que juegan cada día (DAU) y partidas jugadas cada día.",
-    "abandono_ayudas": "% de niños que no vuelven a jugar según las ayudas pedidas en su primera partida.",
-    "abandono_errores": "% de niños que no vuelven a jugar según los errores por minuto de su primera partida.",
-    "matriz_confusion": "Matriz de confusión con los jugadores de prueba (20 %).",
-    "curva_roc": "Curva ROC con los jugadores de prueba; el AUC está en la leyenda.",
-    "importancias": "Importancia de cada variable de la primera partida en el árbol (de 0 a 1).",
-    "arbol": "El árbol de decisión entrenado (max_depth = 4).",
+    "duracion": "Cuántas partidas duran cada tiempo. Cada barra es un tramo de segundos; cuanto más alta, más partidas duran eso.",
+    "puntuaciones": "Cuántas partidas acaban con cada puntuación, un color por dificultad. Si se solapan, se ven los dos colores.",
+    "errores_dificultad": "Izquierda: errores medios por partida. Derecha: de cada 100 partidas, cuántas se dejan a medias.",
+    "intentos_puntuacion": "Cada punto es una partida: a la derecha, más toques; arriba, más puntos. Enseña cómo van juntos.",
+    "actividad_diaria": "Cada día: niños distintos que juegan (DAU, línea azul) y partidas jugadas (línea gris).",
+    "abandono_ayudas": "Niños agrupados por las ayudas (?) de su primera partida: % de cada grupo que no vuelve a jugar.",
+    "abandono_errores": "Niños agrupados por los errores por minuto de su primera partida: % de cada grupo que no vuelve.",
+    "matriz_confusion": "Filas: lo que pasó de verdad. Columnas: lo que dijo el modelo. La diagonal son los aciertos.",
+    "curva_roc": "Cuanto más se acerca la curva a la esquina de arriba a la izquierda, mejor. La diagonal es el azar.",
+    "importancias": "Cuánto usa el árbol cada variable para separar a los niños. Suman 1 entre todas.",
+    "arbol": "Cada caja es una pregunta sobre la primera partida; se baja por la izquierda si se cumple. Azul: vuelve; naranja: no vuelve.",
 }
 
 # Anexo: los archivos de Métricas y las librerías que usa cada uno
@@ -404,7 +405,10 @@ def poner_grafica(fig, figura, caja, pie):
     ax = fig.add_axes(caja)
     ax.imshow(imagen)
     ax.axis("off")
-    fig.text(caja[0], caja[1] - 0.015, pie, fontsize=8.5, color="dimgray", style="italic")
+    # El pie se parte en líneas según el ancho de la gráfica, para que no se monte con la de al lado
+    lineas = textwrap.wrap(pie, int(caja[2] * 112))
+    for i in range(len(lineas)):
+        fig.text(caja[0], caja[1] - 0.015 - i * 0.015, lineas[i], fontsize=8.5, color="dimgray", style="italic")
 
 
 def hoja_portada(pdf):
@@ -426,16 +430,25 @@ def hoja_portada(pdf):
 
 def hoja_metricas(pdf, metricas):
     fig = nueva_hoja("1. Métricas capturadas y derivadas")
+    texto(fig, 0.91, [
+        "Las métricas «de partida» las mide la tablet mientras se juega y las guarda al acabar (tabla SESION).",
+        "Las «derivadas» no se guardan: se calculan con pandas juntando todas las partidas.",
+    ], tam=9)
     filas = []
     for nombre, origen, descripcion in DESCRIPCIONES:
         filas.append([nombre, origen, descripcion])
-    tabla(fig, 0.91, 0.46, filas, ["Métrica", "Tipo", "Qué mide"], [0.27, 0.13, 0.60])
-    fig.text(0.08, 0.41, "Valores (sesiones simuladas a partir del playtest real)", fontsize=12,
+    tabla(fig, 0.86, 0.44, filas, ["Métrica", "Tipo", "Qué mide"], [0.27, 0.13, 0.60])
+    fig.text(0.08, 0.405, "Valores (sesiones simuladas a partir del playtest real)", fontsize=12,
              weight="bold", color=MARRON)
+    texto(fig, 0.38, [
+        "Cómo se calculan: un niño «vuelve» (returning_player) si tiene 2 partidas o más.",
+        "retention_rate = niños que vuelven / niños × 100 · churn_rate = 100 − retention_rate.",
+        "DAU = niños distintos que juegan un día (media de los días) · MAU = lo mismo por mes · DAU/MAU = DAU ÷ MAU.",
+    ], tam=8.5, separacion=0.018)
     filas = []
     for nombre in metricas:
         filas.append([NOMBRES_VALORES.get(nombre, nombre), str(metricas[nombre])])
-    tabla(fig, 0.39, 0.33, filas, ["Métrica", "Valor"], [0.5, 0.5])
+    tabla(fig, 0.315, 0.27, filas, ["Métrica", "Valor"], [0.5, 0.5])
     pdf.savefig(fig)
     plt.close(fig)
 
@@ -480,9 +493,12 @@ def hoja_datos(pdf, df, jugadores):
     plt.close(fig)
 
 
-def hoja_graficas(pdf, titulo, pares):
+def hoja_graficas(pdf, titulo, pares, intro=None):
     fig = nueva_hoja(titulo)
     cajas = [[0.08, 0.52, 0.84, 0.39], [0.08, 0.07, 0.84, 0.39]]
+    if intro != None:
+        texto(fig, 0.91, intro, tam=9, separacion=0.018)
+        cajas = [[0.08, 0.50, 0.84, 0.35], [0.08, 0.06, 0.84, 0.37]]
     for i in range(len(pares)):
         nombre, figura = pares[i]
         poner_grafica(fig, figura, cajas[i], PIES[nombre])
@@ -492,7 +508,10 @@ def hoja_graficas(pdf, titulo, pares):
 
 def hoja_modelo(pdf, resultado, graficas):
     fig = nueva_hoja("4. Resultados del modelo de predicción")
-    y = texto(fig, 0.90, [
+    texto(fig, 0.91, ["Un modelo de predicción aprende de ejemplos para adivinar algo nuevo. Aquí adivina si un niño",
+                      "volverá a jugar mirando solo su primera partida. Cómo leer cada resultado: página siguiente."],
+          tam=9, separacion=0.018)
+    y = texto(fig, 0.86, [
         "Árbol de decisión (scikit-learn, DecisionTreeClassifier, max_depth = 4, random_state = 42).",
         "y: returning_player (1 si el niño juega 2 partidas o más).",
         "X: los datos de su primera partida:",
@@ -501,19 +520,90 @@ def hoja_modelo(pdf, resultado, graficas):
         "Separación: 80 % entrenamiento / 20 % prueba, con la misma proporción de cada clase (stratify).",
     ], tam=9)
     modelo = numeros_modelo(resultado)
-    filas = [["accuracy", str(modelo["accuracy"])], ["precision", str(modelo["precision"])],
-             ["recall", str(modelo["recall"])], ["ROC-AUC", str(modelo["roc_auc"])],
-             ["Jugadores de entrenamiento", str(modelo["jugadores_entrenamiento"])],
-             ["Jugadores de prueba", str(modelo["jugadores_prueba"])]]
-    tabla(fig, y - 0.01, 0.15, filas, ["Indicador", "Valor"], [0.5, 0.5])
-    poner_grafica(fig, graficas["matriz_confusion"], [0.08, 0.30, 0.40, 0.36], PIES["matriz_confusion"])
-    poner_grafica(fig, graficas["curva_roc"], [0.52, 0.30, 0.40, 0.36], PIES["curva_roc"])
+    filas = [["accuracy", str(modelo["accuracy"]), "De todos los niños de prueba, cuántos acierta"],
+             ["precision", str(modelo["precision"]), "Cuando dice «vuelve», cuántas veces es verdad"],
+             ["recall", str(modelo["recall"]), "De los que vuelven de verdad, cuántos detecta"],
+             ["ROC-AUC", str(modelo["roc_auc"]), "Lo bien que separa los dos grupos (0,5 azar; 1 perfecto)"],
+             ["Jugadores de entrenamiento", str(modelo["jugadores_entrenamiento"]), "Con los que aprende (80 %)"],
+             ["Jugadores de prueba", str(modelo["jugadores_prueba"]), "Con los que se evalúa (20 %, no los ha visto)"]]
+    tabla(fig, y - 0.01, 0.15, filas, ["Indicador", "Valor", "Qué mide"], [0.30, 0.10, 0.60])
+    poner_grafica(fig, graficas["matriz_confusion"], [0.08, 0.27, 0.40, 0.34], PIES["matriz_confusion"])
+    poner_grafica(fig, graficas["curva_roc"], [0.52, 0.27, 0.40, 0.34], PIES["curva_roc"])
     pdf.savefig(fig)
     plt.close(fig)
 
     fig = nueva_hoja("4. Resultados del modelo (continuación)")
     poner_grafica(fig, graficas["importancias"], [0.16, 0.64, 0.68, 0.28], PIES["importancias"])
     poner_grafica(fig, graficas["arbol"], [0.01, 0.08, 0.98, 0.52], PIES["arbol"])
+    pdf.savefig(fig)
+    plt.close(fig)
+    hoja_explicacion_modelo(pdf, resultado)
+
+
+# Explica qué mide cada resultado del modelo y cómo se calcula, con los números de este informe
+def hoja_explicacion_modelo(pdf, resultado):
+    matriz = resultado["matriz"]
+    vn = int(matriz[0][0])      # dijo «no vuelve» y no volvió
+    fp = int(matriz[0][1])      # dijo «vuelve» y no volvió
+    fn = int(matriz[1][0])      # dijo «no vuelve» y sí volvió
+    vp = int(matriz[1][1])      # dijo «vuelve» y volvió
+    total = vn + fp + fn + vp
+    importancias = resultado["importancias"].sort_values("importancia", ascending=False)
+    primeras = []
+    for i in range(3):
+        fila = importancias.iloc[i]
+        primeras.append(fila["feature"] + " (" + str(round(float(fila["importancia"]), 2)) + ")")
+
+    fig = nueva_hoja("4. Cómo leer los resultados del modelo")
+    y = 0.91
+    bloques = [
+        ("Matriz de confusión", [
+            "Cuenta los aciertos y los fallos del modelo con los " + str(total) + " niños de prueba, en 4 casillas:",
+            "  · " + str(vp) + " verdaderos positivos (VP): dijo «vuelve» y volvió.",
+            "  · " + str(vn) + " verdaderos negativos (VN): dijo «no vuelve» y no volvió.",
+            "  · " + str(fp) + " falsos positivos (FP): dijo «vuelve» y no volvió.",
+            "  · " + str(fn) + " falsos negativos (FN): dijo «no vuelve» y sí volvió.",
+            "Todos los indicadores de abajo salen de estas cuatro casillas.",
+        ]),
+        ("accuracy (exactitud)", [
+            "Qué mide: de todos los niños, cuántos acierta.",
+            "Cómo: (VP + VN) / total = (" + str(vp) + " + " + str(vn) + ") / " + str(total) + " = " + str(resultado["accuracy"]) + ".",
+            "Es decir, acierta " + str(vp + vn) + " de cada " + str(total) + " niños.",
+        ]),
+        ("precision (precisión)", [
+            "Qué mide: cuando el modelo dice «vuelve», cuántas veces tiene razón.",
+            "Cómo: VP / (VP + FP) = " + str(vp) + " / " + str(vp + fp) + " = " + str(resultado["precision"]) + ".",
+            "De los " + str(vp + fp) + " niños que predijo que volverían, volvieron " + str(vp) + ".",
+        ]),
+        ("recall (sensibilidad)", [
+            "Qué mide: de los niños que vuelven de verdad, cuántos encuentra el modelo.",
+            "Cómo: VP / (VP + FN) = " + str(vp) + " / " + str(vp + fn) + " = " + str(resultado["recall"]) + ".",
+            "Encontró a " + str(vp) + " de los " + str(vp + fn) + " que volvieron.",
+        ]),
+        ("Curva ROC y ROC-AUC", [
+            "El árbol no solo dice sí o no: da una probabilidad de que vuelva. La curva ROC prueba todos los umbrales",
+            "(«vuelve si la probabilidad pasa de X») y dibuja, para cada uno, los falsos positivos (eje X) frente a los",
+            "verdaderos positivos (eje Y). AUC es el área bajo esa curva: 0,5 es tirar una moneda y 1 es perfecto.",
+            "Aquí vale " + str(resultado["roc_auc"]) + ".",
+        ]),
+        ("Importancia de las variables", [
+            "Cuánto ayuda cada dato de la primera partida a separar a los que vuelven de los que no.",
+            "Suman 1 entre todas. Las tres que más usa el árbol: " + ", ".join(primeras) + ".",
+        ]),
+        ("El árbol de decisión", [
+            "Una serie de preguntas de sí o no sobre la primera partida (por ejemplo, «¿errores_por_minuto ≤ X?»).",
+            "En cada caja: la pregunta, gini (lo mezclados que están los dos grupos: 0 = todos iguales), samples (niños",
+            "que llegan), value ([no vuelven, vuelven]) y class (lo que predice). Profundidad máxima: 4 preguntas.",
+        ]),
+        ("Por qué se separa en entrenamiento y prueba", [
+            "El modelo aprende con el 80 % de los niños y se evalúa con el otro 20 %, que no ha visto nunca: así los",
+            "resultados dicen cómo funcionaría con niños nuevos. Con " + str(total) + " niños de prueba, cada fallo",
+            "cambia la accuracy en unos " + str(round(100 / total, 1)) + " puntos.",
+        ]),
+    ]
+    for titulo, lineas in bloques:
+        fig.text(0.08, y, titulo, fontsize=10.5, weight="bold", color="#E07B12")
+        y = texto(fig, y - 0.021, lineas, tam=8.6, separacion=0.0175) - 0.008
     pdf.savefig(fig)
     plt.close(fig)
 
@@ -576,7 +666,10 @@ def guardar_todo(ruta_csv):
         hoja_metricas(pdf, metricas)
         hoja_datos(pdf, df, jugadores)
         hoja_graficas(pdf, "3. Visualización de los datos", [("duracion", graficas["duracion"]),
-                                                             ("puntuaciones", graficas["puntuaciones"])])
+                                                             ("puntuaciones", graficas["puntuaciones"])],
+                      ["Gráficas hechas con Matplotlib a partir de las sesiones simuladas. Las cuatro primeras enseñan",
+                       "cómo son las partidas; la de actividad, cuándo se juega; y las dos de abandono comparan a los",
+                       "niños según su primera partida, que es justo lo que usa el modelo para predecir."])
         hoja_graficas(pdf, "3. Visualización de los datos (2)", [("errores_dificultad", graficas["errores_dificultad"]),
                                                                  ("intentos_puntuacion", graficas["intentos_puntuacion"])])
         hoja_graficas(pdf, "3. Visualización de los datos (3)", [("actividad_diaria", graficas["actividad_diaria"]),
