@@ -10,6 +10,7 @@ Actualizado: 25/11/2026 · Equipo: Borja, Miguel y Daniil (DAM)
 | **Título legible en Halloween** | Android `366e0ac` | El título de 7 pantallas (Ranking, Perfil, Ajustes, Cómo jugar, Dificultades, Crear cuenta y Mis estadísticas) sale del color de la temática (`colorTitulo`): crema con sombra marrón en Halloween; en Normal y Navidad, igual que antes. Probado en el emulador |
 | **Contraseña nueva de la BD** | API `2039d24` | Se cambió la contraseña del login `jocs_dam02` (`ALTER LOGIN`). **Decisión del equipo:** `appsettings.json` **se sube a git** (proyecto de clase en un entorno cerrado); ya no hay que crearlo a mano. Fuera `appsettings.ejemplo.json`. Probado: la API arranca y lee la BD. **Proyectada usa el mismo login: hay que ponerle la contraseña nueva** |
 | **`instalar_librerias.bat`** | Android `366e0ac`, escritorio `56d522c` | Doble clic: instala Python 3.13 con winget si falta, las librerías (`requirements.txt`) y comprueba que se cargan. En el Android, Python 3.13 (Chaquopy) y las de `metricas/`; en el escritorio, las de la pantalla Métricas. Probados los dos |
+| **Figma** | — | Texto marrón en los botones naranjas y verdes del arte y títulos como en la app (ver «Cuando se pueda») |
 | Documentos | API `7c482a5` y este | README de los 3 repos, `REGLAS_CODIGO.md`, `metricas/README.md`, `CAMBIOS_18-11.md` (histórico), `resumen-del-proyecto.md` (checklist revisado) y `topohit-diseno-del-juego.md` |
 
 ## Decisiones del 25/11/2026 (tarde)
@@ -53,7 +54,7 @@ Actualizado: 25/11/2026 · Equipo: Borja, Miguel y Daniil (DAM)
   (5,2:1) en los botones secundarios (Ranking, Perfil, Continuar, Menú…), las pestañas del Ranking y el botón de la
   temática Normal; campo `colorTextoBotonSecundario` (blanco en Halloween y Navidad). **El título sobre el cielo
   morado de Halloween** se arregló el 25/11 por la noche (Android `366e0ac`): crema con sombra marrón.
-  **Falta**: el arte de Figma sigue con el texto blanco en los botones naranjas y verdes.
+  El arte de Figma se puso igual el 25/11 por la noche.
 
 ## Qué se hizo el 25/11/2026 · Historia y Contrarreloj fuera de la base de datos
 
@@ -203,7 +204,9 @@ El aviso de desbloqueo («¡Has desbloqueado Normal!») se probó de verdad el 2
   que es lo que usan las apps. `api/modos/avatares` no existe ni hace falta (los avatares van dentro de cada app); el README de la
   API lo avisa en la sección del 19/11.
 - [ ] **Entregar el informe de Métricas v1** (`Topohit-Android-/metricas/informe_metricas.pdf`, era para el 21/11).
-- [ ] **Figma:** pasar al arte el texto marrón de los botones naranjas y verdes y el título crema de Halloween (como la app).
+- [x] **Figma** (hecho el 25/11 por la noche): en «🎨 Arte · Temáticas», 69 textos de botones, pestañas y chips naranjas y verdes
+  pasan a marrón sin contorno (Normal y Halloween), y los 18 títulos sobre el cielo van como en la app: crema con contorno
+  marrón en Halloween y marrón con contorno blanco en Normal y Navidad.
 - [ ] **Diapositivas de la presentación técnica** (con `metricas/CONCLUSIONES.md`).
 
 ## Documentos relacionados
