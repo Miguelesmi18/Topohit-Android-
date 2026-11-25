@@ -54,6 +54,13 @@
   .indice { text-align: left; margin-top: 10mm; background: #FFFFFFCC; border-radius: 4mm; padding: 4mm 8mm; font-size: 10.5pt; columns: 2; column-gap: 10mm; }
   .indice div { margin: 1mm 0; }
   .pie { color: var(--gris); font-size: 8.5pt; }
+  /* Páginas con mucho contenido: un poco más apretadas para que quepan en una hoja */
+  .compacta { font-size: 9.8pt; line-height: 1.35; }
+  .compacta td, .compacta th { padding: 1mm 2mm; font-size: 8.7pt; }
+  .compacta h2 { margin: 3.5mm 0 1.5mm; }
+  .compacta .caja { padding: 2.2mm 3.5mm; margin: 2mm 0 2.5mm; }
+  .compacta .tarjeta { padding: 2.5mm 3mm; }
+  .compacta table { margin: 1mm 0 2.5mm; }
   .pregunta { margin-bottom: 2.6mm; }
   .pregunta b { color: var(--naranja-osc); }
   .respuesta { color: var(--gris); font-size: 9.5pt; margin-left: 5mm; }
@@ -147,7 +154,7 @@
 </section>
 
 <!-- ============ 2 ============ -->
-<section class="pagina">
+<section class="pagina compacta">
   <h1><span class="num">2</span>Las cuatro piezas</h1>
   <div class="tarjetas">
     <div class="tarjeta"><span class="tag">Kotlin</span><h3>📱 El juego (tablet)</h3>
@@ -157,6 +164,7 @@
         <li>Normal se abre con 500 puntos en Fácil y Difícil con 800 en Normal; el tutor también puede bloquear una dificultad.</li>
         <li>Al acabar cada partida, envía sus datos a la API.</li>
         <li>Ranking, perfil y <b>Mis estadísticas</b> (Python dentro de la app).</li>
+        <li>3 temáticas (Normal, Halloween y Navidad), <b>cada una con su canción</b>.</li>
       </ul></div>
     <div class="tarjeta"><span class="tag">C# · WinForms</span><h3>🖥️ La app de escritorio</h3>
       <ul>
@@ -191,6 +199,11 @@
   <div class="caja truco"><b class="t">✅ Usuarios de prueba</b>
     <code>marc</code> / <code>marc1234</code> (jugador), <code>profe</code> / <code>profe1234</code> (educador) y <code>ana</code> / <code>ana1234</code> (admin).
     En los de prueba, la contraseña es siempre el nombre más 1234.</div>
+
+  <div class="caja idea"><b class="t">🎵 Sonido y música (todo dentro de la tablet, sin red)</b>
+    Efectos cortos con <b>SoundPool</b>; música de fondo en bucle con <b>MediaPlayer</b>, <b>una canción por temática</b>
+    (<code>res/raw/musica_normal</code>, <code>_halloween</code> y <code>_navidad.mp3</code>). Al cambiar de temática,
+    <code>Sonidos.cambiarMusica()</code> para la de antes y pone la nueva. El botón 🔊 / 🔇 del menú la quita o la pone.</div>
 </section>
 
 <!-- ============ 3 ============ -->
@@ -339,7 +352,7 @@ Authorization: Bearer eyJhbGciOi...   ← el token del login</span>
 </section>
 
 <!-- ============ 7 ============ -->
-<section class="pagina">
+<section class="pagina compacta">
   <h1><span class="num">7</span>Archivos y librerías</h1>
   <h2>📱 Tablet · <code>Topohit-Android-/app/src/main/java/com/groundstudio/topohit/</code></h2>
   <table>
@@ -351,6 +364,7 @@ Authorization: Bearer eyJhbGciOi...   ← el token del login</span>
     <tr><td><code>Cifrado.kt</code></td><td>bcrypt de la contraseña</td></tr>
     <tr><td><code>activities/</code></td><td>Una Activity por pantalla (Login, Menú, Partida, Resultado, Ranking, Perfil, Métricas…)</td></tr>
     <tr><td><code>AndroidManifest.xml</code></td><td>Permiso <code>INTERNET</code> y <code>usesCleartextTraffic</code></td></tr>
+    <tr><td><code>Sonidos.kt</code> + <code>Tematicas.kt</code> + <code>res/raw/</code></td><td>Efectos y música; cada temática dice qué canción suena</td></tr>
   </table>
   <p class="pie"><b>Librerías:</b> Retrofit 2.11 + converter-gson (llamadas HTTP), Gson 2.11 (JSON), Kotlin Coroutines 1.8 (segundo plano),
     jBCrypt 0.4 (contraseñas), Chaquopy 17.2 (Python), AndroidX (appcompat, recyclerview, constraintlayout) y Material.</p>
@@ -464,6 +478,8 @@ Authorization: Bearer eyJhbGciOi...   ← el token del login</span>
     <tr><td><b>Chaquopy</b></td><td>Herramienta que mete Python dentro de una app Android.</td></tr>
     <tr><td><b>base64</b></td><td>Forma de convertir una imagen en texto para enviarla (Python → Kotlin).</td></tr>
     <tr><td><b>armeabi-v7a</b></td><td>El tipo de procesador de 32 bits de la Galaxy Tab A.</td></tr>
+    <tr><td><b>MediaPlayer</b></td><td>Lo que usa Android para la música de fondo (una canción en bucle por temática).</td></tr>
+    <tr><td><b>SoundPool</b></td><td>Lo que usa Android para los efectos cortos (golpe, bomba…), que pueden sonar a la vez.</td></tr>
   </table>
 </section>
 
@@ -495,6 +511,8 @@ Authorization: Bearer eyJhbGciOi...   ← el token del login</span>
     <div class="respuesta">→ Con Chaquopy, que mete Python en la app. Se usa la 3.11 porque es la última que Chaquopy tiene para tablets de 32 bits como la Tab A.</div></div>
   <div class="pregunta"><b>12.</b> ¿Qué archivo cambiarías si la tablet no encuentra la API?
     <div class="respuesta">→ <code>SharedData.kt</code> (<code>PROJECT_ROOT</code>), y después volverías a instalar la app.</div></div>
+  <div class="pregunta"><b>13.</b> ¿Cómo sabe la app qué canción poner y qué pasa al cambiar de temática?
+    <div class="respuesta">→ Cada temática de <code>Tematicas.kt</code> tiene su campo <code>musica</code>. Al cambiarla, <code>Sonidos.cambiarMusica()</code> para y libera la canción anterior (MediaPlayer) y pone la nueva. No usa la red.</div></div>
 </section>
 
 <!-- ============ ANEXO USUARIOS ============ -->
