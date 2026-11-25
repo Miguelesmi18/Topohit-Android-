@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Cómo funciona Topohit · Guía de estudio</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
+  :root {
+    --marron: #3B2314; --naranja: #F2A93B; --naranja-osc: #E07B12; --verde: #5BAA3A;
+    --azul: #3B7DD8; --rojo: #D9534F; --crema: #FFF4DC; --crema2: #F6E2B8; --gris: #6B5E52;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--marron); font-size: 10.5pt; line-height: 1.45; margin: 0; }
+  h1 { font-size: 21pt; margin: 0 0 4mm; color: var(--marron); border-bottom: 3px solid var(--naranja); padding-bottom: 2mm; }
+  h1 .num { display: inline-block; background: var(--naranja); color: var(--marron); border-radius: 50%;
+            width: 11mm; height: 11mm; text-align: center; line-height: 11mm; margin-right: 3mm; font-size: 15pt; }
+  h2 { font-size: 13pt; margin: 5mm 0 2mm; color: var(--naranja-osc); }
+  p { margin: 0 0 2.5mm; }
+  .pagina { page-break-after: always; }
+  .pagina:last-child { page-break-after: auto; }
+  code, .mono { font-family: Consolas, "Courier New", monospace; font-size: 9pt; background: #F3EEE6; padding: 0 1.2mm; border-radius: 1mm; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.6pt; background: #2B1D14; color: #FCEBD0;
+        padding: 3mm 4mm; border-radius: 2.5mm; margin: 1.5mm 0 3mm; white-space: pre-wrap; line-height: 1.35; }
+  pre .c { color: #C9B79F; } pre .k { color: #F2A93B; } pre .s { color: #9FD48A; }
+  table { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3.5mm; font-size: 9.3pt; }
+  th { background: var(--crema2); text-align: left; padding: 1.6mm 2.2mm; border-bottom: 2px solid var(--naranja); }
+  td { padding: 1.5mm 2.2mm; border-bottom: 1px solid #E8DCC8; vertical-align: top; }
+  tr:nth-child(even) td { background: #FFFBF3; }
+  .caja { border-radius: 3mm; padding: 3mm 4mm; margin: 2.5mm 0 3.5mm; }
+  .idea { background: #EAF4FF; border-left: 5px solid var(--azul); }
+  .ojo { background: #FFF0EF; border-left: 5px solid var(--rojo); }
+  .truco { background: #EEF8E8; border-left: 5px solid var(--verde); }
+  .resumen { background: var(--crema); border: 2px dashed var(--naranja); }
+  .caja b.t { display: block; margin-bottom: 1mm; }
+  .tarjetas { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin: 2mm 0 3mm; }
+  .tarjeta { border: 2px solid var(--crema2); border-radius: 3mm; padding: 3mm 3.5mm; background: #FFFCF6; }
+  .tarjeta h3 { margin: 0 0 1.5mm; font-size: 11.5pt; }
+  .tarjeta .tag { float: right; font-size: 8pt; background: var(--crema2); border-radius: 2mm; padding: 0.3mm 2mm; }
+  .tarjeta ul { margin: 0; padding-left: 4.5mm; }
+  .pasos { counter-reset: paso; list-style: none; padding: 0; margin: 2mm 0; }
+  .pasos li { position: relative; padding: 2mm 0 2mm 12mm; border-left: 3px solid var(--crema2); margin-left: 4.5mm; }
+  .pasos li::before { counter-increment: paso; content: counter(paso); position: absolute; left: -5mm; top: 1.5mm;
+       width: 8mm; height: 8mm; border-radius: 50%; background: var(--naranja); color: var(--marron);
+       font-weight: bold; text-align: center; line-height: 8mm; }
+  .check { list-style: none; padding-left: 0; }
+  .check li { padding-left: 7mm; position: relative; margin-bottom: 1.2mm; }
+  .check li::before { content: "☐"; position: absolute; left: 0; color: var(--naranja-osc); font-size: 11pt; top: -0.5mm; }
+  .portada { height: 255mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+             background: linear-gradient(180deg, #CFEAFF 0%, #FFF4DC 55%, #FFF4DC 100%); border-radius: 6mm; }
+  .portada img.topo { width: 55mm; }
+  .portada .titulo { font-size: 34pt; font-weight: 800; color: var(--marron); margin: 3mm 0 0; }
+  .portada .sub { font-size: 15pt; color: var(--naranja-osc); margin: 1mm 0 6mm; font-weight: 600; }
+  .portada .meta { color: var(--gris); font-size: 10pt; }
+  .indice { text-align: left; margin-top: 10mm; background: #FFFFFFCC; border-radius: 4mm; padding: 4mm 8mm; font-size: 10.5pt; columns: 2; column-gap: 10mm; }
+  .indice div { margin: 1mm 0; }
+  .pie { color: var(--gris); font-size: 8.5pt; }
+  .pregunta { margin-bottom: 2.6mm; }
+  .pregunta b { color: var(--naranja-osc); }
+  .respuesta { color: var(--gris); font-size: 9.5pt; margin-left: 5mm; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  svg text { font-family: "Segoe UI", Arial, sans-serif; }
+</style>
+</head>
+<body>
+
+<!-- ============ PORTADA ============ -->
+<section class="pagina portada">
+  <img class="topo" src="../app/src/main/res/drawable-nodpi/ic_launcher_frente.png" alt="">
+  <div class="titulo">Cómo funciona Topohit</div>
+  <div class="sub">Guía para estudiarlo y entenderlo</div>
+  <div class="meta">Tablet Android · API · Base de datos · App de escritorio · Métricas</div>
+  <div class="meta">Equipo: Borja, Miguel y Daniil (DAM) · 25/11/2026</div>
+  <div class="indice">
+    <div>1. La idea en un minuto</div>
+    <div>2. Las cuatro piezas</div>
+    <div>3. El viaje de una partida</div>
+    <div>4. Cómo hablan sin cable</div>
+    <div>5. Seguridad: contraseñas, token y roles</div>
+    <div>6. Las llamadas de la API</div>
+    <div>7. Archivos y librerías</div>
+    <div>8. Métricas con Python</div>
+    <div>9. Ponerlo en marcha en la Tab A</div>
+    <div>10. Problemas típicos</div>
+    <div>11. Glosario</div>
+    <div>12. Preguntas de repaso</div>
+    <div>Anexo: usuarios y contraseñas</div>
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="pagina">
+  <h1><span class="num">1</span>La idea en un minuto</h1>
+  <p>Topohit es un juego de golpear topos para niños de 5 años. Lo forman <b>cuatro piezas</b> que se pasan datos entre sí:</p>
+
+  <svg viewBox="0 0 700 300" width="100%" style="margin: 2mm 0 3mm">
+    <defs>
+      <marker id="fl" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B2314"/></marker>
+    </defs>
+    <!-- Tablet -->
+    <rect x="10" y="20" width="180" height="110" rx="14" fill="#FFF4DC" stroke="#F2A93B" stroke-width="3"/>
+    <text x="100" y="52" text-anchor="middle" font-size="18" font-weight="bold" fill="#3B2314">📱 Tablet</text>
+    <text x="100" y="76" text-anchor="middle" font-size="12" fill="#3B2314">El juego (Kotlin)</text>
+    <text x="100" y="96" text-anchor="middle" font-size="11" fill="#6B5E52">Los niños juegan</text>
+    <text x="100" y="114" text-anchor="middle" font-size="11" fill="#6B5E52">Galaxy Tab A</text>
+    <!-- Escritorio -->
+    <rect x="10" y="170" width="180" height="110" rx="14" fill="#FFF4DC" stroke="#5BAA3A" stroke-width="3"/>
+    <text x="100" y="202" text-anchor="middle" font-size="18" font-weight="bold" fill="#3B2314">🖥️ Escritorio</text>
+    <text x="100" y="226" text-anchor="middle" font-size="12" fill="#3B2314">App C# (WinForms)</text>
+    <text x="100" y="246" text-anchor="middle" font-size="11" fill="#6B5E52">Educadoras y admin</text>
+    <text x="100" y="264" text-anchor="middle" font-size="11" fill="#6B5E52">en el mismo PC que la API</text>
+    <!-- API -->
+    <rect x="265" y="95" width="180" height="110" rx="14" fill="#EAF4FF" stroke="#3B7DD8" stroke-width="3"/>
+    <text x="355" y="127" text-anchor="middle" font-size="18" font-weight="bold" fill="#3B2314">⚙️ API</text>
+    <text x="355" y="151" text-anchor="middle" font-size="12" fill="#3B2314">ASP.NET Core (C#)</text>
+    <text x="355" y="171" text-anchor="middle" font-size="11" fill="#6B5E52">en tu PC, puerto 5110</text>
+    <text x="355" y="189" text-anchor="middle" font-size="11" fill="#6B5E52">el «portero» de los datos</text>
+    <!-- BD -->
+    <rect x="520" y="95" width="170" height="110" rx="14" fill="#F3EEE6" stroke="#3B2314" stroke-width="3"/>
+    <text x="605" y="127" text-anchor="middle" font-size="18" font-weight="bold" fill="#3B2314">🗄️ Base de datos</text>
+    <text x="605" y="151" text-anchor="middle" font-size="12" fill="#3B2314">SQL Server</text>
+    <text x="605" y="171" text-anchor="middle" font-size="11" fill="#6B5E52">jocs_dam02</text>
+    <text x="605" y="189" text-anchor="middle" font-size="11" fill="#6B5E52">servidor de clase</text>
+    <!-- flechas -->
+    <line x1="192" y1="78" x2="262" y2="128" stroke="#3B2314" stroke-width="2.5" marker-end="url(#fl)"/>
+    <text x="200" y="150" font-size="11" fill="#E07B12" font-weight="bold">wifi</text><text x="200" y="164" font-size="10" fill="#E07B12">HTTP + JSON</text>
+    <line x1="192" y1="225" x2="262" y2="175" stroke="#3B2314" stroke-width="2.5" marker-end="url(#fl)"/>
+    <text x="214" y="240" font-size="11" fill="#5BAA3A" font-weight="bold">localhost</text>
+    <line x1="447" y1="150" x2="517" y2="150" stroke="#3B2314" stroke-width="2.5" marker-end="url(#fl)"/>
+    <text x="482" y="142" text-anchor="middle" font-size="11" fill="#3B7DD8" font-weight="bold">internet</text>
+  </svg>
+
+  <div class="caja resumen"><b class="t">🧠 La frase para recordar</b>
+    La tablet y el escritorio <b>nunca tocan la base de datos</b>. Le piden todo a la <b>API</b>, y la API es la única que habla con SQL Server.
+    La tablet lo hace <b>por wifi</b>; por eso no necesita cable.</div>
+
+  <h2>¿Por qué se hace así?</h2>
+  <ul>
+    <li><b>Los mismos datos en las dos apps:</b> la partida que juega un niño en la tablet la ve la educadora en el escritorio un momento después.</li>
+    <li><b>Lo pide el reto:</b> «implementar la API JSON para subir y descargar datos de SQL Server».</li>
+    <li><b>Seguridad:</b> la contraseña de la base de datos solo la conoce la API, y las apps solo pueden hacer lo que la API les deja según su rol.</li>
+    <li><b>Orden:</b> si cambia la base de datos, se toca la API y las apps siguen igual.</li>
+  </ul>
+
+  <div class="caja idea"><b class="t">💡 Un ejemplo de la vida real</b>
+    Es como un restaurante: la tablet y el escritorio son los <b>clientes</b>, la API es el <b>camarero</b> y la base de datos es la <b>cocina</b>.
+    Los clientes no entran en la cocina; le piden las cosas al camarero (una <i>petición</i>) y él les trae el plato (una <i>respuesta</i> en JSON).</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="pagina">
+  <h1><span class="num">2</span>Las cuatro piezas</h1>
+  <div class="tarjetas">
+    <div class="tarjeta"><span class="tag">Kotlin</span><h3>📱 El juego (tablet)</h3>
+      <ul>
+        <li>Login y registro, con avatar.</li>
+        <li>Modo <b>Infinito</b> con 3 dificultades: Fácil, Normal y Difícil.</li>
+        <li>Normal se abre con 500 puntos en Fácil y Difícil con 800 en Normal; el tutor también puede bloquear una dificultad.</li>
+        <li>Al acabar cada partida, envía sus datos a la API.</li>
+        <li>Ranking, perfil y <b>Mis estadísticas</b> (Python dentro de la app).</li>
+      </ul></div>
+    <div class="tarjeta"><span class="tag">C# · WinForms</span><h3>🖥️ La app de escritorio</h3>
+      <ul>
+        <li>La usan las educadoras (rol <i>educador</i>) y el administrador (<i>admin</i>).</li>
+        <li>Gestiona usuarios (solo admin) y dificultades.</li>
+        <li>Estadísticas de cada niño: reacción, aciertos y errores.</li>
+        <li>Pantalla <b>Métricas</b>: todos los niños y el modelo de abandono.</li>
+      </ul></div>
+    <div class="tarjeta"><span class="tag">ASP.NET Core 8</span><h3>⚙️ La API</h3>
+      <ul>
+        <li>Un programa que se queda escuchando en el <b>puerto 5110</b> de tu PC.</li>
+        <li>Recibe peticiones HTTP, comprueba quién pide (token) y si puede.</li>
+        <li>Lee o escribe en SQL Server y contesta en JSON.</li>
+        <li>Documentación de prueba en <code>/scalar</code>.</li>
+      </ul></div>
+    <div class="tarjeta"><span class="tag">SQL Server</span><h3>🗄️ La base de datos</h3>
+      <ul>
+        <li><code>jocs_dam02</code>, en el servidor de clase <code>51.83.192.177</code>.</li>
+        <li>Tablas: usuarios, sesiones (partidas), dificultades de Infinito, bloqueos, avatares…</li>
+        <li>Es <b>compartida</b>: también tiene tablas de otro proyecto (Proyectada) que no se tocan.</li>
+      </ul></div>
+  </div>
+
+  <h2>¿Quién usa qué?</h2>
+  <table>
+    <tr><th>Persona</th><th>Rol</th><th>App</th><th>Qué puede hacer</th></tr>
+    <tr><td>Niño o niña</td><td><code>jugador</code></td><td>Tablet</td><td>Jugar, ver su ranking, su perfil y sus estadísticas</td></tr>
+    <tr><td>Educadora</td><td><code>educador</code></td><td>Escritorio</td><td>Ver estadísticas, cambiar dificultades y bloquear dificultades a un niño</td></tr>
+    <tr><td>Administrador</td><td><code>admin</code></td><td>Escritorio</td><td>Todo lo anterior y además crear, editar y borrar usuarios</td></tr>
+  </table>
+
+  <div class="caja truco"><b class="t">✅ Usuarios de prueba</b>
+    <code>marc</code> / <code>marc1234</code> (jugador), <code>profe</code> / <code>profe1234</code> (educador) y <code>ana</code> / <code>ana1234</code> (admin).
+    En los de prueba, la contraseña es siempre el nombre más 1234.</div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="pagina">
+  <h1><span class="num">3</span>El viaje de una partida</h1>
+  <p>Sigamos a Marc desde que entra en el juego hasta que su educadora ve la partida en el escritorio:</p>
+  <ol class="pasos">
+    <li><b>Entra.</b> Marc escribe su usuario y su contraseña. La tablet <b>cifra la contraseña con bcrypt</b> (<code>Cifrado.kt</code>) y envía
+        <code>POST api/auth/login</code> con el usuario y el hash, nunca la contraseña.</li>
+    <li><b>La API le da un «pase».</b> Compara el hash con el de la base de datos. Si coincide, devuelve un <b>token JWT</b> que vale 8 horas,
+        más su id, rol, temática y avatar. La tablet lo guarda en <code>sesion.txt</code> (<code>GestorSesion.kt</code>).</li>
+    <li><b>Elige dificultad.</b> La tablet pide <code>GET api/sesiones/dificultades</code> enseñando el token. La API contesta qué dificultades tiene
+        abiertas y cuáles tienen candado, y por qué.</li>
+    <li><b>Juega.</b> Todo el juego pasa <b>dentro de la tablet</b> (<code>PartidaActivity.kt</code>): salen topos, los golpea, se cuentan los aciertos,
+        los fallos, los topos que se escapan, el tiempo de reacción y las ayudas. Aquí no hace falta la red.</li>
+    <li><b>Guarda la partida.</b> Al acabar, la pantalla de Resultado envía <code>POST api/sesiones</code> con un JSON con todos los números.
+        La API comprueba el token y que la dificultad esté abierta, y la guarda en la tabla <code>SESION</code>.</li>
+    <li><b>Ranking y desbloqueo.</b> La tablet vuelve a pedir el récord y las dificultades. Si ha llegado a 500 puntos en Fácil, sale
+        «¡Has desbloqueado Normal!».</li>
+    <li><b>La educadora lo ve.</b> En el escritorio, la educadora entra con su usuario y la app pide, por ejemplo, <code>GET api/jugadores/{id}/sesiones</code>:
+        la partida de Marc ya está ahí.</li>
+  </ol>
+
+  <h2>Así es el JSON que envía la tablet al guardar una partida</h2>
+<pre><span class="c">POST http://IP-del-PC:5110/api/sesiones
+Authorization: Bearer eyJhbGciOi...   ← el token del login</span>
+{
+  <span class="k">"modeId"</span>: 3,              <span class="c">// 3 = Infinito</span>
+  <span class="k">"difficulty"</span>: <span class="s">"Fácil"</span>,
+  <span class="k">"sessionLength"</span>: 60,      <span class="c">// segundos</span>
+  <span class="k">"finalScore"</span>: 400,
+  <span class="k">"hits"</span>: 40,  <span class="k">"errorsMade"</span>: 5,  <span class="k">"nAttempts"</span>: 45,
+  <span class="k">"molesEscaped"</span>: 3,  <span class="k">"maxCombo"</span>: 6,  <span class="k">"goldenHits"</span>: 1,
+  <span class="k">"avgReactionMs"</span>: 620,  <span class="k">"helpClicks"</span>: 0,  <span class="k">"abandoned"</span>: false
+}</pre>
+  <div class="caja idea"><b class="t">💡 Qué es JSON</b>
+    Es texto con forma de «nombre: valor», fácil de leer para personas y programas. Kotlin y C# no se entienden entre sí directamente,
+    pero los dos saben leer y escribir JSON: es el idioma común.</div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="pagina">
+  <h1><span class="num">4</span>Cómo hablan sin cable</h1>
+  <p>La tablet y el PC están en la <b>misma red wifi</b>. Cada aparato de esa red tiene una <b>dirección IP</b> (por ejemplo <code>192.168.1.20</code>),
+     y cada programa que escucha dentro de un aparato tiene un <b>puerto</b>. La API escucha en el <b>5110</b>. Así que, para llamar a la API,
+     la tablet usa <code>http://IP-del-PC:5110/api/…</code>.</p>
+
+  <h2>Las tres direcciones que hay que conocer</h2>
+  <table>
+    <tr><th>Desde…</th><th>Dirección de la API</th><th>Por qué</th></tr>
+    <tr><td>El escritorio (mismo PC)</td><td><code>http://localhost:5110/</code></td><td><i>localhost</i> significa «este mismo ordenador»</td></tr>
+    <tr><td>El emulador de Android</td><td><code>http://10.0.2.2:5110/api/</code></td><td>El emulador es un «móvil dentro del PC»; para él, 10.0.2.2 es el PC</td></tr>
+    <tr><td>La tablet de verdad</td><td><code>http://192.168.x.x:5110/api/</code></td><td>Hay que poner la IP real del PC en la wifi</td></tr>
+  </table>
+
+  <div class="caja ojo"><b class="t">⚠️ Lo más importante para la Tab A</b>
+    La dirección está en <code>SharedData.kt</code> (<code>PROJECT_ROOT</code>). Ahora pone <code>10.0.2.2</code>, que solo sirve para el emulador.
+    Para la tablet de verdad hay que poner la IP del PC (en Windows: <code>ipconfig</code> → «Dirección IPv4») y <b>volver a instalar la app</b>.
+    Si cambias de wifi, la IP puede cambiar.</div>
+
+  <h2>Lo que hace falta para que funcione, y dónde está</h2>
+  <table>
+    <tr><th>Qué</th><th>Dónde</th><th>Para qué</th></tr>
+    <tr><td>La API acepta conexiones de fuera</td><td><code>launchSettings.json</code>: <code>http://0.0.0.0:5110</code></td><td><i>0.0.0.0</i> = «escucha en todas las redes del PC», no solo en localhost</td></tr>
+    <tr><td>Permiso de red</td><td><code>AndroidManifest.xml</code>: <code>INTERNET</code></td><td>Sin él, Android no deja a la app usar la red</td></tr>
+    <tr><td>Permitir <i>http</i></td><td><code>AndroidManifest.xml</code>: <code>usesCleartextTraffic="true"</code></td><td>Android bloquea <i>http</i> sin cifrar por defecto; la API de clase no usa <i>https</i></td></tr>
+    <tr><td>Abrir el puerto</td><td>Cortafuegos de Windows</td><td>Windows bloquea las conexiones que llegan de otros aparatos si no se abre el 5110</td></tr>
+    <tr><td>Hacer las llamadas</td><td>carpeta <code>api/</code> (Retrofit)</td><td>Una interfaz <code>ApiXxx</code> y un <code>RetrofitXxxClient</code> por cada llamada</td></tr>
+    <tr><td>No congelar la pantalla</td><td><code>GlobalScope.launch</code> (corrutinas)</td><td>La llamada va en segundo plano; luego <code>runOnUiThread</code> pinta el resultado</td></tr>
+  </table>
+
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="pagina">
+  <h1><span class="num">5</span>Seguridad: contraseñas, token y roles</h1>
+
+  <h2>🔒 1. La contraseña nunca viaja ni se guarda «en claro»</h2>
+  <p>La tablet y el escritorio la pasan por <b>bcrypt</b> antes de enviarla. bcrypt convierte <code>marc1234</code> en algo como
+     <code>$2a$10$3s5iPBl…</code>, y no se puede dar la vuelta. La base de datos guarda ese <b>hash</b>, así que aunque alguien vea la tabla, no ve las contraseñas.</p>
+  <ul>
+    <li>Tablet: <code>Cifrado.kt</code> con la librería <b>jBCrypt</b>. Escritorio: <b>BCrypt.Net-Next</b>.</li>
+    <li>Usan la <b>misma sal fija</b> para que el mismo usuario dé el mismo hash en las dos apps y la API solo tenga que comparar.</li>
+  </ul>
+
+  <h2>🎫 2. El token JWT: el «pase» de cada petición</h2>
+  <p>Tras el login, la API firma un <b>token JWT</b> con su clave secreta (<code>Jwt:Clave</code> de <code>appsettings.json</code>). Dentro va quién eres y tu rol,
+     y caduca a las <b>8 horas</b>. En cada petición, la app lo envía en la cabecera <code>Authorization: Bearer …</code>. Si falta o ha caducado, la API contesta
+     <b>401</b> y la app vuelve al login.</p>
+  <ul><li>API: <code>Auth/Tokens.cs</code>, <code>Auth/JwtConfig.cs</code> y <code>Program.cs</code>, con la librería <b>Microsoft.AspNetCore.Authentication.JwtBearer</b>.</li></ul>
+
+  <h2>👥 3. Los roles deciden qué puedes hacer</h2>
+  <p>En los controladores de la API, cada llamada lleva una etiqueta, por ejemplo <code>[Authorize(Roles = Roles.ADMIN)]</code>.
+     Un niño con su token de <i>jugador</i> no puede pedir <code>api/usuarios</code>: la API le contesta <b>403</b>.</p>
+
+  <h2>🗝️ 4. La contraseña de la base de datos</h2>
+  <p>Solo la conoce la API (<code>appsettings.json</code>, cadena <code>ConnectionStrings:Topohit</code>). Las apps no la tienen.
+     Por decisión del equipo, este archivo se sube a git porque es un proyecto de clase en un entorno cerrado.</p>
+
+  <div class="caja resumen"><b class="t">🧠 Resumen de seguridad en 3 líneas</b>
+    bcrypt protege las <b>contraseñas</b> · el token JWT dice <b>quién eres</b> en cada petición ·
+    los roles dicen <b>qué puedes hacer</b>.</div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="pagina">
+  <h1><span class="num">6</span>Las llamadas de la API</h1>
+  <p>Todas empiezan por <code>http://…:5110/</code>. Las más importantes:</p>
+  <table>
+    <tr><th>Llamada</th><th>Quién la usa</th><th>Qué hace</th></tr>
+    <tr><td><code>POST api/auth/login</code></td><td>Las dos apps</td><td>Entra y devuelve el token</td></tr>
+    <tr><td><code>POST api/auth/registro</code></td><td>Tablet</td><td>Crea una cuenta de jugador con avatar</td></tr>
+    <tr><td><code>PUT api/auth/avatar</code> · <code>PUT api/auth/password</code></td><td>Las dos apps</td><td>Cambia tu avatar o tu contraseña</td></tr>
+    <tr><td><code>GET api/sesiones/dificultades</code></td><td>Tablet</td><td>Qué dificultades tienes abiertas o con candado</td></tr>
+    <tr><td><code>POST api/sesiones</code></td><td>Tablet</td><td>Guarda una partida (403 si la dificultad está cerrada)</td></tr>
+    <tr><td><code>GET api/sesiones/mias</code></td><td>Tablet</td><td>Tus partidas (para «Mis estadísticas»)</td></tr>
+    <tr><td><code>GET api/sesiones/ranking</code> · <code>ranking/total</code></td><td>Tablet</td><td>Top 10 por dificultad y suma de récords</td></tr>
+    <tr><td><code>GET api/sesiones/todas</code></td><td>Escritorio</td><td>Todas las partidas (pantalla Métricas)</td></tr>
+    <tr><td><code>GET api/jugadores</code> · <code>{id}/sesiones</code> · <code>{id}/estadisticas</code></td><td>Escritorio</td><td>Lista de niños, sus partidas y sus medias</td></tr>
+    <tr><td><code>PUT/DELETE api/jugadores/{id}/bloqueos/{dificultad}</code></td><td>Escritorio</td><td>El tutor bloquea o desbloquea una dificultad</td></tr>
+    <tr><td><code>GET/PUT api/modos/infinito</code></td><td>Las dos</td><td>Vidas, aceleración y puntos para abrir cada dificultad</td></tr>
+    <tr><td><code>GET/POST/PUT/DELETE api/usuarios</code></td><td>Escritorio (admin)</td><td>Gestión de usuarios</td></tr>
+    <tr><td><code>GET api/estadisticas/globales</code> · <code>avisos</code></td><td>Escritorio</td><td>Resumen general y niños que necesitan atención</td></tr>
+  </table>
+  <h2>Los cuatro verbos de HTTP</h2>
+  <div class="dos">
+    <table>
+      <tr><th>Verbo</th><th>Para qué</th></tr>
+      <tr><td><b>GET</b></td><td>Leer (ranking, partidas…)</td></tr>
+      <tr><td><b>POST</b></td><td>Crear (login, guardar partida)</td></tr>
+      <tr><td><b>PUT</b></td><td>Modificar (avatar, dificultad)</td></tr>
+      <tr><td><b>DELETE</b></td><td>Borrar (usuario, bloqueo)</td></tr>
+    </table>
+    <table>
+      <tr><th>Código</th><th>Significa</th></tr>
+      <tr><td><b>200 / 201</b></td><td>Todo bien / creado</td></tr>
+      <tr><td><b>400</b></td><td>Datos mal enviados</td></tr>
+      <tr><td><b>401</b></td><td>Sin token o token caducado</td></tr>
+      <tr><td><b>403</b></td><td>No tienes permiso (o dificultad cerrada)</td></tr>
+    </table>
+  </div>
+  <div class="caja truco"><b class="t">✅ Para probarla sin apps</b>
+    Con la API arrancada, abre <code>http://localhost:5110/scalar</code> en el navegador del PC (documentación interactiva) o usa el archivo
+    <code>TopohitAPI.http</code> desde Visual Studio. Desde la tablet, abre en su navegador <code>http://IP-del-PC:5110/api/modos/infinito</code>:
+    si salen datos, la conexión por wifi funciona.</div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="pagina">
+  <h1><span class="num">7</span>Archivos y librerías</h1>
+  <h2>📱 Tablet · <code>Topohit-Android-/app/src/main/java/com/groundstudio/topohit/</code></h2>
+  <table>
+    <tr><th>Archivo</th><th>Qué hace</th></tr>
+    <tr><td><code>SharedData.kt</code></td><td>La dirección de la API (<code>PROJECT_ROOT</code>)</td></tr>
+    <tr><td><code>api/ApiXxx.kt</code> + <code>api/RetrofitXxxClient.kt</code></td><td>Una pareja por llamada (login, partidas, ranking, avatar…)</td></tr>
+    <tr><td><code>datamodel/</code></td><td>Las clases que representan el JSON (<code>@SerializedName</code>)</td></tr>
+    <tr><td><code>GestorSesion.kt</code></td><td>Guarda el token y los datos del usuario en <code>sesion.txt</code></td></tr>
+    <tr><td><code>Cifrado.kt</code></td><td>bcrypt de la contraseña</td></tr>
+    <tr><td><code>activities/</code></td><td>Una Activity por pantalla (Login, Menú, Partida, Resultado, Ranking, Perfil, Métricas…)</td></tr>
+    <tr><td><code>AndroidManifest.xml</code></td><td>Permiso <code>INTERNET</code> y <code>usesCleartextTraffic</code></td></tr>
+  </table>
+  <p class="pie"><b>Librerías:</b> Retrofit 2.11 + converter-gson (llamadas HTTP), Gson 2.11 (JSON), Kotlin Coroutines 1.8 (segundo plano),
+    jBCrypt 0.4 (contraseñas), Chaquopy 17.2 (Python), AndroidX (appcompat, recyclerview, constraintlayout) y Material.</p>
+
+  <h2>⚙️ API · <code>ASP.NET-Core-Web-API-Topohit/</code></h2>
+  <table>
+    <tr><th>Archivo</th><th>Qué hace</th></tr>
+    <tr><td><code>Program.cs</code></td><td>Arranca la API: lee <code>appsettings.json</code>, activa JWT y los controladores</td></tr>
+    <tr><td><code>Properties/launchSettings.json</code></td><td>Perfil <i>http</i>: escucha en <code>0.0.0.0:5110</code></td></tr>
+    <tr><td><code>appsettings.json</code></td><td>Cadena de conexión a SQL Server y clave de los tokens</td></tr>
+    <tr><td><code>Controllers/</code></td><td>Las llamadas: Auth, Sesiones, Jugadores, Usuarios, Modos y Estadísticas</td></tr>
+    <tr><td><code>Models/Access/*BD.cs</code></td><td>Las consultas SQL a la base de datos</td></tr>
+    <tr><td><code>Auth/</code></td><td>Crear y validar los tokens JWT</td></tr>
+  </table>
+  <p class="pie"><b>Librerías:</b> Microsoft.AspNetCore.Authentication.JwtBearer 8.0 (tokens), Microsoft.Data.SqlClient 5.2 (SQL Server),
+    Scalar.AspNetCore y Swashbuckle (documentación para probarla).</p>
+
+  <h2>🖥️ Escritorio · <code>GolpeaTopos-Escritorio/TopohitEscritorio/</code></h2>
+  <table>
+    <tr><th>Archivo</th><th>Qué hace</th></tr>
+    <tr><td><code>Servicios/Api.cs</code></td><td>Cliente HTTP con la dirección <code>http://localhost:5110/</code></td></tr>
+    <tr><td><code>Pantallas/</code></td><td>Los formularios: Login, Jugadores, Estadísticas, Dificultades, Métricas…</td></tr>
+    <tr><td><code>Modelos/</code></td><td>Las clases del JSON</td></tr>
+    <tr><td><code>Servicios/Metricas.cs</code> + <code>Python/</code></td><td>Ejecuta Python para la pantalla Métricas</td></tr>
+  </table>
+  <p class="pie"><b>Librerías:</b> System.Net.Http.Json (llamadas HTTP con JSON) y BCrypt.Net-Next (contraseñas). Python: pandas, numpy, matplotlib y scikit-learn.</p>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="pagina">
+  <h1><span class="num">8</span>Métricas con Python</h1>
+  <p>El reto «Mètriques dels jocs» pide analizar por qué los niños dejan de jugar, con <b>Python</b> (pandas, matplotlib y un modelo de predicción),
+     y enseñar el resultado en una vista «Mètriques».</p>
+  <h2>El pipeline, en 3 scripts (<code>Topohit-Android-/metricas/</code>)</h2>
+  <ol class="pasos">
+    <li><b><code>01_playtest.py</code></b> descarga las partidas reales de la API (29 partidas) y saca el mínimo, la media y el máximo de cada dato.</li>
+    <li><b><code>02_simulacion.py</code></b> crea 400 partidas simuladas con esos rangos y la <b>regla de frustración</b>: si en su primera partida
+        el niño comete muchos errores o pide muchas ayudas, es un 75 % más probable que no vuelva.</li>
+    <li><b><code>03_analisis.py</code></b> calcula las métricas (retención, abandono, DAU/MAU…), hace las gráficas, entrena un <b>árbol de decisión</b>
+        y genera <code>informe_metricas.pdf</code>. Resultado: accuracy 0,913 y ROC-AUC 0,865.</li>
+  </ol>
+  <h2>Dónde se ve</h2>
+  <div class="dos">
+    <div class="tarjeta"><h3>📱 Tablet · Mis estadísticas</h3>
+      <ul><li>Python <b>dentro de la app</b> con <b>Chaquopy</b>.</li>
+      <li>Kotlin le pasa las partidas en JSON y Python devuelve números y gráficas en <b>base64</b>.</li>
+      <li>Python 3.11, porque es el último que Chaquopy tiene para tablets de 32 bits como la Tab A.</li>
+      <li>Archivos: <code>python/estadisticas_jugador.py</code> y <code>modelo_abandono.py</code>.</li></ul></div>
+    <div class="tarjeta"><h3>🖥️ Escritorio · Métricas</h3>
+      <ul><li>El escritorio <b>ejecuta Python</b> del PC (<code>metricas_escritorio.py</code>).</li>
+      <li>Python genera los PNG y el escritorio los enseña.</li>
+      <li>Todas las partidas de todos los niños.</li>
+      <li>Hace falta Python con las librerías: <code>instalar_librerias.bat</code>.</li></ul></div>
+  </div>
+  <div class="caja idea"><b class="t">💡 Por qué el modelo de la tablet no usa scikit-learn</b>
+    Chaquopy no tiene scikit-learn para Python 3.11 en 32 bits. Así que el árbol de decisión de la tablet está hecho «a mano» con numpy,
+    siguiendo los mismos pasos, y da exactamente los mismos números que el del escritorio.</div>
+</section>
+
+<!-- ============ 9 + 10 ============ -->
+<section class="pagina">
+  <h1><span class="num">9</span>Ponerlo en marcha en la Tab A</h1>
+  <ul class="check">
+    <li><b>PC y tablet en la misma wifi.</b></li>
+    <li>En el PC, mirar la IP: <code>ipconfig</code> → «Dirección IPv4» (por ejemplo <code>192.168.1.20</code>).</li>
+    <li>Poner esa IP en <code>SharedData.kt</code>: <code>http://192.168.1.20:5110/api/</code>.</li>
+    <li>Arrancar la API (Visual Studio, perfil <b>http</b>). Tiene que salir <code>Now listening on: http://0.0.0.0:5110</code>.</li>
+    <li>Abrir el puerto 5110 en el cortafuegos de Windows (regla de entrada TCP 5110).</li>
+    <li>Comprobar desde el navegador de la tablet: <code>http://192.168.1.20:5110/api/modos/infinito</code> tiene que enseñar datos.</li>
+    <li>Instalar la app en la tablet (con cable USB o con el APK) y entrar con <code>marc</code> / <code>marc1234</code>.</li>
+  </ul>
+  <div class="caja truco"><b class="t">✅ Antes de la primera vez, en cada PC</b>
+    <code>git pull</code> en los 3 repositorios · <code>instalar_dotnet.bat</code> (API) · <code>instalar_librerias.bat</code> (Android y escritorio) ·
+    en Android Studio, Gradle JDK 17 o 21.</div>
+
+  <h1 style="margin-top:7mm"><span class="num">10</span>Problemas típicos</h1>
+  <table>
+    <tr><th>Lo que pasa</th><th>Por qué suele ser</th><th>Qué hacer</th></tr>
+    <tr><td>«Sin conexión» en la tablet</td><td>IP mal puesta, otra wifi o la API parada</td><td>Revisar <code>SharedData.kt</code>, la wifi y que la API esté arrancada</td></tr>
+    <tr><td>Funciona en el emulador pero no en la tablet</td><td>Sigue <code>10.0.2.2</code>, o el cortafuegos bloquea</td><td>Poner la IP real y abrir el puerto 5110</td></tr>
+    <tr><td>Desde el navegador de la tablet no carga</td><td>El cortafuegos de Windows</td><td>Regla de entrada para el puerto TCP 5110</td></tr>
+    <tr><td>Vuelve sola al login</td><td>El token ha caducado (8 h) → 401</td><td>Volver a entrar</td></tr>
+    <tr><td>No deja jugar una dificultad</td><td>Está cerrada (faltan puntos o la bloqueó el tutor) → 403</td><td>Es lo esperado; mirar el candado</td></tr>
+    <tr><td>La API no arranca: «You must install .NET»</td><td>Falta .NET 8</td><td>Ya está resuelto con <code>RollForward</code>; si no, <code>instalar_dotnet.bat</code></td></tr>
+    <tr><td>La API no conecta a la base de datos</td><td>Contraseña vieja en <code>appsettings.json</code></td><td><code>git pull</code> (la nueva está en el repo)</td></tr>
+    <tr><td>Mis estadísticas falla en la Tab A</td><td>Versión de Python incompatible con 32 bits</td><td>La app usa Python 3.11; compilar con Python 3.11 en el PC</td></tr>
+  </table>
+</section>
+
+<!-- ============ 11 ============ -->
+<section class="pagina">
+  <h1><span class="num">11</span>Glosario</h1>
+  <table>
+    <tr><th style="width:28%">Palabra</th><th>Qué significa, fácil</th></tr>
+    <tr><td><b>API</b></td><td>Programa intermediario que recibe peticiones y devuelve datos. Las apps hablan con ella, no con la base de datos.</td></tr>
+    <tr><td><b>Endpoint</b></td><td>Cada «dirección» de la API que hace una cosa, por ejemplo <code>POST api/sesiones</code>.</td></tr>
+    <tr><td><b>HTTP / HTTPS</b></td><td>El idioma de las peticiones en la red. HTTPS es la versión cifrada; aquí se usa HTTP porque es una red de clase.</td></tr>
+    <tr><td><b>JSON</b></td><td>Formato de texto «nombre: valor» que entienden Kotlin, C# y Python.</td></tr>
+    <tr><td><b>IP</b></td><td>La «dirección postal» de un aparato dentro de la red (<code>192.168.1.20</code>).</td></tr>
+    <tr><td><b>Puerto</b></td><td>La «puerta» de un programa dentro del aparato. La API usa la 5110.</td></tr>
+    <tr><td><b>localhost</b></td><td>«Este mismo ordenador». Desde el emulador, el PC es <code>10.0.2.2</code>.</td></tr>
+    <tr><td><b>0.0.0.0</b></td><td>Escuchar en todas las redes del PC, para que lleguen peticiones de otros aparatos.</td></tr>
+    <tr><td><b>Cortafuegos</b></td><td>El guardia de Windows que bloquea conexiones que llegan de fuera.</td></tr>
+    <tr><td><b>Retrofit</b></td><td>Librería de Android que convierte una interfaz de Kotlin en llamadas HTTP.</td></tr>
+    <tr><td><b>Gson</b></td><td>Librería que pasa JSON a objetos de Kotlin y al revés.</td></tr>
+    <tr><td><b>Corrutina</b></td><td>Trabajo en segundo plano para que la pantalla no se congele mientras llega la respuesta.</td></tr>
+    <tr><td><b>bcrypt / hash</b></td><td>Convierte la contraseña en un código que no se puede deshacer.</td></tr>
+    <tr><td><b>Token JWT</b></td><td>Un «pase» firmado por la API que dice quién eres y tu rol. Caduca a las 8 h.</td></tr>
+    <tr><td><b>Rol</b></td><td>Tipo de usuario: <i>jugador</i>, <i>educador</i> o <i>admin</i>. Decide qué puedes hacer.</td></tr>
+    <tr><td><b>SQL Server</b></td><td>El programa de base de datos donde se guardan los usuarios y las partidas.</td></tr>
+    <tr><td><b>Chaquopy</b></td><td>Herramienta que mete Python dentro de una app Android.</td></tr>
+    <tr><td><b>base64</b></td><td>Forma de convertir una imagen en texto para enviarla (Python → Kotlin).</td></tr>
+    <tr><td><b>armeabi-v7a</b></td><td>El tipo de procesador de 32 bits de la Galaxy Tab A.</td></tr>
+  </table>
+</section>
+
+<!-- ============ 12 ============ -->
+<section class="pagina">
+  <h1><span class="num">12</span>Preguntas de repaso</h1>
+  <p class="pie">Intenta responderlas antes de leer la respuesta.</p>
+  <div class="pregunta"><b>1.</b> ¿Por qué la tablet no se conecta directamente a la base de datos?
+    <div class="respuesta">→ Porque la contraseña de la base de datos solo la debe conocer la API, y así las dos apps comparten los mismos datos y las mismas reglas (roles, candados).</div></div>
+  <div class="pregunta"><b>2.</b> ¿Qué hace falta para que la tablet hable con el PC sin cable?
+    <div class="respuesta">→ Misma wifi, la IP del PC en <code>SharedData.kt</code>, la API escuchando en <code>0.0.0.0:5110</code>, el puerto abierto en el cortafuegos y el permiso INTERNET.</div></div>
+  <div class="pregunta"><b>3.</b> ¿Qué diferencia hay entre <code>localhost</code>, <code>10.0.2.2</code> y <code>192.168.x.x</code>?
+    <div class="respuesta">→ localhost es el propio PC (escritorio); 10.0.2.2 es el PC visto desde el emulador; 192.168.x.x es el PC visto desde la tablet de verdad.</div></div>
+  <div class="pregunta"><b>4.</b> ¿Por qué el manifest tiene <code>usesCleartextTraffic="true"</code>?
+    <div class="respuesta">→ Porque Android bloquea HTTP sin cifrar y la API de clase va por HTTP, no por HTTPS.</div></div>
+  <div class="pregunta"><b>5.</b> ¿Qué viaja por la red al hacer login: la contraseña o su hash?
+    <div class="respuesta">→ El hash bcrypt. La contraseña nunca sale de la tablet.</div></div>
+  <div class="pregunta"><b>6.</b> ¿Qué es el token y dónde se envía?
+    <div class="respuesta">→ Un pase JWT firmado por la API (dura 8 h). Va en la cabecera <code>Authorization: Bearer …</code> de cada petición.</div></div>
+  <div class="pregunta"><b>7.</b> ¿Qué contesta la API si un jugador intenta borrar un usuario?
+    <div class="respuesta">→ 403 (prohibido): esa llamada solo la permite el rol admin.</div></div>
+  <div class="pregunta"><b>8.</b> ¿Qué librería hace las llamadas HTTP en Android, y cuál pasa el JSON a objetos?
+    <div class="respuesta">→ Retrofit hace las llamadas; Gson pasa el JSON a clases de Kotlin.</div></div>
+  <div class="pregunta"><b>9.</b> ¿Por qué las llamadas van dentro de <code>GlobalScope.launch</code>?
+    <div class="respuesta">→ Para hacerlas en segundo plano; si se hicieran en el hilo de la pantalla, la app se congelaría (Android no lo deja).</div></div>
+  <div class="pregunta"><b>10.</b> ¿Hace falta la red mientras el niño juega una partida?
+    <div class="respuesta">→ No. La partida pasa entera en la tablet; la red solo se usa antes (login, dificultades) y al final (guardar la partida, ranking).</div></div>
+  <div class="pregunta"><b>11.</b> ¿Cómo se ejecuta Python en la tablet y por qué se usa la versión 3.11?
+    <div class="respuesta">→ Con Chaquopy, que mete Python en la app. Se usa la 3.11 porque es la última que Chaquopy tiene para tablets de 32 bits como la Tab A.</div></div>
+  <div class="pregunta"><b>12.</b> ¿Qué archivo cambiarías si la tablet no encuentra la API?
+    <div class="respuesta">→ <code>SharedData.kt</code> (<code>PROJECT_ROOT</code>), y después volverías a instalar la app.</div></div>
+</section>
+
+<!-- ============ ANEXO USUARIOS ============ -->
+<section class="pagina">
+  <h1><span class="num">A</span>Anexo: usuarios y contraseñas</h1>
+  <p>Los usuarios que hay en la base de datos <code>jocs_dam02</code> (comprobado el 25/11/2026). En los de prueba, la contraseña es el nombre más 1234.</p>
+  <table>
+    <tr><th>Usuario</th><th>Contraseña</th><th>Rol</th><th>Dónde se usa</th><th>Notas</th></tr>
+    <tr><td><b>ana</b></td><td><code>ana1234</code></td><td>admin</td><td>Escritorio</td><td>Crea, edita y borra usuarios</td></tr>
+    <tr><td><b>profe</b></td><td><code>profe1234</code></td><td>educador</td><td>Escritorio</td><td>Estadísticas, dificultades y bloqueos</td></tr>
+    <tr><td><b>marc</b></td><td><code>marc1234</code></td><td>jugador</td><td>Tablet</td><td>El de las pruebas</td></tr>
+    <tr><td><b>laia</b></td><td><code>laia1234</code></td><td>jugador</td><td>Tablet</td><td>Perfil «bueno»</td></tr>
+    <tr><td><b>pol</b></td><td><code>pol1234</code></td><td>jugador</td><td>Tablet</td><td></td></tr>
+    <tr><td><b>julia</b></td><td><code>julia1234</code></td><td>jugador</td><td>Tablet</td><td>Perfil «bueno»</td></tr>
+    <tr><td><b>nil</b></td><td><code>nil1234</code></td><td>jugador</td><td>Tablet</td><td>Perfil «con dificultades»</td></tr>
+    <tr><td><b>emma</b></td><td><code>emma1234</code></td><td>jugador</td><td>Tablet</td><td></td></tr>
+    <tr><td><b>biel</b></td><td><code>biel1234</code></td><td>jugador</td><td>Tablet</td><td>Con dificultades, lleva días sin jugar</td></tr>
+    <tr><td><b>martina</b></td><td><code>martina1234</code></td><td>jugador</td><td>Tablet</td><td></td></tr>
+    <tr><td><b>ona</b></td><td><code>ona1234</code></td><td>jugador</td><td>Tablet</td><td>Sin partidas («Sin empezar»)</td></tr>
+    <tr><td><b>Borja</b></td><td>la suya</td><td>admin</td><td>Escritorio</td><td rowspan="4">Cuentas creadas por el equipo con su propia contraseña. Solo se guarda el hash, así que no se puede recuperar: si se olvida, <b>ana</b> la cambia desde el escritorio</td></tr>
+    <tr><td><b>Daniil</b></td><td>la suya</td><td>admin</td><td>Escritorio</td></tr>
+    <tr><td><b>Miguelesmi18</b></td><td>la suya</td><td>admin</td><td>Escritorio</td></tr>
+    <tr><td><b>Miguel</b></td><td>la suya</td><td>jugador</td><td>Tablet</td></tr>
+  </table>
+
+  <h2>🗄️ Acceso a la base de datos (SQL Server)</h2>
+  <table>
+    <tr><th>Servidor</th><th>Base de datos</th><th>Usuario</th><th>Contraseña</th></tr>
+    <tr><td><code>51.83.192.177</code></td><td><code>jocs_dam02</code></td><td><code>jocs_dam02</code></td><td><code>Topohit_2026!</code></td></tr>
+  </table>
+  <p class="pie">Es la que usa la API (<code>appsettings.json</code>). Sirve también para entrar con SSMS. La comparte el proyecto Proyectada:
+     si se cambia, hay que avisar y ponerla en los dos sitios.</p>
+
+  <div class="caja ojo"><b class="t">⚠️ Cuidado con estas contraseñas</b>
+    Son de un entorno de clase. No las uses en ninguna otra cuenta y no compartas este anexo fuera del equipo.</div>
+</section>
+
+</body>
+</html>
