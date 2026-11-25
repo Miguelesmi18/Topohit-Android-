@@ -151,6 +151,7 @@
                     style="@style/BotonTema"
                     android:layout_marginEnd="@dimen/separacion_pequena"
                     android:background="@drawable/btn_verde"
+                    android:textColor="@color/marron"
                     android:text="@string/normal" />
 
                 <TextView

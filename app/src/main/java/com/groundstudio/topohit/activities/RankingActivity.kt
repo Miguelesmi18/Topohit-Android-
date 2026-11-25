@@ -91,7 +91,7 @@ class RankingActivity : PantallaBase()
             else
             {
                 pestanas[i].setBackgroundResource(tema.botonSecundario)
-                pestanas[i].setTextColor(ContextCompat.getColor(this, R.color.blanco))
+                pestanas[i].setTextColor(ContextCompat.getColor(this, tema.colorTextoBotonSecundario))
                 pestanas[i].alpha = 0.75f
             }
         }
