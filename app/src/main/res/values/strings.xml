@@ -131,6 +131,11 @@
     <string name="duracion_media">Segundos por partida</string>
     <string name="dias_jugados">Días jugados</string>
     <string name="ayudas_por_partida">Ayudas por partida</string>
+    <string name="modelo_abandono">Modelo: ¿volverá a jugar?</string>
+    <string name="modelo_accuracy">Accuracy</string>
+    <string name="modelo_precision">Precision</string>
+    <string name="modelo_recall">Recall</string>
+    <string name="modelo_roc_auc">ROC-AUC</string>
     <string name="perfil_sin_partidas">Todavía no has jugado ninguna partida</string>
     <string name="guardar">Guardar</string>
     <string name="cancelar">Cancelar</string>

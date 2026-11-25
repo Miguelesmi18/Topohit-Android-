@@ -50,9 +50,18 @@ de frustración** que se programaron.
 Al final se ha hecho como pidió el equipo: **en la tablet, las estadísticas propias del niño**.
 - El script es `app/src/main/python/estadisticas_jugador.py`, con el mismo estilo que `03_analisis.py`.
 - Recibe las partidas de `GET api/sesiones/mias` desde Kotlin y devuelve los números y 7 gráficas en base64.
-- Chaquopy usa Python 3.13. En Chaquopy, scikit-learn solo existe hasta Python 3.10, así que **el modelo no va en la tablet**.
+- **El modelo también va en la tablet (25/11)**, porque el PDF pide sus resultados en la vista «Mètriques».
+  Chaquopy usa Python 3.13 y no tiene scikit-learn (solo existe hasta Python 3.10), así que
+  `app/src/main/python/modelo_abandono.py` hace con numpy el mismo árbol de decisión que `03_analisis.py`
+  (mismas features, `max_depth=4`, 80/20 estratificado, `random_state=42`), con las sesiones simuladas
+  (`app/src/main/python/sesiones_simuladas.csv`, copia de `datos/`). Sale **lo mismo que en el escritorio**:
+  accuracy 0,913, precision 0,875, recall 1,0 y ROC-AUC 0,865, con la misma matriz de confusión
+  (comprobado contra scikit-learn). La importancia de las variables cambia un poco porque scikit-learn
+  desempata al azar entre dos cortes igual de buenos.
+- Si se vuelve a generar `datos/sesiones_simuladas.csv`, hay que copiarlo también a `app/src/main/python/`
+  y a `GolpeaTopos-Escritorio/TopohitEscritorio/Python/`.
 
-`03_analisis.py` (todos los jugadores, con el modelo de abandono) es para el **escritorio**:
+`03_analisis.py` (todos los jugadores, con el modelo de abandono) es para el **escritorio** y el informe PDF:
 
 ## generar_informe() (escritorio)
 

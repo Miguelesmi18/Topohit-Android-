@@ -1,6 +1,8 @@
 package com.groundstudio.topohit.activities
 
 import android.os.Bundle
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import com.groundstudio.topohit.GestorAjustes
 import com.groundstudio.topohit.Sonidos
@@ -28,6 +30,17 @@ open class PantallaBase : AppCompatActivity()
     // Esta parte es de información externa que no sale en los vídeos
     // (isFinishing e isDestroyed son propiedades de Activity que no se ven en clase)
     fun pantallaActiva(): Boolean = !isFinishing && !isDestroyed
+
+    // El título de la pantalla (encima del cielo del fondo) con el color y la sombra de la temática
+    fun pintarTitulo(id: Int)
+    {
+        val tema = GestorAjustes.tema
+        val titulo = findViewById<TextView>(id)
+        titulo.setTextColor(ContextCompat.getColor(this, tema.colorTitulo))
+        // Esta parte es de información externa que no sale en los vídeos
+        // (setShadowLayer: cambiar desde el código la sombra que en el layout es shadowColor)
+        titulo.setShadowLayer(8f, 0f, 0f, ContextCompat.getColor(this, tema.colorSombraTitulo))
+    }
 
     override fun onPause()
     {

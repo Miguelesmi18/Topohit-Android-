@@ -4,7 +4,7 @@ Qué hay que seguir **siempre** al tocar la app. Salen de lo que enseñan en cla
 módulo 0489, fichas `REGLA-0489-xxx`) y de cómo lo aplicamos en Proyectada.
 Si algo de aquí choca con un PDF de los retos, **manda el PDF**.
 
-Actualizado: 24/11/2026.
+Actualizado: 25/11/2026.
 
 ## 0. Lo que no puede fallar
 
@@ -157,12 +157,16 @@ Ejemplos que ya están en la app, con su motivo:
 | Chaquopy (`Python.start`, `getModule`, `callAttr`) | el reto de Métricas pide ejecutar Python dentro de la app |
 | `Base64` + `BitmapFactory` | pintar las gráficas que Python manda en base64 |
 | `android:pageSizeCompat` | que numpy funcione en las tablets con páginas de 16 KB |
+| `setShadowLayer` | cambiar desde el código la sombra del título según la temática (`PantallaBase.pintarTitulo()`) |
+| En Python: árbol de decisión, `train_test_split` y métricas hechos con numpy (`modelo_abandono.py`) | Chaquopy no tiene scikit-learn para Python 3.13 |
 | En Python: backend `Agg`, `base64` | dibujar sin ventana y pasar las gráficas a la app |
 
 Para elegir agujero y tipo de topo se usa `java.util.Random`, que sí sale en clase (087).
 
 ## 10. Pendiente de decidir o preguntar
 
-- **Cifrado** (0490): la tablet calcula bcrypt con una **sal fija** y envía el hash. Los PDF no dicen quién
-  cifra. Preguntar al profesor de 0490 en la entrevista si lo quiere así o con la sal aleatoria en la API.
-- Las partidas de Historia y Contrarreloj se borraron de la BD el 24/11 (`10_quitar_historia_contrarreloj.sql`).
+- **Cifrado** (0490), **decidido el 25/11**: se queda como está (bcrypt con **sal fija** calculado en la tablet), porque
+  el PDF solo pide la contraseña cifrada en la BD. Si algún profesor pide sal aleatoria, la API haría `hashpw` y `checkpw`.
+- Las partidas de Historia y Contrarreloj se borraron de la BD el 25/11 (`10_quitar_historia_contrarreloj.sql`).
+- **Colores de la temática:** el texto sobre botones y títulos sale de la `Tematica` (`colorTextoBoton`,
+  `colorTextoBotonSecundario`, `colorTitulo`, `colorSombraTitulo`), nunca un color fijo en el layout.

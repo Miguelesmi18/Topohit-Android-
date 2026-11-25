@@ -37,7 +37,17 @@ Se abre desde **Perfil → Mis estadísticas** y enseña las métricas **propias
 3. Python devuelve los números (partidas, récord, puntos de media, precisión, segundos por partida, días jugados y
    ayudas) y 7 gráficas de Matplotlib en base64. `GraficasAdapter` las pinta de dos en dos.
 
-Las estadísticas de todos los niños y el modelo de abandono van en el escritorio.
+4. **Modelo de abandono (25/11):** `modelo_abandono.py` entrena el árbol de decisión que predice si un niño volverá a
+   jugar (con las sesiones simuladas que van dentro de la app) y devuelve accuracy, precision, recall y ROC-AUC
+   (la fila «Modelo: ¿volverá a jugar?») y 3 gráficas: matriz de confusión, curva ROC e importancia de cada variable.
+   Es lo que pide el PDF de Métricas para la vista «Mètriques». Chaquopy no tiene scikit-learn para Python 3.13,
+   así que el árbol está hecho con numpy; da los mismos números que el escritorio.
+
+Las estadísticas de todos los niños van en el escritorio.
+
+**Título de las pantallas (25/11, contraste):** el título que va sobre el cielo (Ranking, Perfil, Ajustes…) sale del
+campo nuevo `colorTitulo` / `colorSombraTitulo` de la temática (`PantallaBase.pintarTitulo()`). En Halloween es crema
+con sombra marrón, porque el marrón no se leía sobre el cielo morado; en Normal y Navidad sigue marrón con halo blanco.
 
 Lo que cambia en la app por Chaquopy:
 
@@ -52,15 +62,15 @@ Lo que cambia en la app por Chaquopy:
 ## Métricas (carpeta `metricas/`)
 
 Contiene el pipeline en Python del reto «Mètriques dels jocs»: el playtest, la simulación de 400 sesiones, las gráficas,
-el árbol de decisión y el informe PDF. Está aquí porque la pestaña «Mètriques» de la tablet lo ejecutará con Chaquopy
-(`generar_informe()` devuelve las gráficas en base64). Más información en [`metricas/README.md`](metricas/README.md).
+el árbol de decisión y el informe PDF. La tablet usa sus propios scripts (`app/src/main/python/`), con el mismo estilo. Más información en [`metricas/README.md`](metricas/README.md).
 
 ## Cómo abrirlo
 
 1. Android Studio → **Open** → esta carpeta. Si Gradle dice que no admite la versión de Java (por ejemplo «25.0.3»),
    en *Settings → Build Tools → Gradle → Gradle JDK* elegid un **JDK 17 o 21** (Gradle 8.9 no funciona con Java 25).
 2. **Instalad Python 3.13** en el ordenador. Chaquopy lo usa al compilar para meter pandas y matplotlib en la app.
-   En Windows: `pymanager install 3.13` o el instalador de python.org. La primera compilación descarga unos 30 MB de paquetes.
+   Lo más fácil: doble clic en **`instalar_librerias.bat`** (instala Python 3.13 con winget si no está y las librerías de
+   `metricas/requirements.txt`). A mano: `pymanager install 3.13` o el instalador de python.org. La primera compilación descarga unos 30 MB de paquetes.
 3. Arrancad la API (perfil **http**, puerto 5110). Hace falta `07_solo_infinito.sql` en la base de datos.
 4. Ejecutad la app en un emulador de **tablet en horizontal** (por ejemplo *Pixel Tablet*).
    - Desde el emulador la API está en `http://10.0.2.2:5110/api/` (`SharedData.PROJECT_ROOT`).

@@ -108,6 +108,7 @@ class AjustesActivity : PantallaBase()
     private fun pintar()
     {
         val tema = GestorAjustes.tema
+        pintarTitulo(R.id.LblAjustesCabecera)
         findViewById<ImageView>(R.id.ImgAjustesFondo).setImageResource(tema.fondo)
         findViewById<TextView>(R.id.BtnAjustesAtras).setBackgroundResource(tema.circulo)
         findViewById<LinearLayout>(R.id.LayAjustesPanel).setBackgroundResource(tema.panel)

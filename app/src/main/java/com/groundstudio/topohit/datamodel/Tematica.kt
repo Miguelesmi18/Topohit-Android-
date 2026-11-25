@@ -5,6 +5,8 @@ package com.groundstudio.topohit.datamodel
 // Todos los Int son recursos: R.drawable... o R.color...
 // colorTextoBoton y colorTextoBotonSecundario: el texto de los botones (marrón sobre el naranja y el verde,
 // que con blanco no se leen bien)
+// colorTitulo y colorSombraTitulo: el título de las pantallas, que va encima del cielo del fondo
+// (en Halloween el cielo es morado y el marrón no se lee: va en crema con sombra marrón)
 class Tematica (val nombre: String,
                 val fondo: Int,
                 val logo: Int,
@@ -24,4 +26,6 @@ class Tematica (val nombre: String,
                 val circulo: Int,
                 val colorTexto: Int,
                 val colorTextoBoton: Int,
-                val colorTextoBotonSecundario: Int)
+                val colorTextoBotonSecundario: Int,
+                val colorTitulo: Int,
+                val colorSombraTitulo: Int)

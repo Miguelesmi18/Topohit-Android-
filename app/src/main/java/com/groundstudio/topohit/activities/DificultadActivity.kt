@@ -43,6 +43,8 @@ class DificultadActivity : PantallaBase()
         val btnDificultadAtras = findViewById<TextView>(R.id.BtnDificultadAtras)
 
         val tema = GestorAjustes.tema
+
+        pintarTitulo(R.id.LblDificultadCabecera)
         findViewById<ImageView>(R.id.ImgDificultadFondo).setImageResource(tema.fondo)
         btnDificultadAtras.setBackgroundResource(tema.circulo)
 

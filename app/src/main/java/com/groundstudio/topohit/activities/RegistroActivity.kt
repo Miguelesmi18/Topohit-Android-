@@ -82,6 +82,7 @@ class RegistroActivity : PantallaBase()
     private fun pintarTema()
     {
         val tema = GestorAjustes.tema
+        pintarTitulo(R.id.LblRegistroCabecera)
         val color = ContextCompat.getColor(this, tema.colorTexto)
         findViewById<ImageView>(R.id.ImgRegistroFondo).setImageResource(tema.fondo)
         findViewById<LinearLayout>(R.id.LayRegistroDatos).setBackgroundResource(tema.panel)

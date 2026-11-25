@@ -47,6 +47,8 @@ class RankingActivity : PantallaBase()
                           findViewById<TextView>(R.id.BtnRankingTotal))
 
         val tema = GestorAjustes.tema
+
+        pintarTitulo(R.id.LblRankingCabecera)
         findViewById<ImageView>(R.id.ImgRankingFondo).setImageResource(tema.fondo)
         findViewById<TextView>(R.id.BtnRankingAtras).setBackgroundResource(tema.circulo)
         findViewById<LinearLayout>(R.id.LayRankingPanel).setBackgroundResource(tema.panel)

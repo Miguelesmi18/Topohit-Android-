@@ -20,6 +20,7 @@ import com.groundstudio.topohit.api.ApiGetPartidas
 import com.groundstudio.topohit.api.RetrofitGetPartidasClient
 import com.groundstudio.topohit.datamodel.Grafica
 import com.groundstudio.topohit.datamodel.MetricasJugador
+import com.groundstudio.topohit.datamodel.ModeloAbandono
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -27,7 +28,9 @@ import kotlinx.coroutines.launch
 // 1. Pide sus partidas a la API (GET api/sesiones/mias).
 // 2. Se las pasa en JSON al script de Python estadisticas_jugador.py (Chaquopy).
 // 3. Python devuelve los números y las gráficas de Matplotlib en base64, y aquí se pintan.
-// Las estadísticas de todos los niños y el modelo de abandono están en el escritorio.
+// 4. Después, modelo_abandono.py entrena el árbol de decisión (¿volverá a jugar?) con las sesiones
+//    simuladas y devuelve accuracy, precision, recall, ROC-AUC y sus gráficas, que van detrás.
+// Las estadísticas de todos los niños están en el escritorio.
 class MetricasActivity : PantallaBase()
 {
     private lateinit var lstMetricasGraficas: RecyclerView
@@ -76,6 +79,7 @@ class MetricasActivity : PantallaBase()
     private fun pintarTema()
     {
         val tema = GestorAjustes.tema
+        pintarTitulo(R.id.LblMetricasCabecera)
         findViewById<ImageView>(R.id.ImgMetricasFondo).setImageResource(tema.fondo)
         findViewById<TextView>(R.id.BtnMetricasAtras).setBackgroundResource(tema.circulo)
         findViewById<LinearLayout>(R.id.LayMetricasPanel).setBackgroundResource(tema.panel)
@@ -107,15 +111,16 @@ class MetricasActivity : PantallaBase()
                 if(local != null)
                 {
                     val metricas = calcular(Gson().toJson(local))
+                    val modelo = calcularModelo()
                     // runOnUiThread: las vistas solo se pueden cambiar desde el hilo de la pantalla, no desde el launch.
                     // pantallaActiva() comprueba que el niño no ha salido de la pantalla mientras llegaba la respuesta.
                     runOnUiThread()
                     {
                         if(pantallaActiva())
                         {
-                            if(metricas != null)
+                            if(metricas != null && modelo != null)
                             {
-                                pintarMetricas(metricas)
+                                pintarMetricas(metricas, modelo)
                             }
                             else
                             {
@@ -172,10 +177,38 @@ class MetricasActivity : PantallaBase()
         return metricas
     }
 
-    private fun pintarMetricas(metricas: MetricasJugador)
+    // Llama a generar() de modelo_abandono.py. Devuelve null si Python falla.
+    private fun calcularModelo(): ModeloAbandono?
     {
-        graficas = metricas.graficas
+        var modelo: ModeloAbandono? = null
+        try
+        {
+            // Esta parte es de información externa que no sale en los vídeos
+            // (Chaquopy: getModule carga el script y callAttr llama a una de sus funciones)
+            val modulo = Python.getInstance().getModule("modelo_abandono")
+            val resultado = modulo.callAttr("generar").toString()
+            modelo = Gson().fromJson(resultado, ModeloAbandono::class.java)
+        }
+        catch(e: Exception)
+        {
+            modelo = null
+        }
+        return modelo
+    }
+
+    private fun pintarMetricas(metricas: MetricasJugador, modelo: ModeloAbandono)
+    {
+        // Primero las gráficas del niño y detrás las del modelo
+        val todas = mutableListOf<Grafica>()
+        todas.addAll(metricas.graficas)
+        todas.addAll(modelo.graficas)
+        graficas = todas
         adapter.setGraficas(graficas)
+
+        findViewById<TextView>(R.id.LblMetricasAccuracy).text = modelo.accuracy.toString()
+        findViewById<TextView>(R.id.LblMetricasPrecisionModelo).text = modelo.precision.toString()
+        findViewById<TextView>(R.id.LblMetricasRecall).text = modelo.recall.toString()
+        findViewById<TextView>(R.id.LblMetricasRocAuc).text = modelo.rocAuc.toString()
 
         if(metricas.partidas == 0)
         {

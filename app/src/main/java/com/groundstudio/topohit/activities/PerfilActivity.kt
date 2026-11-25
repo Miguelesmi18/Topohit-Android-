@@ -112,6 +112,7 @@ class PerfilActivity : PantallaBase()
     private fun pintarTema()
     {
         val tema = GestorAjustes.tema
+        pintarTitulo(R.id.LblPerfilCabecera)
         val color = ContextCompat.getColor(this, tema.colorTexto)
         findViewById<ImageView>(R.id.ImgPerfilFondo).setImageResource(tema.fondo)
         findViewById<TextView>(R.id.BtnPerfilAtras).setBackgroundResource(tema.circulo)

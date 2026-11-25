@@ -19,6 +19,8 @@ class ComoJugarActivity : PantallaBase()
         setContentView(R.layout.activity_como_jugar)
 
         val tema = GestorAjustes.tema
+
+        pintarTitulo(R.id.LblComoJugarCabecera)
         findViewById<ImageView>(R.id.ImgComoJugarFondo).setImageResource(tema.fondo)
         findViewById<TextView>(R.id.BtnComoJugarAtras).setBackgroundResource(tema.circulo)
         val btnComoJugarJugar = findViewById<TextView>(R.id.BtnComoJugarJugar)
